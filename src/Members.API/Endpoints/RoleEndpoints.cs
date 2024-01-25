@@ -35,8 +35,8 @@ namespace Members.API.Endpoints
         /// <summary>
         /// Synchronizes the application roles with the Discord guild's server roles.
         /// </summary>
-        private async Task Post_SyncRolesWithDiscord(IRolesInfrastructureService aRolesInfrastructureService, CancellationToken aCancellationToken = default)
-            => await aRolesInfrastructureService.SyncRolesWithDiscordAsync(aCancellationToken);
+        private async Task Post_SyncRolesWithDiscord(IRolesInfrastructureService aRolesInfrastructureService, CancellationToken? aCancellationToken = default)
+            => await aRolesInfrastructureService.SyncRolesWithDiscordAsync(aCancellationToken.GetValueOrDefault());
 
         /// <summary>
         /// Get the list of guild members(<see cref="PaginatedRoleListDTO"/>) under filtering and pagination conditions specified in the request's query parameters and sorted by a given column name.
@@ -44,19 +44,19 @@ namespace Members.API.Endpoints
         private async Task<IResult> Get_Roles(IRolesService aRolesService, PaginationValidator aPaginationValidator, RolesSortByValidator aSortByValidator,
             string? name, RoleTypesEnum? type, PermissionsEnum? permissions,
             int page = 1, int pageSize = 20, string sortBy = nameof(RoleDTO.Position),
-            CancellationToken aCancellationToken = default)
-        => await Result.CancellationTokenResult(aCancellationToken)
+            CancellationToken? aCancellationToken = default)
+        => await Result.CancellationTokenResult(aCancellationToken.GetValueOrDefault())
         .ValidateMany(
             aPaginationValidator.Validate(new PaginationValParams(page, pageSize)),
             aSortByValidator.Validate(sortBy))
-        .Bind(_ => aRolesService.GetRoleList(page, pageSize, sortBy, name, type, permissions, aCancellationToken))
+        .Bind(_ => aRolesService.GetRoleList(page, pageSize, sortBy, name, type, permissions, aCancellationToken.GetValueOrDefault()))
         .ToIResult();
 
         /// <summary>
         /// Updates a list of application roles: ONLY Permissions, RoleType and Description columns can be updated. (<see cref="RoleUpdateDTO.DiscordRoleId"/>) => is used only to determine which role has to be updated. To change the name or position it must be changed on Discord. 
         /// </summary>
-        private async Task<IResult> Put_UpdateRoleList([FromBody] IEnumerable<RoleUpdateDTO> aRoleDTOList, IRolesService aRolesService, IIntegrationMessagePublisher aIntegrationPublisherService, CancellationToken aCancellationToken = default)
-        => await aRolesService.UpdateRoleList(aRoleDTOList, aCancellationToken)
+        private async Task<IResult> Put_UpdateRoleList([FromBody] IEnumerable<RoleUpdateDTO> aRoleDTOList, IRolesService aRolesService, IIntegrationMessagePublisher aIntegrationPublisherService, CancellationToken? aCancellationToken = default)
+        => await aRolesService.UpdateRoleList(aRoleDTOList, aCancellationToken.GetValueOrDefault())
         .Tap(roleDTOList =>
         {
             var lUpdatedRoleIdList = roleDTOList.Select(roleDTO => ulong.Parse(roleDTO.DiscordRoleId));

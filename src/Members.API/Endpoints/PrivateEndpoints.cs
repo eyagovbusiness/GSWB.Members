@@ -24,13 +24,13 @@ namespace Members.API.Endpoints
         }
 
         /// private endpoint implementation 
-        private async Task<IResult> Put_NewMember([FromBody] CreateMemberDTO aCreateMemberDTO, IMembersService aMembersService, CancellationToken aCancellationToken = default)
-            => await aMembersService.AddNewMember(aCreateMemberDTO, aCancellationToken)
+        private async Task<IResult> Put_NewMember([FromBody] CreateMemberDTO aCreateMemberDTO, IMembersService aMembersService, CancellationToken? aCancellationToken = default)
+            => await aMembersService.AddNewMember(aCreateMemberDTO, aCancellationToken.GetValueOrDefault())
             .ToIResult();
 
         /// private endpoint implementation 
-        private async Task<IResult> Get_GetByDiscordUserId(ulong aDiscordUserId, IMembersService aMembersService, CancellationToken aCancellationToken = default)
-            => await aMembersService.GetByDiscordUserId(aDiscordUserId, aCancellationToken)
+        private async Task<IResult> Get_GetByDiscordUserId(ulong aDiscordUserId, IMembersService aMembersService, CancellationToken? aCancellationToken = default)
+            => await aMembersService.GetByDiscordUserId(aDiscordUserId, aCancellationToken.GetValueOrDefault())
             .ToIResult();
 
     }

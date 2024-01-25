@@ -23,7 +23,8 @@ main() {
     execute_before_start
 
     echo "Calling base Entrypoint"
-    dotnet Members.API.dll &
+    #dotnet Members.API.dll &
+	./Members.API &
     local baseentry_pid=$!
 	
     wait "$baseentry_pid" 
