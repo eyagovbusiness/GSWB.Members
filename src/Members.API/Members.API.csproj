@@ -7,8 +7,11 @@
     <ServerGarbageCollection>false</ServerGarbageCollection>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <DockerBuild>false</DockerBuild>
-    <UserSecretsId>40720355-4fc7-452a-81e2-574b364a5851</UserSecretsId>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Private.Uri" Version="4.3.2" />
+  </ItemGroup>
   
   <ItemGroup Condition="'$(DockerBuild)'=='false'">
     <ProjectReference Include="..\Members.Infrastructure\Members.Infrastructure.csproj" />
