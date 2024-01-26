@@ -4,16 +4,16 @@ using TGF.CA.Infrastructure.Communication.Consumer.Handler;
 using TGF.CA.Infrastructure.Communication.Messages;
 using TGF.CA.Infrastructure.Communication.Messages.Discord;
 
-namespace Members.Infrastructure.MessageConsumer.Role
+namespace Members.Infrastructure.Communication.MessageConsumer.Role
 {
-    internal class RoleDeletedHandler(IServiceScopeFactory aServiceScopeFactory) 
-        : IIntegrationMessageHandler<RoleDeleted>
+    internal class RoleUpdatedHandler(IServiceScopeFactory aServiceScopeFactory)
+        : IIntegrationMessageHandler<RoleUpdated>
     {
-        public async Task Handle(IntegrationMessage<RoleDeleted> aIntegrationMessage, CancellationToken aCancellationToken = default)
+        public async Task Handle(IntegrationMessage<RoleUpdated> aIntegrationMessage, CancellationToken aCancellationToken = default)
         {
             using var lScope = aServiceScopeFactory.CreateScope();
             var lRolesService = lScope.ServiceProvider.GetRequiredService<IRolesService>();
-            _ = await lRolesService.DeleteRoleAsync(ulong.Parse(aIntegrationMessage.Content.DiscordRoleId), aCancellationToken);
+            _ = await lRolesService.UpdateRoleAsync(aIntegrationMessage.Content.DiscordRole, aCancellationToken);
         }
     }
 }

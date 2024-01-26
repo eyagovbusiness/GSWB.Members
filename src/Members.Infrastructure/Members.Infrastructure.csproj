@@ -31,4 +31,8 @@
     <PackageReference Include="Common.Infrastructure" Version="1.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\TheGoodFramework\src\Common\TGF.Common.Extensions\TGF.Common.Extensions.csproj" />
+  </ItemGroup>
+
 </Project>

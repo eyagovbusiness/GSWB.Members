@@ -4,6 +4,7 @@ using Common.Domain.ValueObjects;
 using Members.Application;
 using Members.Domain.Entities;
 using Members.Infrastructure.Repositories;
+using TGF.Common.Extensions;
 
 namespace Members.Infrastructure.Services
 {
@@ -23,9 +24,13 @@ namespace Members.Infrastructure.Services
 
         public async Task<bool> SyncRolesWithDiscordAsync(CancellationToken aCancellationToken)
         {
-            var GetDiscordRoleListResult = await _SwarmBotCommunicationService.GetDiscordRoleList(aCancellationToken);
-            if (GetDiscordRoleListResult == null || !GetDiscordRoleListResult.IsSuccess)
-                throw new Exception("Error during the initial Roles sync with Discord.");
+
+            var GetDiscordRoleListResult = await RetryUtility.ExecuteWithRetryAsync(
+                async () => await _SwarmBotCommunicationService.GetDiscordRoleList(aCancellationToken),
+                result => !result.IsSuccess,
+                aMaxRetries: 3,
+                aDelayMilliseconds: 1000,
+                aCancellationToken: aCancellationToken);
 
             var lGuildServerDiscordRoleList = GetDiscordRoleListResult.Value;
             var lDatabaseRoleList = await _roleRepository.GetAll(aCancellationToken);

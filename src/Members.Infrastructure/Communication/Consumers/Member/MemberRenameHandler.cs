@@ -4,7 +4,7 @@ using TGF.CA.Infrastructure.Communication.Consumer.Handler;
 using TGF.CA.Infrastructure.Communication.Messages;
 using TGF.CA.Infrastructure.Communication.Messages.Discord;
 
-namespace Members.Infrastructure.MessageConsumer.Member
+namespace Members.Infrastructure.Communication.MessageConsumer.Member
 {
     internal class MemberRenameHandler(IServiceScopeFactory aServiceScopeFactory)
         : IIntegrationMessageHandler<MemberRenamed>

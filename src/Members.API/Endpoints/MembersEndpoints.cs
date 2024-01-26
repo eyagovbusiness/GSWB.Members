@@ -39,20 +39,20 @@ namespace Members.API.Endpoints
         private async Task<IResult> Get_MembersList(IMembersService aMembersService, PaginationValidator aPaginationValidator, MembersSortByValidator aSortByValidator,
             string? discordNameFilter, string? gameHandleFilter, ulong? roleIdFilter, bool? isVerifiedFilter,
             int page = 1, int pageSize = 20, string sortBy = nameof(MemberDTO.Roles),
-            CancellationToken? aCancellationToken = default)
+            CancellationToken aCancellationToken = default)
         =>
-        await Result.CancellationTokenResult(aCancellationToken.GetValueOrDefault())
+        await Result.CancellationTokenResult(aCancellationToken)
         .ValidateMany(
             aPaginationValidator.Validate(new PaginationValParams(page, pageSize)),
             aSortByValidator.Validate(sortBy))
-        .Bind(_ => aMembersService.GetMemberList(page, pageSize, sortBy, discordNameFilter, gameHandleFilter, roleIdFilter, isVerifiedFilter, aCancellationToken.GetValueOrDefault()))
+        .Bind(_ => aMembersService.GetMemberList(page, pageSize, sortBy, discordNameFilter, gameHandleFilter, roleIdFilter, isVerifiedFilter, aCancellationToken))
         .ToIResult();
 
         /// <summary>
         /// Get the count of all the guild's members registered in the database.
         /// </summary>
-        private async Task<IResult> Get_MembersCount(IMembersService aMembersService, CancellationToken? aCancellationToken = default)
-        => await Result.CancellationTokenResult(aCancellationToken.GetValueOrDefault())
+        private async Task<IResult> Get_MembersCount(IMembersService aMembersService, CancellationToken aCancellationToken = default)
+        => await Result.CancellationTokenResult(aCancellationToken)
             .Bind(_ => aMembersService.GetMembersCount())
             .ToIResult();
     }

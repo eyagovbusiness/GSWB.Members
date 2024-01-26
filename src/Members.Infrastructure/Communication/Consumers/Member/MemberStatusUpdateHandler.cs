@@ -2,15 +2,16 @@
 using Common.Infrastructure.Communication.Messages;
 using Members.Application;
 using Microsoft.Extensions.DependencyInjection;
+using SwarmBot.Infrastructure.Communication;
 using TGF.CA.Infrastructure.Communication.Consumer.Handler;
 using TGF.CA.Infrastructure.Communication.Messages;
 using TGF.CA.Infrastructure.Communication.Messages.Discord;
 using TGF.CA.Infrastructure.Communication.Publisher.Integration;
 using TGF.Common.ROP.HttpResult;
 
-namespace Members.Infrastructure.MessageConsumer.Member
+namespace Members.Infrastructure.Communication.MessageConsumer.Member
 {
-    internal class MemberStatusUpdateHandler(IServiceScopeFactory aServiceScopeFactory) 
+    internal class MemberStatusUpdateHandler(IServiceScopeFactory aServiceScopeFactory)
         : IIntegrationMessageHandler<MemberBanUpdated>
     {
         public async Task Handle(IntegrationMessage<MemberBanUpdated> aIntegrationMessage, CancellationToken aCancellationToken = default)
@@ -21,7 +22,7 @@ namespace Members.Infrastructure.MessageConsumer.Member
 
             await lMembersService.UpdateMemberStatus(ulong.Parse(aIntegrationMessage.Content.DiscordUserId), /*aIntegrationMessage.Content.DiscordGuildId,*/ lMemberStatus, aCancellationToken)
             .Tap(_ => lScope.ServiceProvider.GetRequiredService<IIntegrationMessagePublisher>()
-                      .Publish(new MemberTokenRevoked([aIntegrationMessage.Content.DiscordUserId]), routingKey: "member.revoke"));
+                      .Publish(new MemberTokenRevoked([aIntegrationMessage.Content.DiscordUserId]), routingKey: RoutingKeys.Members.Member_revoke));
         }
     }
 }
