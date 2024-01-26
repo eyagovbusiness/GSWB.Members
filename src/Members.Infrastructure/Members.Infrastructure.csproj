@@ -21,6 +21,7 @@
     <ProjectReference Include="..\Members.Application\Members.Application.csproj" />
     <ProjectReference Include="..\Members.Domain\Members.Domain.csproj" />
     <ProjectReference Include="..\..\..\TheGoodFramework\src\CleanArchitecture\Infrastructure\Comm\TGF.CA.Infrastructure.Comm.RabbitMQ\TGF.CA.Infrastructure.Comm.RabbitMQ.csproj" />
+    <ProjectReference Include="..\..\..\TheGoodFramework\src\Common\TGF.Common.Extensions\TGF.Common.Extensions.csproj" />
     <ProjectReference Include="..\..\..\GSWB.Common\src\Common.Infrastructure\Common.Infrastructure.csproj" />
   </ItemGroup>
 
@@ -28,11 +29,8 @@
     <ProjectReference Include="../Members.Application/Members.Application.csproj" />
     <ProjectReference Include="../Members.Domain/Members.Domain.csproj" />
     <PackageReference Include="TGF.CA.Infrastructure.Comm.RabbitMQ" Version="1.0.0" />
+    <PackageReference Include="TGF.Common.Extensions" Version="1.0.0" />
     <PackageReference Include="Common.Infrastructure" Version="1.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\TheGoodFramework\src\Common\TGF.Common.Extensions\TGF.Common.Extensions.csproj" />
   </ItemGroup>
 
 </Project>
