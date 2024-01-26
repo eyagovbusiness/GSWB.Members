@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!--FIXING CVE-2019-0980-->
     <PackageReference Include="System.Private.Uri" Version="4.3.2" />
   </ItemGroup>
   
