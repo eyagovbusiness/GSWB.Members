@@ -24,13 +24,11 @@ namespace Members.API
             var lXmlDocFilePath = Path.Combine(AppContext.BaseDirectory, lXmlDocFileName);
 
             aWebApplicationBuilder.ConfigureDefaultPresentation(
-                new List<string> { lXmlDocFilePath },
+                [lXmlDocFilePath],
                 aBaseSwaggerPath: "members-ms",
                 aScanMarkerList: typeof(PresentationErrors)
             );
             aWebApplicationBuilder.Services.AddValidatorsFromAssemblyContaining<MembersSortByValidator>();
-            aWebApplicationBuilder.Services.AddValidatorsFromAssemblyContaining<RolesSortByValidator>();
-
         }
 
         /// <summary>
