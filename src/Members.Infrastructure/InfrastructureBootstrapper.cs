@@ -1,4 +1,5 @@
 ﻿using Common.Application;
+using Common.Application.Contracts.Services;
 using Common.Infrastructure;
 using Common.Infrastructure.Communication.HTTP;
 using Members.Application;

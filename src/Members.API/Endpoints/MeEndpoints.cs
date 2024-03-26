@@ -1,5 +1,5 @@
-﻿using Common.Application.Contracts.ApiRoutes;
-using Common.Application.DTOs;
+﻿using Common.Application.DTOs;
+using Common.Infrastructure.Communication.ApiRoutes;
 using Common.Infrastructure.Communication.Messages;
 using Members.Application;
 using Microsoft.AspNetCore.Mvc;

@@ -1,6 +1,6 @@
-﻿using Common.Application.Contracts.ApiRoutes;
-using Common.Application.DTOs;
+﻿using Common.Application.DTOs;
 using Common.Domain.ValueObjects;
+using Common.Infrastructure.Communication.ApiRoutes;
 using Common.Presentation.Validation;
 using Members.API.Validation;
 using Members.Application;

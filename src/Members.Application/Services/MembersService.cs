@@ -1,4 +1,4 @@
-﻿using Common.Application;
+﻿using Common.Application.Contracts.Services;
 using Common.Application.DTOs;
 using Common.Application.DTOs.Discord;
 using Common.Domain.ValueObjects;
