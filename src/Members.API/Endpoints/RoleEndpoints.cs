@@ -1,4 +1,5 @@
-﻿using Common.Application.DTOs;
+﻿using Common.Application.DTOs.Members;
+using Common.Application.DTOs.Roles;
 using Common.Domain.ValueObjects;
 using Common.Infrastructure.Communication.ApiRoutes;
 using Common.Infrastructure.Communication.Messages;

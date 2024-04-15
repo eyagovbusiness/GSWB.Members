@@ -1,4 +1,4 @@
-﻿using Common.Application.DTOs;
+﻿using Common.Application.DTOs.Roles;
 using Members.Domain.Entities;
 
 namespace Members.Application.Mapping

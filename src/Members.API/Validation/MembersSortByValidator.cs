@@ -1,4 +1,4 @@
-﻿using Common.Application.DTOs;
+﻿using Common.Application.DTOs.Members;
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 namespace Members.API.Validation
 {

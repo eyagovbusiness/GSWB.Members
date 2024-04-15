@@ -1,4 +1,4 @@
-﻿using Common.Application.DTOs;
+﻿using Common.Application.DTOs.Members;
 using Common.Infrastructure.Communication.ApiRoutes;
 using Members.Application;
 using Microsoft.AspNetCore.Mvc;
