@@ -23,6 +23,12 @@ namespace Members.Application
         Task<IHttpResult<Member>> Delete(Member aMemberToDelete, CancellationToken aCancellationToken = default);
 
         /// <summary>
+        /// Get a Member by its Id
+        /// </summary>
+        /// <returns>The member matchign the provided Id</returns>
+        Task<IHttpResult<Member>> GetByIdAsync(Guid aMemberId, CancellationToken aCancellationToken = default);
+
+        /// <summary>
         /// Retrieves a member by their Discord user ID.
         /// </summary>
         /// <param name="aDiscordUserId">The Discord user ID to search for.</param>

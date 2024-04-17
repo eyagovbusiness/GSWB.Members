@@ -49,6 +49,9 @@ namespace Members.Infrastructure.Repositories
         public async Task<IHttpResult<Member>> Delete(Member aMemberToDelete, CancellationToken aCancellationToken = default)
             => await TryCommandAsync(() => _context.Members.Remove(aMemberToDelete).Entity, aCancellationToken);
 
+        public async Task<IHttpResult<Member>> GetByIdAsync(Guid aMemberId, CancellationToken aCancellationToken = default)
+            => await base.GetByIdAsync<Member, Guid>(aMemberId, aCancellationToken);
+
         public async Task<IHttpResult<int>> GetCountAsync(CancellationToken aCancellationToken = default)
         => await TryQueryAsync(async (aCancellationToken)
             => await _context.Members.CountAsync(aCancellationToken)

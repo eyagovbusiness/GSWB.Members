@@ -43,6 +43,10 @@ namespace Members.Application.Services
         public async Task<IHttpResult<int>> GetMembersCount(CancellationToken aCancellationToken = default)
         => await _memberRepository.GetCountAsync();
 
+        public async Task<IHttpResult<PermissionsEnum>> GetPermissions(Guid aMemberId, CancellationToken aCancellationToken = default)
+        => await _memberRepository.GetByIdAsync(aMemberId, aCancellationToken)
+            .Map(member => member.CalculatePermissions());
+
 
         public async Task<IHttpResult<MemberDetailDTO>> AddNewMember(CreateMemberDTO aCreateMemberDTO, CancellationToken aCancellationToken = default)
         {

@@ -21,6 +21,12 @@ namespace Members.Application
             CancellationToken aCancellationToken = default);
 
         /// <summary>
+        /// Get the calculated permissions of a given member from its Id.
+        /// </summary>
+        /// <returns>The permissions of the member.</returns>
+        public Task<IHttpResult<PermissionsEnum>> GetPermissions(Guid aMemberId, CancellationToken aCancellationToken = default); 
+
+        /// <summary>
         /// Get the total count of guild members.
         /// </summary>
         public Task<IHttpResult<int>> GetMembersCount(CancellationToken aCancellationToken = default);

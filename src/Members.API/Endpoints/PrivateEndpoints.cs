@@ -14,7 +14,8 @@ namespace Members.API.Endpoints
         public void DefineEndpoints(WebApplication aWebApplication)
         {
             aWebApplication.MapGet(MembersApiRoutes.private_members_getByDiscordUserId, Get_GetByDiscordUserId);
-            aWebApplication.MapPut(MembersApiRoutes.private_members_addNew, Put_NewMember);
+            aWebApplication.MapPut(MembersApiRoutes.private_members_getPermissions, Get_Permissions);
+            aWebApplication.MapGet(MembersApiRoutes.private_members_addNew, Put_NewMember);
 
         }
 
@@ -27,6 +28,10 @@ namespace Members.API.Endpoints
         private async Task<IResult> Put_NewMember([FromBody] CreateMemberDTO aCreateMemberDTO, IMembersService aMembersService, CancellationToken aCancellationToken = default)
             => await aMembersService.AddNewMember(aCreateMemberDTO, aCancellationToken)
             .ToIResult();
+
+        private async Task<IResult> Get_Permissions(Guid memberId, IMembersService aMembersService, CancellationToken aCancellationToken = default)
+            => await aMembersService.GetPermissions(memberId, aCancellationToken)
+            .ToIResult(); 
 
         /// private endpoint implementation 
         private async Task<IResult> Get_GetByDiscordUserId(ulong aDiscordUserId, IMembersService aMembersService, CancellationToken aCancellationToken = default)
