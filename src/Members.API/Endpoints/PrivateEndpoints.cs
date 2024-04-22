@@ -14,8 +14,8 @@ namespace Members.API.Endpoints
         public void DefineEndpoints(WebApplication aWebApplication)
         {
             aWebApplication.MapGet(MembersApiRoutes.private_members_getByDiscordUserId, Get_GetByDiscordUserId);
-            aWebApplication.MapPut(MembersApiRoutes.private_members_getPermissions, Get_Permissions);
-            aWebApplication.MapGet(MembersApiRoutes.private_members_addNew, Put_NewMember);
+            aWebApplication.MapGet(MembersApiRoutes.private_members_getPermissions, Get_Permissions);
+            aWebApplication.MapPut(MembersApiRoutes.private_members_addNew, Put_NewMember);
 
         }
 
