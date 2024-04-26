@@ -20,7 +20,7 @@ namespace Members.API.Endpoints
         /// <inheritdoc/>
         public void DefineEndpoints(WebApplication aWebApplication)
         {
-            aWebApplication.MapGet(MembersApiRoutes.members_list, Get_MembersList)
+            aWebApplication.MapGet(MembersApiRoutes.members, Get_MembersList)
                 .RequirePermissions(PermissionsEnum.AccessMembers)
                 .SetResponseMetadata<PaginatedMemberListDTO[]>(200)
                 .ProducesValidationProblem();

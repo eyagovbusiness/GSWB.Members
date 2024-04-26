@@ -13,9 +13,9 @@ namespace Members.API.Endpoints
         /// <inheritdoc/>
         public void DefineEndpoints(WebApplication aWebApplication)
         {
-            aWebApplication.MapGet(MembersApiRoutes.private_members_getByDiscordUserId, Get_GetByDiscordUserId);
-            aWebApplication.MapGet(MembersApiRoutes.private_members_getPermissions, Get_Permissions);
-            aWebApplication.MapPut(MembersApiRoutes.private_members_addNew, Put_NewMember);
+            aWebApplication.MapGet(MembersApiRoutes.private_members_discordUserId, Get_GetByDiscordUserId);
+            aWebApplication.MapGet(MembersApiRoutes.private_members_permissions, Get_Permissions);
+            aWebApplication.MapPut(MembersApiRoutes.private_members, Put_NewMember);
 
         }
 
@@ -34,8 +34,8 @@ namespace Members.API.Endpoints
             .ToIResult(); 
 
         /// private endpoint implementation 
-        private async Task<IResult> Get_GetByDiscordUserId(ulong aDiscordUserId, IMembersService aMembersService, CancellationToken aCancellationToken = default)
-            => await aMembersService.GetByDiscordUserId(aDiscordUserId, aCancellationToken)
+        private async Task<IResult> Get_GetByDiscordUserId(ulong discordUserId, IMembersService aMembersService, CancellationToken aCancellationToken = default)
+            => await aMembersService.GetByDiscordUserId(discordUserId, aCancellationToken)
             .ToIResult();
 
     }

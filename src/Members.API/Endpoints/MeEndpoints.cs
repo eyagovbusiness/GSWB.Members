@@ -22,10 +22,10 @@ namespace Members.API.Endpoints
         public void DefineEndpoints(WebApplication aWebApplication)
         {
             aWebApplication.MapGet(MembersApiRoutes.members_me, Get_Me).RequireJWTBearer().SetResponseMetadata<MemberDetailDTO>(200, 404);
-            aWebApplication.MapPut(MembersApiRoutes.members_me_update, Put_MeUpdate).RequireJWTBearer().SetResponseMetadata<MemberDetailDTO>(200, 404);
-            aWebApplication.MapDelete(MembersApiRoutes.members_me_delete, Delete_MeDelete).RequireJWTBearer().SetResponseMetadata<Unit>(200, 404);
-            aWebApplication.MapGet(MembersApiRoutes.members_me_getVerifyInfo, Get_GetVerifyInfo).RequireJWTBearer().SetResponseMetadata<MemberVerifyInfoDTO>(200, 404);
-            aWebApplication.MapPut(MembersApiRoutes.members_me_verifyGameHandle, Put_MeVerifyGameHandle).RequireJWTBearer().SetResponseMetadata<MemberDetailDTO>(200, 404);
+            aWebApplication.MapPut(MembersApiRoutes.members_me, Put_MeUpdate).RequireJWTBearer().SetResponseMetadata<MemberDetailDTO>(200, 404);
+            aWebApplication.MapDelete(MembersApiRoutes.members_me, Delete_MeDelete).RequireJWTBearer().SetResponseMetadata<Unit>(200, 404);
+            aWebApplication.MapGet(MembersApiRoutes.members_me_verify, Get_GetVerifyInfo).RequireJWTBearer().SetResponseMetadata<MemberVerifyInfoDTO>(200, 404);
+            aWebApplication.MapPut(MembersApiRoutes.members_me_verify, Put_MeVerifyGameHandle).RequireJWTBearer().SetResponseMetadata<MemberDetailDTO>(200, 404);
 
         }
 

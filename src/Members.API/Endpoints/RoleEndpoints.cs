@@ -24,9 +24,9 @@ namespace Members.API.Endpoints
         /// <inheritdoc/>
         public void DefineEndpoints(WebApplication aWebApplication)
         {
-            aWebApplication.MapPost(MembersApiRoutes.roles_syncRolesWithDiscord, Post_SyncRolesWithDiscord).RequirePermissions(PermissionsEnum.Admin).SetResponseMetadata(200).ProducesValidationProblem();
-            aWebApplication.MapGet(MembersApiRoutes.roles_getRoles, Get_Roles).RequirePermissions(PermissionsEnum.Admin).SetResponseMetadata<PaginatedRoleListDTO>(200);
-            aWebApplication.MapPut(MembersApiRoutes.roles_update, Put_UpdateRoleList).RequirePermissions(PermissionsEnum.Admin).SetResponseMetadata<RoleDTO[]>(200, 404);
+            aWebApplication.MapPost(MembersApiRoutes.roles_discordSync, Post_SyncRolesWithDiscord).RequirePermissions(PermissionsEnum.Admin).SetResponseMetadata(200).ProducesValidationProblem();
+            aWebApplication.MapGet(MembersApiRoutes.roles, Get_Roles).RequirePermissions(PermissionsEnum.Admin).SetResponseMetadata<PaginatedRoleListDTO>(200);
+            aWebApplication.MapPut(MembersApiRoutes.roles, Put_UpdateRoleList).RequirePermissions(PermissionsEnum.Admin).SetResponseMetadata<RoleDTO[]>(200, 404);
 
         }
         /// <inheritdoc/>
