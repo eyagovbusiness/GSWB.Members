@@ -27,7 +27,7 @@ namespace Members.Infrastructure.Services
         {
 
             var GetDiscordRoleListResult = await RetryUtility.ExecuteWithRetryAsync(
-                async () => await _SwarmBotCommunicationService.GetDiscordRoleList(aCancellationToken),
+                _SwarmBotCommunicationService.GetDiscordRoleList(aCancellationToken),
                 result => !result.IsSuccess,
                 aMaxRetries: 3,
                 aDelayMilliseconds: 1000,

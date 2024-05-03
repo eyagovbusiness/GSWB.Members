@@ -29,13 +29,13 @@ namespace Members.API.Endpoints
             => await aMembersService.AddNewMember(aCreateMemberDTO, aCancellationToken)
             .ToIResult();
 
-        private async Task<IResult> Get_Permissions(Guid memberId, IMembersService aMembersService, CancellationToken aCancellationToken = default)
-            => await aMembersService.GetPermissions(memberId, aCancellationToken)
+        private async Task<IResult> Get_Permissions(Guid id, IMembersService aMembersService, CancellationToken aCancellationToken = default)
+            => await aMembersService.GetPermissions(id, aCancellationToken)
             .ToIResult(); 
 
         /// private endpoint implementation 
-        private async Task<IResult> Get_GetByDiscordUserId(ulong discordUserId, IMembersService aMembersService, CancellationToken aCancellationToken = default)
-            => await aMembersService.GetByDiscordUserId(discordUserId, aCancellationToken)
+        private async Task<IResult> Get_GetByDiscordUserId(ulong id, IMembersService aMembersService, CancellationToken aCancellationToken = default)
+            => await aMembersService.GetByDiscordUserId(id, aCancellationToken)
             .ToIResult();
 
     }
