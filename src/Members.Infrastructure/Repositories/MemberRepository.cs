@@ -50,7 +50,14 @@ namespace Members.Infrastructure.Repositories
             => await TryCommandAsync(() => _context.Members.Remove(aMemberToDelete).Entity, aCancellationToken);
 
         public async Task<IHttpResult<Member>> GetByIdAsync(Guid aMemberId, CancellationToken aCancellationToken = default)
-            => await base.GetByIdAsync<Member, Guid>(aMemberId, aCancellationToken);
+        => await TryQueryAsync(async (aCancellationToken) =>
+        {
+            return await _context.Members
+            .Include(m => m.Roles.OrderByDescending(r => r.Position))
+            .SingleOrDefaultAsync(m => m.Id == aMemberId, aCancellationToken);
+        }, aCancellationToken)
+        .Verify(member => member != null, InfrastructureErrors.MembersDb.NotFoundId)
+        .Map(member => member!);
 
         public async Task<IHttpResult<int>> GetCountAsync(CancellationToken aCancellationToken = default)
         => await TryQueryAsync(async (aCancellationToken)
