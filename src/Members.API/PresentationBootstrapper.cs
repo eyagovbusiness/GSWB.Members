@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Common.Presentation;
+using FluentValidation;
 using HealthChecks.UI.Client;
 using Members.API.Validation;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -36,16 +37,7 @@ namespace Members.API
         /// </summary>
         public static void UsePresentation(this WebApplication aWebApplication)
         {
-            if (aWebApplication.Environment.IsDevelopment())
-            {
-                aWebApplication.UseSwagger();
-                aWebApplication.UseSwaggerUI();
-            }
-            aWebApplication.MapHealthChecks(TGFEndpointRoutes.health, new HealthCheckOptions()
-            {
-                Predicate = _ => true,
-                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-            });
+            aWebApplication.UseCommonPresentation();
 
             aWebApplication.UseCustomErrorHandlingMiddleware();
             aWebApplication.UseRouting();//UseRouting() must be called before UseAuthentication() and UseAuthorization() which is UseIdentity().
