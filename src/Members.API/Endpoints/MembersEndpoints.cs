@@ -5,6 +5,7 @@ using Common.Infrastructure.Communication.ApiRoutes;
 using Common.Presentation.Validation;
 using Members.API.Validation;
 using Members.Application;
+using Microsoft.AspNetCore.Mvc;
 using TGF.CA.Infrastructure.Security.Identity.Authorization.Permissions;
 using TGF.CA.Presentation;
 using TGF.CA.Presentation.Middleware;
@@ -23,6 +24,11 @@ namespace Members.API.Endpoints
             aWebApplication.MapGet(MembersApiRoutes.members, Get_MembersList)
                 .RequirePermissions(PermissionsEnum.AccessMembers)
                 .SetResponseMetadata<PaginatedMemberListDTO[]>(200)
+                .ProducesValidationProblem();
+
+            aWebApplication.MapPost(MembersApiRoutes.members_getByIds, Post_MembersByIdList)
+                .RequirePermissions(PermissionsEnum.AccessMembers)
+                .SetResponseMetadata<MemberDetailDTO[]>(200)
                 .ProducesValidationProblem();
 
             aWebApplication.MapGet(MembersApiRoutes.members_count, Get_MembersCount)
@@ -47,6 +53,16 @@ namespace Members.API.Endpoints
             aPaginationValidator.Validate(new PaginationValParams(page, pageSize)),
             aSortByValidator.Validate(sortBy))
         .Bind(_ => aMembersService.GetMemberList(page, pageSize, sortBy, discordNameFilter, gameHandleFilter, roleIdFilter, isVerifiedFilter, aCancellationToken))
+        .ToIResult();
+
+
+        /// <summary>
+        /// Get the list of guild members(<see cref="MemberDetailDTO"/>) from the provided members id list.
+        /// </summary>
+        private async Task<IResult> Post_MembersByIdList(IMembersService aMembersService, [FromBody] IEnumerable<Guid> aMemberList, CancellationToken aCancellationToken = default)
+        =>
+        await Result.CancellationTokenResult(aCancellationToken)
+        .Bind(_ => aMembersService.GetMembersByIdList(aMemberList, aCancellationToken))
         .ToIResult();
 
         /// <summary>

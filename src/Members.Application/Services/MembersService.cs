@@ -40,6 +40,11 @@ namespace Members.Application.Services
         => await _memberRepository.GetMembersListAsync(aPage, aPageSize, aSortBy, aDiscordNameFilter, aGameHandleFilter, aRoleIdFilter, aIsVerifiedFilter, aCancellationToken)
             .Bind(memberList => GetPaginatedMemberListDTO(memberList, aPage, aPageSize));
 
+        public async Task<IHttpResult<IEnumerable<MemberDetailDTO>>> GetMembersByIdList(IEnumerable<Guid> aMemberIdList, CancellationToken aCancellationToken = default)
+        => await _memberRepository.GetByIdListAsync(aMemberIdList, aCancellationToken)
+            .Map(memberList => memberList.Select(member => member.ToDetailDto()));
+
+
         public async Task<IHttpResult<int>> GetMembersCount(CancellationToken aCancellationToken = default)
         => await _memberRepository.GetCountAsync();
 

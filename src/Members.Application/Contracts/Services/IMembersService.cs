@@ -21,6 +21,13 @@ namespace Members.Application
             CancellationToken aCancellationToken = default);
 
         /// <summary>
+        /// Get the list of members from the provided members id list.
+        /// </summary>
+        /// <returns>List of members matching the id list.</returns>
+        public Task<IHttpResult<IEnumerable<MemberDetailDTO>>> GetMembersByIdList(IEnumerable<Guid> aMemberIdList, CancellationToken aCancellationToken = default);
+
+
+        /// <summary>
         /// Get the calculated permissions of a given member from its Id.
         /// </summary>
         /// <returns>The permissions of the member.</returns>

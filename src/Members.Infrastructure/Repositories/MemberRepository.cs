@@ -59,6 +59,20 @@ namespace Members.Infrastructure.Repositories
         .Verify(member => member != null, InfrastructureErrors.MembersDb.NotFoundId)
         .Map(member => member!);
 
+        public async Task<IHttpResult<IEnumerable<Member>>> GetByIdListAsync(IEnumerable<Guid> aMemberIdList, CancellationToken aCancellationToken = default)
+        => await TryQueryAsync(async (aCancellationToken) =>
+        {
+            var lMemberList = await _context.Members
+                .Include(m => m.Roles.OrderByDescending(r => r.Position))
+                .Where(m => aMemberIdList.Contains(m.Id))
+                .ToListAsync(aCancellationToken);
+
+            return lMemberList;
+        }, aCancellationToken)
+        .Verify(members => members != null && members.Count == aMemberIdList.Count(), InfrastructureErrors.MembersDb.NotFoundIdList)
+        .Map(members => members!.AsEnumerable());
+
+
         public async Task<IHttpResult<int>> GetCountAsync(CancellationToken aCancellationToken = default)
         => await TryQueryAsync(async (aCancellationToken)
             => await _context.Members.CountAsync(aCancellationToken)

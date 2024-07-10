@@ -12,6 +12,12 @@ namespace Members.Infrastructure
             new Error("MembersDb.NotFoundId",
                 "No registered member was found under the specified Id."),
             HttpStatusCode.NotFound);
+
+            public static HttpError NotFoundIdList => new(
+            new Error("MembersDb.NotFoundIdList",
+                "Could not find a member by ID for one or more of the provided IDs"),
+            HttpStatusCode.NotFound);
+
             public static HttpError NotFoundDiscordUserId => new(
             new Error("MembersDb.NotFoundDiscordUserId",
                 "No registered member was found under the specified DiscordUserId."),

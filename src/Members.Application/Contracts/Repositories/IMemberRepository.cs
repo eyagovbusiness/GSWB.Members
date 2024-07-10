@@ -29,6 +29,13 @@ namespace Members.Application
         Task<IHttpResult<Member>> GetByIdAsync(Guid aMemberId, CancellationToken aCancellationToken = default);
 
         /// <summary>
+        /// Get a list of Member by their Ids
+        /// </summary>
+        /// <returns>The list of members matchign the provided Id list</returns>
+        public Task<IHttpResult<IEnumerable<Member>>> GetByIdListAsync(IEnumerable<Guid> aMemberIdList, CancellationToken aCancellationToken = default);
+
+
+        /// <summary>
         /// Retrieves a member by their Discord user ID.
         /// </summary>
         /// <param name="aDiscordUserId">The Discord user ID to search for.</param>
