@@ -1,17 +1,13 @@
 ﻿using Common.Domain.ValueObjects;
+using TGF.CA.Domain.Primitives;
 
 namespace Members.Domain.Entities
 {
     /// <summary>
     /// Represents an application role. Represents a DiscordRole but it has a set of application permissions attached.
     /// </summary>
-    public partial class Role
+    public partial class Role : Entity<Guid>
     {
-        /// <summary>
-        /// Global unique id.
-        /// </summary>
-        public Guid Id { get; set; }
-
         /// <summary>
         /// The original DiscordRole that is being represented by this application Role.
         /// </summary>

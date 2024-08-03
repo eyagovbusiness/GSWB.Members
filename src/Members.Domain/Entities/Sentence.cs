@@ -1,17 +1,13 @@
 ﻿using Members.Domain.ValueObjects;
+using TGF.CA.Domain.Primitives;
 
 namespace Members.Domain.Entities
 {
     /// <summary>
     /// Represents a sentence of an incident report.
     /// </summary>
-    public class Sentence
+    public class Sentence : Entity<Guid>
     {
-        /// <summary>
-        /// Global unique id.
-        /// </summary>
-        public Guid Id { get; set; }
-
         /// <summary>
         /// Description and arguments of the sentence. 
         /// </summary>

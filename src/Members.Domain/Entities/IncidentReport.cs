@@ -1,17 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using TGF.CA.Domain.Primitives;
 
 namespace Members.Domain.Entities
 {
     /// <summary>
     /// Represents an incident report where a member is reporting an incident with another member.
     /// </summary>
-    public class IncidentReport
+    public class IncidentReport : Entity<Guid>
     {
-        /// <summary>
-        /// Global unique id.
-        /// </summary>
-        public Guid Id { get; set; }
-
         /// <summary>
         /// Title of this incident being reported.
         /// </summary>

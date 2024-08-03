@@ -1,18 +1,14 @@
 ﻿using Common.Domain.ValueObjects;
 using System.ComponentModel.DataAnnotations;
+using TGF.CA.Domain.Primitives;
 
 namespace Members.Domain.Entities
 {
     /// <summary>
     /// Represents a member account (user account) in the system. Contains information about the DiscordUser who created this account, the in-game handles and the list of application Role assigned to this member which determines its permissions.
     /// </summary>
-    public partial class Member
+    public partial class Member: Entity<Guid>
     {
-        /// <summary>
-        /// Global unique id.
-        /// </summary>
-        public Guid Id { get; set; }
-
         /// <summary>
         /// Discord user ID from OAuth with discord.
         /// </summary>
@@ -34,15 +30,6 @@ namespace Members.Domain.Entities
         [MaxLength(256)]
         [Required]
         public string DiscordAvatarUrl { get; set; }
-
-        /// <summary>
-        /// Discord username account.
-        /// </summary>
-        /// <remarks>Don't mess it with the discord account display name!!! they are not the same field.</remarks>
-        [MaxLength(32)]
-        [MinLength(2)]
-        [Required]
-        public string DiscordUserName { get; set; }
 
         ///// <summary>
         ///// The guild of this member.
@@ -85,30 +72,29 @@ namespace Members.Domain.Entities
         /// <summary>
         /// The Roles assigned to this member.
         /// </summary>
-        public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
+        public virtual ICollection<Role> Roles { get; set; } = [];
 
 
         //ctor for EF
-        public Member(ulong DiscordUserId, string DiscordUserName, string DiscordGuildDisplayName, string DiscordAvatarUrl)
+        public Member(ulong DiscordUserId, string DiscordGuildDisplayName, string DiscordAvatarUrl)
         {
             this.DiscordUserId = DiscordUserId;
-            this.DiscordUserName = DiscordUserName;
             this.DiscordGuildDisplayName = DiscordGuildDisplayName;
             this.DiscordAvatarUrl = DiscordAvatarUrl;
         }
 
-        public Member(ulong DiscordUserId, string DiscordUserName, string DiscordGuildDisplayName, string DiscordAvatarUrl, ICollection<Role> Roles)
-            : this(DiscordUserId, DiscordUserName, DiscordGuildDisplayName, DiscordAvatarUrl)
+        public Member(ulong DiscordUserId, string DiscordGuildDisplayName, string DiscordAvatarUrl, ICollection<Role> Roles)
+            : this(DiscordUserId, DiscordGuildDisplayName, DiscordAvatarUrl)
         {
             this.Roles = Roles;
         }
-        public Member(string DiscordUserId, string DiscordUserName, string DiscordGuildDisplayName, string DiscordAvatarUrl, ICollection<Role> Roles)
-            : this(ulong.Parse(DiscordUserId), DiscordUserName, DiscordGuildDisplayName, DiscordAvatarUrl, Roles)
+        public Member(string DiscordUserId, string DiscordGuildDisplayName, string DiscordAvatarUrl, ICollection<Role> Roles)
+            : this(ulong.Parse(DiscordUserId), DiscordGuildDisplayName, DiscordAvatarUrl, Roles)
         {
 
         }
-        public Member(string DiscordUserId, string DiscordUserName, string DiscordGuildDisplayName, string DiscordAvatarUrl, string? GameHandle, string? SpectrumCommunityMoniker, ICollection<Role> Roles)
-            : this(DiscordUserId, DiscordUserName, DiscordGuildDisplayName, DiscordAvatarUrl, Roles)
+        public Member(string DiscordUserId, string DiscordGuildDisplayName, string DiscordAvatarUrl, string? GameHandle, string? SpectrumCommunityMoniker, ICollection<Role> Roles)
+            : this(DiscordUserId, DiscordGuildDisplayName, DiscordAvatarUrl, Roles)
         {
             if (GameHandle != null)
                 this.GameHandle = GameHandle;
