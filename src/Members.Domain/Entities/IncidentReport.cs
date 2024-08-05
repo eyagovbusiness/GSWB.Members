@@ -23,12 +23,12 @@ namespace Members.Domain.Entities
         /// <summary>
         /// Member who reported the incident.
         /// </summary>
-        public required Member Accuser { get; set; }
+        public required Guid AccuserId { get; set; }
 
         /// <summary>
         /// Member who is being reported.
         /// </summary>
-        public required Member Accused { get; set; }
+        public required Guid AccusedId { get; set; }
 
         /// <summary>
         /// Final sentence of this sentence after being evaluated.

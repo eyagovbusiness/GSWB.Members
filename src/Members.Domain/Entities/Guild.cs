@@ -2,7 +2,7 @@
 
 namespace Members.Domain.Entities
 {
-    public class Guild : Entity<Guid>
+    public partial class Guild : Entity<Guid>
     {
         public required string Name { get; set; }
         public required ulong DiscordGuildId { get; set; }

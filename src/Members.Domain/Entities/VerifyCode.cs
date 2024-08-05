@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using TGF.CA.Domain.Primitives;
 
 namespace Members.Domain.Entities
@@ -24,7 +25,7 @@ namespace Members.Domain.Entities
         /// <summary>
         /// The expiry date for this verification code. 
         /// </summary>
-        public DateTimeOffset ExpiryDate { get; set; }
-
+        [NotMapped]
+        public DateTimeOffset ExpiryDate => CreatedAt.AddMinutes(2);
     }
 }

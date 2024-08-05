@@ -16,7 +16,7 @@ namespace Members.Domain.Entities
         /// <summary>
         /// Member who managed the incident and expedited this sentence.
         /// </summary>
-        public required Member Judge { get; set; }
+        public required Guid JudgeId { get; set; }
 
         /// <summary>
         /// Type of the sentence with the final repercussion.

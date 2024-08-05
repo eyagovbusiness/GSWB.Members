@@ -69,11 +69,6 @@ namespace Members.Domain.Entities
         /// </summary>
         public DateTimeOffset VerificationCodeExpiryDate { get; set; }
 
-        /// <summary>
-        /// The Roles assigned to this member.
-        /// </summary>
-        public virtual ICollection<Role> Roles { get; set; } = [];
-
 
         //ctor for EF
         public Member(ulong DiscordUserId, string DiscordGuildDisplayName, string DiscordAvatarUrl)
@@ -83,23 +78,23 @@ namespace Members.Domain.Entities
             this.DiscordAvatarUrl = DiscordAvatarUrl;
         }
 
-        public Member(ulong DiscordUserId, string DiscordGuildDisplayName, string DiscordAvatarUrl, ICollection<Role> Roles)
-            : this(DiscordUserId, DiscordGuildDisplayName, DiscordAvatarUrl)
-        {
-            this.Roles = Roles;
-        }
-        public Member(string DiscordUserId, string DiscordGuildDisplayName, string DiscordAvatarUrl, ICollection<Role> Roles)
-            : this(ulong.Parse(DiscordUserId), DiscordGuildDisplayName, DiscordAvatarUrl, Roles)
-        {
+        //public Member(ulong DiscordUserId, string DiscordGuildDisplayName, string DiscordAvatarUrl, ICollection<Role> Roles)
+        //    : this(DiscordUserId, DiscordGuildDisplayName, DiscordAvatarUrl)
+        //{
+        //    this.Roles = Roles;
+        //}
+        //public Member(string DiscordUserId, string DiscordGuildDisplayName, string DiscordAvatarUrl, ICollection<Role> Roles)
+        //    : this(ulong.Parse(DiscordUserId), DiscordGuildDisplayName, DiscordAvatarUrl, Roles)
+        //{
 
-        }
-        public Member(string DiscordUserId, string DiscordGuildDisplayName, string DiscordAvatarUrl, string? GameHandle, string? SpectrumCommunityMoniker, ICollection<Role> Roles)
-            : this(DiscordUserId, DiscordGuildDisplayName, DiscordAvatarUrl, Roles)
-        {
-            if (GameHandle != null)
-                this.GameHandle = GameHandle;
-            if (SpectrumCommunityMoniker != null)
-                this.SpectrumCommunityMoniker = SpectrumCommunityMoniker;
-        }
+        //}
+        //public Member(string DiscordUserId, string DiscordGuildDisplayName, string DiscordAvatarUrl, string? GameHandle, string? SpectrumCommunityMoniker, ICollection<Role> Roles)
+        //    : this(DiscordUserId, DiscordGuildDisplayName, DiscordAvatarUrl, Roles)
+        //{
+        //    if (GameHandle != null)
+        //        this.GameHandle = GameHandle;
+        //    if (SpectrumCommunityMoniker != null)
+        //        this.SpectrumCommunityMoniker = SpectrumCommunityMoniker;
+        //}
     }
 }

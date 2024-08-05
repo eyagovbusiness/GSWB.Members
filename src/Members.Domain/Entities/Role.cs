@@ -9,7 +9,12 @@ namespace Members.Domain.Entities
     public partial class Role : Entity<Guid>
     {
         /// <summary>
-        /// The original DiscordRole that is being represented by this application Role.
+        /// The guild to which the role belongs
+        /// </summary>
+        public required Guild Guild { get; set; }
+
+        /// <summary>
+        /// The DiscordRole that is being represented by this application Role.
         /// </summary>
         public required ulong DiscordRoleId { get; set; }
 
@@ -41,13 +46,6 @@ namespace Members.Domain.Entities
         /// </summary>
         /// <remarks>Uses <see cref="Role.SetPermissions(PermissionsEnum)"/> in the setter.</remarks>
         public PermissionsEnum Permissions { get => _permissions; set { _permissions = SetPermissions(value); } }
-
-        /// <summary>
-        /// The list of Member assigned with this Role.
-        /// </summary>
-        public virtual ICollection<Member> Members { get; set; } = new List<Member>();
-
-        //public Guild Guild { get; set; }
 
     }
 }

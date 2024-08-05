@@ -59,25 +59,25 @@ namespace Members.Domain.Entities
             return true;
         }
 
-        /// <summary>
-        /// Get this member's highest application role, which determines this member's permissions within the application.
-        /// </summary>
-        public Role? GetHighestRole()
-            => Roles.Where(r => r.IsApplicationRole()).MaxBy(role => role.Position);
+        ///// <summary>
+        ///// Get this member's highest application role, which determines this member's permissions within the application.
+        ///// </summary>
+        //public Role? GetHighestRole()
+        //    => Roles.Where(r => r.IsApplicationRole()).MaxBy(role => role.Position);
 
-        /// <summary>
-        /// Get this member's permissions, calculated by Bitwise OR to accumulate permissions from each permissions of all roles assigned to the member.
-        /// </summary>
-        // Method to calculate total permissions
-        public PermissionsEnum CalculatePermissions()
-        {
-            PermissionsEnum lTotalPermissions = PermissionsEnum.None;
+        ///// <summary>
+        ///// Get this member's permissions, calculated by Bitwise OR to accumulate permissions from each permissions of all roles assigned to the member.
+        ///// </summary>
+        //// Method to calculate total permissions
+        //public PermissionsEnum CalculatePermissions()
+        //{
+        //    PermissionsEnum lTotalPermissions = PermissionsEnum.None;
 
-            foreach (var lRole in Roles)
-                lTotalPermissions |= lRole.Permissions; // Bitwise OR to accumulate permissions
+        //    foreach (var lRole in Roles)
+        //        lTotalPermissions |= lRole.Permissions; // Bitwise OR to accumulate permissions
 
-            return lTotalPermissions;
-        }
+        //    return lTotalPermissions;
+        //}
 
     }
 }
