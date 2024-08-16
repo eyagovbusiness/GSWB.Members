@@ -18,7 +18,7 @@ FROM build AS publish
 ARG BUILD_CONFIGURATION
 RUN dotnet publish "src/Members.API/Members.API.csproj" -c $BUILD_CONFIGURATION --no-build -o /app/publish /p:UseAppHost=true /p:DockerBuild=true -r linux-musl-x64
 
-FROM registry.guildswarm.org/baseimages/dotnet_base AS final 
+FROM registry.guildswarm.org/baseimages/dotnet/aspnet:8.0 AS final 
 WORKDIR /app
 COPY --from=publish /app/publish .
 COPY Infrastructure/MembersEntrypointOverride.sh ./entrypoint.sh
