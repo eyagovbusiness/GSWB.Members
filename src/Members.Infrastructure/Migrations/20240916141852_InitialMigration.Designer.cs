@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Members.Infrastructure.Migrations
 {
     [DbContext(typeof(MembersDbContext))]
-    [Migration("20231005160646_InitialMigration")]
+    [Migration("20240916141852_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace Members.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.10")
+                .HasAnnotation("ProductVersion", "8.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -30,14 +30,63 @@ namespace Members.Infrastructure.Migrations
                     b.Property<Guid>("MembersId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("RolesId")
-                        .HasColumnType("uuid");
+                    b.Property<decimal>("RolesId")
+                        .HasColumnType("numeric(20,0)");
 
                     b.HasKey("MembersId", "RolesId");
 
                     b.HasIndex("RolesId");
 
                     b.ToTable("MemberRole");
+                });
+
+            modelBuilder.Entity("Members.Domain.Entities.Guild", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("DiscordGuildId")
+                        .HasColumnType("numeric(20,0)");
+
+                    b.Property<DateTimeOffset>("ModifiedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Guilds");
+                });
+
+            modelBuilder.Entity("Members.Domain.Entities.GuildBooster", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("GuildId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("MemberId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("ModifiedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GuildId");
+
+                    b.ToTable("GuildBoosters");
                 });
 
             modelBuilder.Entity("Members.Domain.Entities.IncidentReport", b =>
@@ -52,10 +101,16 @@ namespace Members.Infrastructure.Migrations
                     b.Property<Guid>("AccuserId")
                         .HasColumnType("uuid");
 
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(1024)
                         .HasColumnType("character varying(1024)");
+
+                    b.Property<DateTimeOffset>("ModifiedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid?>("SentenceId")
                         .HasColumnType("uuid");
@@ -82,6 +137,9 @@ namespace Members.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("DiscordAvatarUrl")
                         .IsRequired()
                         .HasMaxLength(256)
@@ -95,11 +153,6 @@ namespace Members.Infrastructure.Migrations
                     b.Property<decimal>("DiscordUserId")
                         .HasColumnType("numeric(20,0)");
 
-                    b.Property<string>("DiscordUserName")
-                        .IsRequired()
-                        .HasMaxLength(32)
-                        .HasColumnType("character varying(32)");
-
                     b.Property<string>("GameHandle")
                         .HasColumnType("text");
 
@@ -111,31 +164,37 @@ namespace Members.Infrastructure.Migrations
                     b.Property<bool>("IsGameHandleVerified")
                         .HasColumnType("boolean");
 
+                    b.Property<DateTimeOffset>("ModifiedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("SpectrumCommunityMoniker")
                         .HasColumnType("text");
+
+                    b.Property<byte>("Status")
+                        .HasColumnType("smallint");
 
                     b.Property<DateTimeOffset>("VerificationCodeExpiryDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DiscordUserId")
-                        .IsUnique();
-
                     b.ToTable("Members");
                 });
 
             modelBuilder.Entity("Members.Domain.Entities.Role", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<decimal>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("numeric(20,0)");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
-                    b.Property<decimal>("DiscordRoleId")
-                        .HasColumnType("numeric(20,0)");
+                    b.Property<DateTimeOffset>("ModifiedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -152,9 +211,6 @@ namespace Members.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DiscordRoleId")
-                        .IsUnique();
-
                     b.ToTable("Roles");
                 });
 
@@ -164,12 +220,18 @@ namespace Members.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<Guid>("JudgeId")
                         .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("ModifiedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("SentenceType")
                         .HasColumnType("integer");
@@ -192,11 +254,17 @@ namespace Members.Infrastructure.Migrations
                         .HasMaxLength(32)
                         .HasColumnType("character varying(32)");
 
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<DateTimeOffset>("ExpiryDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("MemberId")
                         .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("ModifiedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -218,6 +286,17 @@ namespace Members.Infrastructure.Migrations
                         .HasForeignKey("RolesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Members.Domain.Entities.GuildBooster", b =>
+                {
+                    b.HasOne("Members.Domain.Entities.Guild", "Guild")
+                        .WithMany()
+                        .HasForeignKey("GuildId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Guild");
                 });
 
             modelBuilder.Entity("Members.Domain.Entities.IncidentReport", b =>

@@ -100,7 +100,7 @@ namespace Members.Infrastructure.Repositories
             }
 
             if (aRoleIdFilter.HasValue)
-                aQuery = aQuery.Where(m => m.Roles.Any(r => r.DiscordRoleId == aRoleIdFilter.Value));
+                aQuery = aQuery.Where(m => m.Roles.Any(r => r.Id == aRoleIdFilter.Value));
 
             if (aIsVerifiedFilter.HasValue)
                 aQuery = aQuery.Where(m => m.IsGameHandleVerified == aIsVerifiedFilter.Value);

@@ -41,7 +41,7 @@ namespace Members.Infrastructure.Services
                 return false;
 
             var lDiscordRoleIds = new HashSet<ulong>(lGuildServerDiscordRoleList.Select(r => ulong.Parse(r.Id)));
-            var lDatabaseRoleIds = new HashSet<ulong>(lDatabaseRoleList.Value.Select(r => r.DiscordRoleId));
+            var lDatabaseRoleIds = new HashSet<ulong>(lDatabaseRoleList.Value.Select(r => r.Id));
 
             await AddNewRolesToDatabase(lGuildServerDiscordRoleList, lDatabaseRoleIds);
             await DeleteRolesFromDatabase(lDatabaseRoleList.Value, lDiscordRoleIds);
@@ -63,13 +63,18 @@ namespace Members.Infrastructure.Services
         {
             var lRolesToAddList = aDiscordRoleList
                 .Where(role => !aExistingRoleIdList.Contains(ulong.Parse(role.Id)))
-                .Select(role => new Role
+                .Select(role =>
                 {
-                    DiscordRoleId = ulong.Parse(role.Id),
-                    Name = role.Name,
-                    Position = role.Position,
-                    RoleType = role.Name == "Admin" ? RoleTypesEnum.ApplicationRole : RoleTypesEnum.DiscordOnly,
-                    Permissions = role.Name == "Admin" ? PermissionsEnum.Admin : PermissionsEnum.None
+                    var newRole = new Role
+                    {
+                        Name = role.Name,
+                        Position = role.Position,
+                        RoleType = role.Name == "Admin" ? RoleTypesEnum.ApplicationRole : RoleTypesEnum.DiscordOnly,
+                        Permissions = role.Name == "Admin" ? PermissionsEnum.Admin : PermissionsEnum.None
+                    };
+
+                    newRole.SetId(ulong.Parse(role.Id));
+                    return newRole;
                 })
                 .ToArray();
 
@@ -85,7 +90,7 @@ namespace Members.Infrastructure.Services
         private async Task DeleteRolesFromDatabase(IEnumerable<Role> aDatabaseRoleList, HashSet<ulong> aDiscordRoleIdList)
         {
             var lRolesToDeleteList = aDatabaseRoleList
-                .Where(role => !aDiscordRoleIdList.Contains(role.DiscordRoleId))
+                .Where(role => !aDiscordRoleIdList.Contains(role.Id))
                 .ToArray();
 
             if (lRolesToDeleteList.Length > 0)
@@ -103,7 +108,7 @@ namespace Members.Infrastructure.Services
 
             foreach (var lDbRole in aDatabaseRoleList)
             {
-                var discordRole = aDiscordRoleList.FirstOrDefault(role => ulong.Parse(role.Id) == lDbRole.DiscordRoleId);
+                var discordRole = aDiscordRoleList.FirstOrDefault(role => ulong.Parse(role.Id) == lDbRole.Id);
                 if (discordRole != null && (discordRole.Name != lDbRole.Name || discordRole.Position != lDbRole.Position))
                 {
                     lDbRole.Name = discordRole.Name;

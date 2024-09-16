@@ -61,7 +61,7 @@ namespace Members.API.Endpoints
         => await aRolesService.UpdateRoleList(aRoleDTOList, aCancellationToken)
         .Tap(roleDTOList =>
         {
-            var lUpdatedRoleIdList = roleDTOList.Select(roleDTO => ulong.Parse(roleDTO.DiscordRoleId));
+            var lUpdatedRoleIdList = roleDTOList.Select(roleDTO => ulong.Parse(roleDTO.Id));
             aIntegrationPublisherService.Publish(new RoleTokenRevoked(lUpdatedRoleIdList.ToArray()), routingKey: RoutingKeys.Members.Member_role_revoke);
         })
         .ToIResult();

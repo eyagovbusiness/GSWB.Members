@@ -1,5 +1,6 @@
 ﻿using Members.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TGF.CA.Infrastructure.DB.DbContext;
 
 namespace Members.Infrastructure
@@ -14,17 +15,23 @@ namespace Members.Infrastructure
         public virtual DbSet<Sentence> Sentences { get; set; }
         public virtual DbSet<VerifyCode> VerifyCodes { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder aModelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(aModelBuilder);
+            base.OnModelCreating(modelBuilder);
 
-            aModelBuilder.Entity<Member>()
-            .HasIndex(m => m.DiscordUserId)
-            .IsUnique();
+            // Define the ValueConverter to convert ulong to decimal and back
+            var ulongToDecimalConverter = new ValueConverter<ulong, decimal>(
+                v => Convert.ToDecimal(v),    // Convert ulong to decimal for storage
+                v => Convert.ToUInt64(v)      // Convert decimal back to ulong
+            );
 
-            aModelBuilder.Entity<Role>()
-            .HasIndex(m => m.DiscordRoleId)
-            .IsUnique();
+            modelBuilder.Entity<Role>(entity =>
+            {
+                // Map Id property to PostgreSQL numeric(20,0) and apply the converter because ulong is not directly supported in postgres
+                entity.Property(e => e.Id)
+                    .HasColumnType("numeric(20,0)")           // Store as numeric in PostgreSQL
+                    .HasConversion(ulongToDecimalConverter);  // Use the ValueConverter
+            });
         }
 
     }

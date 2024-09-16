@@ -27,8 +27,8 @@ namespace Members.Infrastructure.Migrations
                     b.Property<Guid>("MembersId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("RolesId")
-                        .HasColumnType("uuid");
+                    b.Property<decimal>("RolesId")
+                        .HasColumnType("numeric(20,0)");
 
                     b.HasKey("MembersId", "RolesId");
 
@@ -175,26 +175,20 @@ namespace Members.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DiscordUserId")
-                        .IsUnique();
-
                     b.ToTable("Members");
                 });
 
             modelBuilder.Entity("Members.Domain.Entities.Role", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<decimal>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("numeric(20,0)");
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
-
-                    b.Property<decimal>("DiscordRoleId")
-                        .HasColumnType("numeric(20,0)");
 
                     b.Property<DateTimeOffset>("ModifiedAt")
                         .HasColumnType("timestamp with time zone");
@@ -213,9 +207,6 @@ namespace Members.Infrastructure.Migrations
                         .HasColumnType("smallint");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("DiscordRoleId")
-                        .IsUnique();
 
                     b.ToTable("Roles");
                 });

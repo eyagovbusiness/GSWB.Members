@@ -115,10 +115,10 @@ namespace Members.Application.Services
 
         #region Verify
 
-        public async Task<IHttpResult<MemberVerifyInfoDTO>> Get_GetVerifyInfo(ulong aDiscordUserId, CancellationToken aCancellationToken = default)
+        public async Task<IHttpResult<MemberVerificationStateDTO>> Get_GetVerifyInfo(ulong aDiscordUserId, CancellationToken aCancellationToken = default)
         => await _memberRepository.GetByDiscordUserIdAsync(aDiscordUserId, aCancellationToken)
             .Bind(member => TryUpdateGameHandleVerifyCode(member!, aCancellationToken))
-            .Map(member => new MemberVerifyInfoDTO(member.IsGameHandleVerified, member!.GameHandleVerificationCode, member.VerificationCodeExpiryDate));
+            .Map(member => new MemberVerificationStateDTO(member.IsGameHandleVerified, member!.GameHandleVerificationCode, member.VerificationCodeExpiryDate));
 
         public async Task<IHttpResult<MemberDetailDTO>> VerifyGameHandle(ulong aDiscordUserId, CancellationToken aCancellationToken = default)
         {
@@ -179,7 +179,7 @@ namespace Members.Application.Services
 
             bool lUpdatesPermissions = aRevokeRoleList.Any(roleDTO => roleDTO.Position == lCurrentHighestRolePosition);
 
-            foreach (Role lRoleToRevoke in aMember.Roles.Where(role => lDiscordRoleIdRevokeList.Contains(role.DiscordRoleId)).ToArray())
+            foreach (Role lRoleToRevoke in aMember.Roles.Where(role => lDiscordRoleIdRevokeList.Contains(role.Id)).ToArray())
                 aMember.Roles.Remove(lRoleToRevoke);
 
             return await _memberRepository.Update(aMember, aCancellationToken)

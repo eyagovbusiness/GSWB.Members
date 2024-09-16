@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -11,6 +12,21 @@ namespace Members.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Guilds",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    DiscordGuildId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ModifiedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Guilds", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Members",
                 columns: table => new
                 {
@@ -18,12 +34,14 @@ namespace Members.Infrastructure.Migrations
                     DiscordUserId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     DiscordGuildDisplayName = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
                     DiscordAvatarUrl = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
-                    DiscordUserName = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
                     SpectrumCommunityMoniker = table.Column<string>(type: "text", nullable: true),
                     GameHandle = table.Column<string>(type: "text", nullable: true),
+                    Status = table.Column<byte>(type: "smallint", nullable: false),
                     IsGameHandleVerified = table.Column<bool>(type: "boolean", nullable: false),
                     GameHandleVerificationCode = table.Column<string>(type: "character varying(6)", maxLength: 6, nullable: false),
-                    VerificationCodeExpiryDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
+                    VerificationCodeExpiryDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ModifiedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -34,17 +52,39 @@ namespace Members.Infrastructure.Migrations
                 name: "Roles",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    DiscordRoleId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    Id = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Position = table.Column<byte>(type: "smallint", nullable: false),
                     RoleType = table.Column<byte>(type: "smallint", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: true),
-                    Permissions = table.Column<int>(type: "integer", nullable: false)
+                    Permissions = table.Column<int>(type: "integer", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ModifiedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Roles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GuildBoosters",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    MemberId = table.Column<Guid>(type: "uuid", nullable: false),
+                    GuildId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ModifiedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GuildBoosters", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_GuildBoosters_Guilds_GuildId",
+                        column: x => x.GuildId,
+                        principalTable: "Guilds",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -54,7 +94,9 @@ namespace Members.Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
                     JudgeId = table.Column<Guid>(type: "uuid", nullable: false),
-                    SentenceType = table.Column<int>(type: "integer", nullable: false)
+                    SentenceType = table.Column<int>(type: "integer", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ModifiedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -74,7 +116,9 @@ namespace Members.Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     MemberId = table.Column<Guid>(type: "uuid", nullable: false),
                     Code = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
-                    ExpiryDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
+                    ExpiryDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ModifiedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -92,7 +136,7 @@ namespace Members.Infrastructure.Migrations
                 columns: table => new
                 {
                     MembersId = table.Column<Guid>(type: "uuid", nullable: false),
-                    RolesId = table.Column<Guid>(type: "uuid", nullable: false)
+                    RolesId = table.Column<decimal>(type: "numeric(20,0)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -120,7 +164,9 @@ namespace Members.Infrastructure.Migrations
                     Description = table.Column<string>(type: "character varying(1024)", maxLength: 1024, nullable: false),
                     AccuserId = table.Column<Guid>(type: "uuid", nullable: false),
                     AccusedId = table.Column<Guid>(type: "uuid", nullable: false),
-                    SentenceId = table.Column<Guid>(type: "uuid", nullable: true)
+                    SentenceId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ModifiedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -145,6 +191,11 @@ namespace Members.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_GuildBoosters_GuildId",
+                table: "GuildBoosters",
+                column: "GuildId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_IncidentReports_AccusedId",
                 table: "IncidentReports",
                 column: "AccusedId");
@@ -165,18 +216,6 @@ namespace Members.Infrastructure.Migrations
                 column: "RolesId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Members_DiscordUserId",
-                table: "Members",
-                column: "DiscordUserId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Roles_DiscordRoleId",
-                table: "Roles",
-                column: "DiscordRoleId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Sentences_JudgeId",
                 table: "Sentences",
                 column: "JudgeId");
@@ -191,6 +230,9 @@ namespace Members.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "GuildBoosters");
+
+            migrationBuilder.DropTable(
                 name: "IncidentReports");
 
             migrationBuilder.DropTable(
@@ -198,6 +240,9 @@ namespace Members.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "VerifyCodes");
+
+            migrationBuilder.DropTable(
+                name: "Guilds");
 
             migrationBuilder.DropTable(
                 name: "Sentences");

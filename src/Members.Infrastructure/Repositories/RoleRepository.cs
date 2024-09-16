@@ -38,7 +38,7 @@ namespace Members.Infrastructure.Repositories
         public async Task<IHttpResult<IEnumerable<Role>>> GetListByDiscordRoleId(IEnumerable<ulong> aDiscordRoleIdList, CancellationToken aCancellationToken = default)
         => await TryQueryAsync(async (aCancellationToken)
             => await _context.Roles
-                .Where(role => aDiscordRoleIdList.Contains(role.DiscordRoleId))
+                .Where(role => aDiscordRoleIdList.Contains(role.Id))
                 .OrderByDescending(r => r.Position)
                 .ToListAsync(aCancellationToken) as IEnumerable<Role>
         , aCancellationToken);
@@ -46,9 +46,9 @@ namespace Members.Infrastructure.Repositories
         public async Task<IHttpResult<IEnumerable<Role>>> UpdateAsync(IEnumerable<RoleUpdateDTO> aRoleToUpdateList, CancellationToken aCancellationToken = default)
         => await TryCommandAsync(async (aCancellationToken) =>
         {
-            var lRolesDict = aRoleToUpdateList.ToDictionary(r => ulong.Parse(r.DiscordRoleId), r => r);
+            var lRolesDict = aRoleToUpdateList.ToDictionary(r => ulong.Parse(r.Id), r => r);
             var lDbRoleList = await _context.Roles
-                .Where(r => lRolesDict.Keys.Contains(r.DiscordRoleId))
+                .Where(r => lRolesDict.Keys.Contains(r.Id))
                 .ToListAsync(aCancellationToken);
 
             if (lDbRoleList.Count != lRolesDict.Count)
@@ -56,7 +56,7 @@ namespace Members.Infrastructure.Repositories
 
             lDbRoleList.ForEach(role =>
             {
-                var dto = lRolesDict[role.DiscordRoleId];
+                var dto = lRolesDict[role.Id];
                 role.RoleType = dto.Type;
                 role.Permissions = dto.Permissions;
                 role.Description = dto.Description;
@@ -72,9 +72,9 @@ namespace Members.Infrastructure.Repositories
             var lNewRole = new Role
             {
                 Name = aNewDiscordRole.Name,
-                DiscordRoleId = ulong.Parse(aNewDiscordRole.Id),
                 Position = aNewDiscordRole.Position,
             };
+            lNewRole.SetId(ulong.Parse(aNewDiscordRole.Id));
             await _context.Roles.AddAsync(lNewRole, aCancellationToken);
             return lNewRole;
         }, aCancellationToken);
@@ -83,7 +83,7 @@ namespace Members.Infrastructure.Repositories
         => await TryCommandAsync(async (aCancellationToken) =>
         {
             var lDiscordRoleIdToFind = ulong.Parse(aUpdatedDiscordRoleDTO.Id);
-            var lRoleToUpdate = await _context.Roles.FirstAsync(role => role.DiscordRoleId == lDiscordRoleIdToFind, aCancellationToken);
+            var lRoleToUpdate = await _context.Roles.FirstAsync(role => role.Id == lDiscordRoleIdToFind, aCancellationToken);
             _ = UpdateRole(lRoleToUpdate, aUpdatedDiscordRoleDTO);
             //_context.Roles.Update(lRoleToUpdate); update only needed to update entities not created by EF(no change tracker setup).In this case the entitiy was created by EF on reading DB.
             return lRoleToUpdate;
@@ -92,7 +92,7 @@ namespace Members.Infrastructure.Repositories
         public async Task<IHttpResult<Role>> DeleteAsync(ulong aDiscordRoleIdDeleted, CancellationToken aCancellationToken = default)
         => await TryCommandAsync(async (aCancellationToken) =>
         {
-            var lRoleToDelete = await _context.Roles.FirstAsync(role => role.DiscordRoleId == aDiscordRoleIdDeleted);
+            var lRoleToDelete = await _context.Roles.FirstAsync(role => role.Id == aDiscordRoleIdDeleted);
             _context.Roles.Remove(lRoleToDelete);
             return lRoleToDelete;
         }, aCancellationToken);

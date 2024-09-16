@@ -4,15 +4,10 @@ using TGF.CA.Domain.Primitives;
 namespace Members.Domain.Entities
 {
     /// <summary>
-    /// Represents an application role. Represents a DiscordRole but it has a set of application permissions attached.
+    /// Represents an application role. Represents a DiscordRole but it has a set of application permissions attached. The Id of this entitiy has the exactly the same Id as the role it represents in Dicord(DiscordRoleId).
     /// </summary>
-    public partial class Role : Entity<Guid>
+    public partial class Role : Entity<ulong>
     {
-        /// <summary>
-        /// The original DiscordRole that is being represented by this application Role.
-        /// </summary>
-        public required ulong DiscordRoleId { get; set; }
-
         /// <summary>
         /// Name of this Role.
         /// </summary>

@@ -13,7 +13,7 @@ namespace Members.Infrastructure.Communication.MessageConsumer.Role
         {
             using var lScope = aServiceScopeFactory.CreateScope();
             var lRolesService = lScope.ServiceProvider.GetRequiredService<IRolesService>();
-            _ = await lRolesService.DeleteRoleAsync(ulong.Parse(aIntegrationMessage.Content.DiscordRoleId), aCancellationToken);
+            _ = await lRolesService.DeleteRoleAsync(ulong.Parse(aIntegrationMessage.Content.Id), aCancellationToken);
         }
     }
 }
