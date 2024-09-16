@@ -4,7 +4,7 @@ using Common.Domain.ValueObjects;
 using Members.Domain.Entities;
 using TGF.Common.ROP.HttpResult;
 
-namespace Members.Application
+namespace Members.Domain.Contracts.Repositories
 {
     /// <summary>
     /// Represents a repository for application Roles with the allowed operations.
@@ -12,11 +12,11 @@ namespace Members.Application
     public interface IRoleRepository
     {
         /// <summary>
-        /// Asynchronously retrieves a list of roles by the associated DiscordRoleId.
+        /// Asynchronously retrieves a list of roles from their Id.
         /// </summary>
-        /// <param name="aDiscordRoleIdList">List with the DiscordRoleId.</param>
-        /// <returns>List with all the Roles associated with any of the DiscordRoleIds provided.</returns>
-        public Task<IHttpResult<IEnumerable<Role>>> GetListByDiscordRoleId(IEnumerable<ulong> aDiscordRoleIdList, CancellationToken aCancellationToken = default);
+        /// <param name="aRoleIdList">List with of Role.Id to get from the DB.</param>
+        /// <returns>List with all the Roles associated with any of the Role.Id list provided.</returns>
+        public Task<IHttpResult<IEnumerable<Role>>> GetByIdListAsync(IEnumerable<ulong> aRoleIdList, CancellationToken aCancellationToken = default);
 
         /// <summary>
         /// Asynchronously retrieves all the application roles registered in the database.

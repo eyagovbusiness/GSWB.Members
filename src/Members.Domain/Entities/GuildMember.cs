@@ -1,9 +1,10 @@
 ﻿
+
 namespace Members.Domain.Entities
 {
-    public class MemberRole
+    public class GuildMember
     {
         public required Member Member { get; set; }
-        public required ulong RoleId { get; set; }
+        public required ulong GuildId { get; set; }
     }
 }

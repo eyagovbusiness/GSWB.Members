@@ -55,13 +55,13 @@ namespace Members.API.Endpoints
         .ToIResult();
 
         /// <summary>
-        /// Updates a list of application roles: ONLY Permissions, RoleType and Description columns can be updated. (<see cref="RoleUpdateDTO.DiscordRoleId"/>) => is used only to determine which role has to be updated. To change the name or position it must be changed on Discord. 
+        /// Updates a list of application roles: ONLY Permissions, RoleType and Description columns can be updated. (<see cref="RoleUpdateDTO.Id"/>) => is used only to determine which role has to be updated. To change the name or position it must be changed on Discord. 
         /// </summary>
         private async Task<IResult> Put_UpdateRoleList([FromBody] IEnumerable<RoleUpdateDTO> aRoleDTOList, IRolesService aRolesService, IIntegrationMessagePublisher aIntegrationPublisherService, CancellationToken aCancellationToken = default)
         => await aRolesService.UpdateRoleList(aRoleDTOList, aCancellationToken)
         .Tap(roleDTOList =>
         {
-            var lUpdatedRoleIdList = roleDTOList.Select(roleDTO => ulong.Parse(roleDTO.DiscordRoleId));
+            var lUpdatedRoleIdList = roleDTOList.Select(roleDTO => ulong.Parse(roleDTO.Id));
             aIntegrationPublisherService.Publish(new RoleTokenRevoked(lUpdatedRoleIdList.ToArray()), routingKey: RoutingKeys.Members.Member_role_revoke);
         })
         .ToIResult();

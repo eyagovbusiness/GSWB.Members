@@ -58,18 +58,6 @@ namespace Members.Domain.Entities
         /// <remarks>User DiscordUserId as verification code seed.</remarks>
         public bool IsGameHandleVerified { get; set; }
 
-        /// <summary>
-        /// 6-digit verification code used to verify the current <see cref="GameHandle"/> set in this Member.
-        /// </summary>
-        [MaxLength(6)]
-        public string GameHandleVerificationCode { get; set; } = "000000";
-
-        /// <summary>
-        /// Expiry date of the current <see cref="GameHandleVerificationCode"/>
-        /// </summary>
-        public DateTimeOffset VerificationCodeExpiryDate { get; set; }
-
-
         //ctor for EF
         public Member(ulong DiscordUserId, string DiscordGuildDisplayName, string DiscordAvatarUrl)
         {

@@ -28,12 +28,6 @@ namespace Members.Application
 
 
         /// <summary>
-        /// Get the calculated permissions of a given member from its Id.
-        /// </summary>
-        /// <returns>The permissions of the member.</returns>
-        public Task<IHttpResult<PermissionsEnum>> GetPermissions(Guid aMemberId, CancellationToken aCancellationToken = default); 
-
-        /// <summary>
         /// Get the total count of guild members.
         /// </summary>
         public Task<IHttpResult<int>> GetMembersCount(CancellationToken aCancellationToken = default);
@@ -111,8 +105,8 @@ namespace Members.Application
         /// <summary>
         /// Get game handle verification info related data for a given member by its DiscordUserId as <see cref="MemberVerifyDTO"/>.
         /// </summary>
-        /// <returns>The current <see cref="MemberVerifyInfoDTO"/> or error if any.</returns>
-        public Task<IHttpResult<MemberVerifyInfoDTO>> Get_GetVerifyInfo(ulong aDiscordUserId, CancellationToken aCancellationToken = default);
+        /// <returns>The current <see cref="MemberVerificationStateDTO"/> or error if any.</returns>
+        public Task<IHttpResult<MemberVerificationStateDTO>> Get_GetVerifyInfo(ulong aDiscordUserId, CancellationToken aCancellationToken = default);
 
         /// <summary>
         /// Verifies the GameHandle of the authenticated member, wit will succeed if the member's GameHandleVerificationCode is present at the game handle's profile bio from "https://robertsspaceindustries.com/citizens/{Member.GameHandle}".

@@ -1,8 +1,8 @@
-﻿using Common.Application;
-using Common.Application.Contracts.Services;
+﻿using Common.Application.Contracts.Services;
 using Common.Infrastructure;
 using Common.Infrastructure.Communication.HTTP;
 using Members.Application;
+using Members.Domain.Contracts.Repositories;
 using Members.Infrastructure.Communication.MessageConsumer.Member;
 using Members.Infrastructure.Repositories;
 using Members.Infrastructure.Services;

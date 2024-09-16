@@ -1,26 +1,14 @@
 ﻿using Members.Domain.Entities;
+using TGF.CA.Domain.Contracts.Repositories;
 using TGF.Common.ROP.HttpResult;
 
-namespace Members.Application
+namespace Members.Domain.Contracts.Repositories
 {
     /// <summary>
     /// Provides an interface for repository operations related to the <see cref="Member"/> entity.
     /// </summary>
-    public interface IMemberRepository
+    public interface IMemberRepository : IRepositoryBase
     {
-        /// <summary>
-        /// Adds a new member to the repository.
-        /// </summary>
-        /// <param name="aNewMember">The member to add.</param>
-        /// <returns>The added member.</returns>
-        Task<IHttpResult<Member>> Add(Member aNewMember, CancellationToken aCancellationToken = default);
-
-        /// <summary>
-        /// Deletes a specified member from the repository.
-        /// </summary>
-        /// <param name="aMemberToDelete">The member to delete.</param>
-        /// <returns>The deleted member or Error</returns>
-        Task<IHttpResult<Member>> Delete(Member aMemberToDelete, CancellationToken aCancellationToken = default);
 
         /// <summary>
         /// Get a Member by its Id
@@ -53,13 +41,6 @@ namespace Members.Application
             string aSortBy,
             string? aDiscordNameFilter = null, string? aGameHandleFilter = null, ulong? aRoleIdFilter = null, bool? aIsVerifiedFilter = null,
             CancellationToken aCancellationToken = default);
-
-        /// <summary>
-        /// Updates a specified member in the repository.
-        /// </summary>
-        /// <param name="aMember">The member to update.</param>
-        /// <returns>The updated member or Error.</returns>
-        Task<IHttpResult<Member>> Update(Member aMember, CancellationToken aCancellationToken = default);
 
         /// <summary>
         /// Get the number of registered guild members.

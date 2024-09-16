@@ -1,5 +1,8 @@
 ﻿using Members.Application.Services;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
+using TGF.CA.Application.Services;
+using TGF.CA.Application.UseCases;
 
 namespace Members.Application
 {
@@ -16,6 +19,9 @@ namespace Members.Application
         {
             aServiceList.AddScoped<IRolesService, RolesService>();
             aServiceList.AddScoped<IMembersService, MembersService>();
+
+            aServiceList.AddUseCases(Assembly.GetExecutingAssembly());
+            aServiceList.AddApplicationServices(Assembly.GetCallingAssembly());
         }
     }
 }

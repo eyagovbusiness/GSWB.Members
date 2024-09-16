@@ -6,17 +6,13 @@ namespace Members.Domain.Entities
     /// <summary>
     /// Represents an application role. Represents a DiscordRole but it has a set of application permissions attached.
     /// </summary>
-    public partial class Role : Entity<Guid>
+    /// <remarks>The Id of this entity matches exactly the DiscordRoleId it represents.</remarks>
+    public partial class Role : Entity<ulong>
     {
         /// <summary>
         /// The guild to which the role belongs
         /// </summary>
         public required Guild Guild { get; set; }
-
-        /// <summary>
-        /// The DiscordRole that is being represented by this application Role.
-        /// </summary>
-        public required ulong DiscordRoleId { get; set; }
 
         /// <summary>
         /// Name of this Role.

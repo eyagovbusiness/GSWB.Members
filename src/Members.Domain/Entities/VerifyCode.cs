@@ -16,16 +16,15 @@ namespace Members.Domain.Entities
         public required Member Member { get; set; }
 
         /// <summary>
-        /// Code used for external member verification. Used to verify RSI account by pasting this generated code for the member in the RSI profile.
+        ///  6-digit code used for external member verification. Used to verify RSI account by pasting this generated code for the member in the RSI profile.
         /// </summary>
-        [MaxLength(32)]
-        [MinLength(32)]
-        public required string Code { get; set; }
+        [MaxLength(6)]
+        public required string Code { get; set; } = "000000";
 
         /// <summary>
         /// The expiry date for this verification code. 
         /// </summary>
         [NotMapped]
-        public DateTimeOffset ExpiryDate => CreatedAt.AddMinutes(2);
+        public DateTimeOffset ExpiryDate => ModifiedAt.AddMinutes(1);
     }
 }

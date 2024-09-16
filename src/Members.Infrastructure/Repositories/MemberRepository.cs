@@ -1,7 +1,8 @@
-﻿using Members.Application;
+﻿using Members.Domain.Contracts.Repositories;
 using Members.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Linq.Expressions;
 using TGF.CA.Infrastructure.DB.Repository;
 using TGF.Common.ROP.HttpResult;
 
@@ -40,21 +41,25 @@ namespace Members.Infrastructure.Repositories
         .Verify(member => member != null, InfrastructureErrors.MembersDb.NotFoundDiscordUserId)
         .Map(member => member!);
 
-        public async Task<IHttpResult<Member>> Add(Member aNewMember, CancellationToken aCancellationToken = default)
-            => await TryCommandAsync(() => _context.Members.Add(aNewMember).Entity, aCancellationToken);
-
-        public async Task<IHttpResult<Member>> Update(Member aMember, CancellationToken aCancellationToken = default)
-            => await TryCommandAsync(() => _context.Members.Update(aMember).Entity, aCancellationToken);
-
-        public async Task<IHttpResult<Member>> Delete(Member aMemberToDelete, CancellationToken aCancellationToken = default)
-            => await TryCommandAsync(() => _context.Members.Remove(aMemberToDelete).Entity, aCancellationToken);
-
         public async Task<IHttpResult<Member>> GetByIdAsync(Guid aMemberId, CancellationToken aCancellationToken = default)
         => await TryQueryAsync(async (aCancellationToken) =>
         {
             return await _context.Members
             .Include(m => m.Roles.OrderByDescending(r => r.Position))
             .SingleOrDefaultAsync(m => m.Id == aMemberId, aCancellationToken);
+        }, aCancellationToken)
+        .Verify(member => member != null, InfrastructureErrors.MembersDb.NotFoundId)
+        .Map(member => member!);
+
+        public async Task<IHttpResult<Member>> GetByIdAsync(Guid aMemberId, CancellationToken aCancellationToken = default, params Expression<Func<Member, object>>[] aIncludes)
+        => await TryQueryAsync(async (aCancellationToken) =>
+        {
+            IQueryable<Member> lQuery = _context.Members;
+            foreach (var include in aIncludes)
+            {
+                lQuery = lQuery.Include(include);
+            }
+            return await lQuery.FirstOrDefaultAsync(member => member.Id == aMemberId);
         }, aCancellationToken)
         .Verify(member => member != null, InfrastructureErrors.MembersDb.NotFoundId)
         .Map(member => member!);

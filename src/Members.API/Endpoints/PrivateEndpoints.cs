@@ -1,6 +1,7 @@
 ﻿using Common.Application.DTOs.Members;
 using Common.Infrastructure.Communication.ApiRoutes;
 using Members.Application;
+using Members.Application.UseCases.Member;
 using Microsoft.AspNetCore.Mvc;
 using TGF.CA.Presentation;
 using TGF.CA.Presentation.MinimalAPI;
@@ -29,8 +30,8 @@ namespace Members.API.Endpoints
             => await aMembersService.AddNewMember(aCreateMemberDTO, aCancellationToken)
             .ToIResult();
 
-        private async Task<IResult> Get_Permissions(Guid id, IMembersService aMembersService, CancellationToken aCancellationToken = default)
-            => await aMembersService.GetPermissions(id, aCancellationToken)
+        private async Task<IResult> Get_Permissions(Guid id, GetMemberPermissionsUseCase aGetMemberPermissionsUseCase, CancellationToken aCancellationToken = default)
+            => await aGetMemberPermissionsUseCase.ExecuteAsync(id, aCancellationToken)
             .ToIResult(); 
 
         /// private endpoint implementation 

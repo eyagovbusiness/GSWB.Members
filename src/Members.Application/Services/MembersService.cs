@@ -5,6 +5,8 @@ using Common.Application.DTOs.Members;
 using Common.Application.DTOs.Roles;
 using Common.Domain.ValueObjects;
 using Members.Application.Mapping;
+using Members.Domain.Contracts.Repositories;
+using Members.Domain.Contracts.Services;
 using Members.Domain.Entities;
 using System.Collections.Immutable;
 using TGF.Common.ROP.HttpResult;
@@ -12,23 +14,18 @@ using TGF.Common.ROP.Result;
 
 namespace Members.Application.Services
 {
-    public class MembersService : IMembersService
+    public class MembersService(
+        IMemberRepository aMemberRepository,
+        IRoleRepository aRoleRepository,
+        IMemberRoleService aMemberRoleService,
+        ISwarmBotCommunicationService aSwarmBotCommunicationService,
+        IGameVerificationService aGameVerificationService) : IMembersService
     {
-        private readonly IMemberRepository _memberRepository;
-        private readonly IRoleRepository _roleRepository;
-        private readonly ISwarmBotCommunicationService _SwarmBotCommunicationService;
-        private readonly IGameVerificationService _gameVerificationService;
-        public MembersService(
-            IMemberRepository aMemberRepository,
-            IRoleRepository aRoleRepository,
-            ISwarmBotCommunicationService aSwarmBotCommunicationService,
-            IGameVerificationService aGameVerificationService)
-        {
-            _memberRepository = aMemberRepository;
-            _roleRepository = aRoleRepository;
-            _SwarmBotCommunicationService = aSwarmBotCommunicationService;
-            _gameVerificationService = aGameVerificationService;
-        }
+        private readonly IMemberRepository _memberRepository = aMemberRepository;
+        private readonly IRoleRepository _roleRepository = aRoleRepository;
+        private readonly IMemberRoleService _memberRoleService = aMemberRoleService;
+        private readonly ISwarmBotCommunicationService _SwarmBotCommunicationService = aSwarmBotCommunicationService;
+        private readonly IGameVerificationService _gameVerificationService = aGameVerificationService;
 
         #region IMembersService
 
@@ -47,10 +44,6 @@ namespace Members.Application.Services
 
         public async Task<IHttpResult<int>> GetMembersCount(CancellationToken aCancellationToken = default)
         => await _memberRepository.GetCountAsync();
-
-        public async Task<IHttpResult<PermissionsEnum>> GetPermissions(Guid aMemberId, CancellationToken aCancellationToken = default)
-        => await _memberRepository.GetByIdAsync(aMemberId, aCancellationToken)
-            .Map(member => member.CalculatePermissions());
 
 
         public async Task<IHttpResult<MemberDetailDTO>> AddNewMember(CreateMemberDTO aCreateMemberDTO, CancellationToken aCancellationToken = default)
@@ -115,7 +108,7 @@ namespace Members.Application.Services
 
         #region Verify
 
-        public async Task<IHttpResult<MemberVerifyInfoDTO>> Get_GetVerifyInfo(ulong aDiscordUserId, CancellationToken aCancellationToken = default)
+        public async Task<IHttpResult<MemberVerificationStateDTO>> Get_GetVerifyInfo(ulong aDiscordUserId, CancellationToken aCancellationToken = default)
         => await _memberRepository.GetByDiscordUserIdAsync(aDiscordUserId, aCancellationToken)
             .Bind(member => TryUpdateGameHandleVerifyCode(member!, aCancellationToken))
             .Map(member => new MemberVerifyInfoDTO(member.IsGameHandleVerified, member!.GameHandleVerificationCode, member.VerificationCodeExpiryDate));
@@ -157,39 +150,44 @@ namespace Members.Application.Services
             return await _memberRepository.Update(aMember, aCancellationToken);
         }
 
+        //Assigns the given roles to the given member and return a bool value representing this action updated the member permissiones(calculated from the permissions of the assinged roles)
         private async Task<IHttpResult<bool>> AssignRoleList(Member aMember, IEnumerable<DiscordRoleDTO> aAssignRoleList, CancellationToken aCancellationToken = default)
         {
-            bool lUpdatesPermissions = default;
-            return await _roleRepository.GetListByDiscordRoleId(aAssignRoleList.Select(role => ulong.Parse(role.Id)).ToArray(), aCancellationToken)
+            bool lIsPermissionsUpdated = default;
+            var lMemberHighestRole = await _memberRoleService.GetHighestRole(aMember.Id, aCancellationToken);
+
+            return await lMemberHighestRole
+                .Bind(_ => _roleRepository.GetByIdListAsync(aAssignRoleList.Select(role => ulong.Parse(role.Id)).ToArray(), aCancellationToken))
                 .Tap(roleToAssignList =>
                 {
-                    foreach (Role lRoleToAssign in roleToAssignList)
-                        aMember.Roles.Add(lRoleToAssign);
-
-                    lUpdatesPermissions = roleToAssignList.Any(role => role.IsApplicationRole() && role.Position > (aMember.GetHighestRole()?.Position ?? default));
+                    aMember.AssignRoleList(roleToAssignList.Select(role => role.Id));
+                    lIsPermissionsUpdated = roleToAssignList.Any(role => role.IsApplicationRole() && role.Position > (lMemberHighestRole.Value?.Position ?? default));
                 })
                 .Bind(_ => _memberRepository.Update(aMember, aCancellationToken))
-                .Map(_ => lUpdatesPermissions);
+                .Map(_ => lIsPermissionsUpdated);
         }
 
+        //Revokes the given roles to the given member and return a bool value representing this action updated the member permissiones(calculated from the permissions of the assinged roles)
         private async Task<IHttpResult<bool>> RevokeRoleList(Member aMember, IEnumerable<DiscordRoleDTO> aRevokeRoleList, CancellationToken aCancellationToken = default)
         {
-            var lCurrentHighestRolePosition = aMember.GetHighestRole()?.Position ?? default;
-            var lDiscordRoleIdRevokeList = aRevokeRoleList.Select(role => ulong.Parse(role.Id)).ToArray();
+            bool lIsPermissionsUpdated = default;
+            var lMemberHighestRole = await _memberRoleService.GetHighestRole(aMember.Id, aCancellationToken);
 
-            bool lUpdatesPermissions = aRevokeRoleList.Any(roleDTO => roleDTO.Position == lCurrentHighestRolePosition);
-
-            foreach (Role lRoleToRevoke in aMember.Roles.Where(role => lDiscordRoleIdRevokeList.Contains(role.DiscordRoleId)).ToArray())
-                aMember.Roles.Remove(lRoleToRevoke);
-
-            return await _memberRepository.Update(aMember, aCancellationToken)
-                .Map(member => lUpdatesPermissions);
+            return await lMemberHighestRole
+                .Bind(_ => _roleRepository.GetByIdListAsync(aRevokeRoleList.Select(role => ulong.Parse(role.Id)).ToArray(), aCancellationToken))
+                .Tap(roleToRevokeList =>
+                {
+                    aMember.RevokeRoleList(roleToRevokeList.Select(role => role.Id));
+                    lIsPermissionsUpdated = roleToRevokeList.Any(role => role.IsApplicationRole() && role.Position > (lMemberHighestRole.Value?.Position ?? default));
+                })
+                .Bind(_ => _memberRepository.Update(aMember, aCancellationToken))
+                .Map(_ => lIsPermissionsUpdated);
         }
 
-        private async Task<IHttpResult<Member>> TryUpdateGameHandleVerifyCode(Member aMember, CancellationToken aCancellationToken = default)
-        => aMember.TryRefreshGameHandleVerificationCode()
-            ? await _memberRepository.Update(aMember, aCancellationToken)
-            : Result.SuccessHttp(aMember);
+        //private async Task<IHttpResult<Member>> TryUpdateGameHandleVerifyCode(Member aMember, CancellationToken aCancellationToken = default)
+        //=> aMember.RefreshVerifyCode()
+        //    ? await _memberRepository.Update(aMember, aCancellationToken)
+        //    : Result.SuccessHttp(aMember);
 
         private async Task<IHttpResult<PaginatedMemberListDTO>> GetPaginatedMemberListDTO(IEnumerable<Member> aMemberList, int aCurrentPage, int aPageSize)
         => await _memberRepository.GetCountAsync()

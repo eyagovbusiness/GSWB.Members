@@ -2,6 +2,7 @@
 using Common.Infrastructure.Communication.ApiRoutes;
 using Common.Infrastructure.Communication.Messages;
 using Members.Application;
+using Members.Application.UseCases.Member;
 using Microsoft.AspNetCore.Mvc;
 using SwarmBot.Infrastructure.Communication;
 using System.Security.Claims;
@@ -24,7 +25,7 @@ namespace Members.API.Endpoints
             aWebApplication.MapGet(MembersApiRoutes.members_me, Get_Me).RequireJWTBearer().SetResponseMetadata<MemberDetailDTO>(200, 404);
             aWebApplication.MapPut(MembersApiRoutes.members_me, Put_MeUpdate).RequireJWTBearer().SetResponseMetadata<MemberDetailDTO>(200, 404);
             aWebApplication.MapDelete(MembersApiRoutes.members_me, Delete_MeDelete).RequireJWTBearer().SetResponseMetadata<Unit>(200, 404);
-            aWebApplication.MapGet(MembersApiRoutes.members_me_verify, Get_GetVerifyInfo).RequireJWTBearer().SetResponseMetadata<MemberVerifyInfoDTO>(200, 404);
+            aWebApplication.MapGet(MembersApiRoutes.members_me_verify, Get_GetVerifyInfo).RequireJWTBearer().SetResponseMetadata<MemberVerificationStateDTO>(200, 404);
             aWebApplication.MapPut(MembersApiRoutes.members_me_verify, Put_MeVerifyGameHandle).RequireJWTBearer().SetResponseMetadata<MemberDetailDTO>(200, 404);
 
         }
@@ -63,8 +64,8 @@ namespace Members.API.Endpoints
         /// <summary>
         /// Get game handle verification info for the authenticated member. Calling this endpoint refreshes the verification code if expired.
         /// </summary>
-        private async Task<IResult> Get_GetVerifyInfo(IMembersService aMembersService, ClaimsPrincipal aClaims, CancellationToken aCancellationToken = default)
-            => await aMembersService.Get_GetVerifyInfo(ulong.Parse(aClaims.FindFirstValue(ClaimTypes.NameIdentifier)!), aCancellationToken)
+        private async Task<IResult> Get_GetVerifyInfo(GetMemberVerificationStateUseCase aGetMemberVerificationStateUseCase, ClaimsPrincipal aClaims, CancellationToken aCancellationToken = default)
+            => await aGetMemberVerificationStateUseCase.ExecuteAsync(Guid.Parse(aClaims.FindFirstValue(ClaimTypes.NameIdentifier)!), aCancellationToken)
             .ToIResult();
 
         /// <summary>

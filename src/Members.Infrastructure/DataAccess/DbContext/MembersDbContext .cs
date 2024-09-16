@@ -23,7 +23,7 @@ namespace Members.Infrastructure
             .IsUnique();
 
             aModelBuilder.Entity<Role>()
-            .HasIndex(m => m.DiscordRoleId)
+            .HasIndex(m => m.Id)
             .IsUnique();
         }
 
