@@ -5,7 +5,7 @@
 # Exit immediately if a command exits with a non-zero status.
 set -e
 #set -x
-CHECKER_ADDR=$1
+
 # "import" service await functions
 source wait_for_service.sh
 
