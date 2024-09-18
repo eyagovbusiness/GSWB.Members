@@ -5,14 +5,14 @@
 # Exit immediately if a command exits with a non-zero status.
 set -e
 #set -x
-
+CHECKER_ADDR=$1
 # "import" service await functions
 source wait_for_service.sh
 
 # Execute tasks before the base entrypoint starts
 execute_before_start() {
     echo "Executing scheduled tasks before the base entrypoint starts.."	
-	wait_IsReady swarmbot.backend.svc.cluster.local #swarm bot waits vault, consul and rabbitmq services are ready :)
+	wait_IsReady "${CHECKER_ADDR}" "swarmbot"
 	echo "Scheduled tasks before the base entrypoint starts..DONE."
 }
 
