@@ -9,10 +9,6 @@ namespace Members.Domain.Entities
     /// <remarks>Used to verify RSI account by pasting this generated code for the member in the RSI profile.</remarks>
     public class VerifyCode : Entity<Guid>
     {
-        /// <summary>
-        /// Discord user ID from OAuth with discord
-        /// </summary>
-        public required Member Member { get; set; }
 
         /// <summary>
         /// Code used for external member verification. Used to verify RSI account by pasting this generated code for the member in the RSI profile.

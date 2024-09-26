@@ -31,10 +31,10 @@ namespace Members.Domain.Entities
         [Required]
         public string DiscordAvatarUrl { get; set; }
 
-        ///// <summary>
-        ///// The guild of this member.
-        ///// </summary>
-        //public Guild Guild { get; set; }
+        /// <summary>
+        /// The Guild Id of this member.
+        /// </summary>
+        public ulong GuildId { get; set; }
 
         /// <summary>
         /// The Community Moniker displays under your Handle in Spectrum forum posts. You can change your moniker anytime, as many times as you like. This is not your character name in game and is used solely for interactions on our forums and chat channels on the Spectrum website.
@@ -57,6 +57,11 @@ namespace Members.Domain.Entities
         /// </summary>
         /// <remarks>User DiscordUserId as verification code seed.</remarks>
         public bool IsGameHandleVerified { get; set; }
+
+        ///// <summary>
+        ///// The verification code generated for this member enitiy.
+        ///// </summary>
+        //public virtual VerifyCode? VerifyCode { get; set; }
 
         /// <summary>
         /// 6-digit verification code used to verify the current <see cref="GameHandle"/> set in this Member.
