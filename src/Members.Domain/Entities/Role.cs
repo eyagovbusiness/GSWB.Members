@@ -4,10 +4,16 @@ using TGF.CA.Domain.Primitives;
 namespace Members.Domain.Entities
 {
     /// <summary>
-    /// Represents an application role. Represents a DiscordRole but it has a set of application permissions attached. The Id of this entitiy has the exactly the same Id as the role it represents in Dicord(DiscordRoleId).
+    /// Represents an application role. Represents a DiscordRole but it has a set of application permissions attached.
     /// </summary>
+    /// <remarks>The Id of this entity matches exactly the DiscordRoleId it represents.</remarks>
     public partial class Role : Entity<ulong>
     {
+        ///// <summary>
+        ///// The guild to which the role belongs
+        ///// </summary>
+        //public required Guild Guild { get; set; }
+
         /// <summary>
         /// Name of this Role.
         /// </summary>
@@ -40,9 +46,7 @@ namespace Members.Domain.Entities
         /// <summary>
         /// The list of Member assigned with this Role.
         /// </summary>
-        public virtual ICollection<Member> Members { get; set; } = new List<Member>();
-
-        //public Guild Guild { get; set; }
+        public virtual ICollection<Member> Members { get; set; } = [];
 
     }
 }

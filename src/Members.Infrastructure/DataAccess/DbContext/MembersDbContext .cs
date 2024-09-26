@@ -32,6 +32,14 @@ namespace Members.Infrastructure
                     .HasColumnType("numeric(20,0)")           // Store as numeric in PostgreSQL
                     .HasConversion(ulongToDecimalConverter);  // Use the ValueConverter
             });
+
+            modelBuilder.Entity<Guild>(entity =>
+            {
+                // Map Id property to PostgreSQL numeric(20,0) and apply the converter because ulong is not directly supported in postgres
+                entity.Property(e => e.Id)
+                    .HasColumnType("numeric(20,0)")           // Store as numeric in PostgreSQL
+                    .HasConversion(ulongToDecimalConverter);  // Use the ValueConverter
+            });
         }
 
     }
