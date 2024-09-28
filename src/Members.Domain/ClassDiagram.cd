@@ -60,7 +60,7 @@
   <Class Name="Members.Domain.Entities.Guild">
     <Position X="3" Y="8" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAACAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Aggregates\GuildAggregate.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -68,8 +68,8 @@
     <Position X="8" Y="8" Width="1.75" />
     <AssociationLine Name="Guild" Type="Members.Domain.Entities.Guild" FixedToPoint="true">
       <Path>
-        <Point X="8" Y="8.238" />
-        <Point X="4.5" Y="8.238" />
+        <Point X="8" Y="8.363" />
+        <Point X="4.5" Y="8.363" />
       </Path>
       <MemberNameLabel ManuallyPlaced="true">
         <Position X="0.067" Y="0.073" />

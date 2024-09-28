@@ -1,8 +1,8 @@
-﻿using Common.Application;
-using Common.Application.Contracts.Services;
+﻿using Common.Application.Contracts.Services;
 using Common.Infrastructure;
 using Common.Infrastructure.Communication.HTTP;
 using Members.Application;
+using Members.Application.Contracts.Repositories;
 using Members.Infrastructure.Communication.MessageConsumer.Member;
 using Members.Infrastructure.Repositories;
 using Members.Infrastructure.Services;
@@ -32,6 +32,7 @@ namespace Members.Infrastructure
             await aWebApplicationBuilder.Services.AddPostgreSQL<MembersDbContext>("MembersDb");
             aWebApplicationBuilder.Services.AddScoped<IRoleRepository, RoleRepository>();
             aWebApplicationBuilder.Services.AddScoped<IMemberRepository, MemberRepository>();
+            aWebApplicationBuilder.Services.AddScoped<IGuildRepository, GuildRepository>();
             aWebApplicationBuilder.Services.AddHostedService<StartupHostedService>();
 
             aWebApplicationBuilder.Services.AddHttpClient();

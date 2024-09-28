@@ -6,7 +6,7 @@ using TGF.CA.Infrastructure.Communication.Messages.Discord;
 
 namespace Members.Infrastructure.Communication.MessageConsumer.Role
 {
-    internal class RoleCreatedHandler(IServiceScopeFactory aServiceScopeFactory)
+    internal class GuildAddedHandler(IServiceScopeFactory aServiceScopeFactory)
         : IIntegrationMessageHandler<RoleCreated>
     {
         public async Task Handle(IntegrationMessage<RoleCreated> aIntegrationMessage, CancellationToken aCancellationToken = default)

@@ -29,6 +29,7 @@ namespace Members.Infrastructure
             {
                 // Map Id property to PostgreSQL numeric(20,0) and apply the converter because ulong is not directly supported in postgres
                 entity.Property(e => e.Id)
+                    .ValueGeneratedNever()
                     .HasColumnType("numeric(20,0)")           // Store as numeric in PostgreSQL
                     .HasConversion(ulongToDecimalConverter);  // Use the ValueConverter
             });
@@ -37,6 +38,7 @@ namespace Members.Infrastructure
             {
                 // Map Id property to PostgreSQL numeric(20,0) and apply the converter because ulong is not directly supported in postgres
                 entity.Property(e => e.Id)
+                    .ValueGeneratedNever()
                     .HasColumnType("numeric(20,0)")           // Store as numeric in PostgreSQL
                     .HasConversion(ulongToDecimalConverter);  // Use the ValueConverter
             });
