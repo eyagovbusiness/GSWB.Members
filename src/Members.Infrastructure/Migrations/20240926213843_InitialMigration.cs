@@ -15,9 +15,9 @@ namespace Members.Infrastructure.Migrations
                 name: "Guilds",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    DiscordGuildId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    IconUrl = table.Column<string>(type: "text", nullable: false),
                     CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     ModifiedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
@@ -34,6 +34,7 @@ namespace Members.Infrastructure.Migrations
                     DiscordUserId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     DiscordGuildDisplayName = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
                     DiscordAvatarUrl = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    GuildId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     SpectrumCommunityMoniker = table.Column<string>(type: "text", nullable: true),
                     GameHandle = table.Column<string>(type: "text", nullable: true),
                     Status = table.Column<byte>(type: "smallint", nullable: false),
@@ -67,12 +68,27 @@ namespace Members.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "VerifyCodes",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Code = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
+                    ExpiryDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ModifiedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_VerifyCodes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "GuildBoosters",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    MemberId = table.Column<Guid>(type: "uuid", nullable: false),
-                    GuildId = table.Column<Guid>(type: "uuid", nullable: false),
+                    MemberId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    GuildId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     ModifiedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
@@ -104,28 +120,6 @@ namespace Members.Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_Sentences_Members_JudgeId",
                         column: x => x.JudgeId,
-                        principalTable: "Members",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "VerifyCodes",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    MemberId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Code = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
-                    ExpiryDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    ModifiedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_VerifyCodes", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_VerifyCodes_Members_MemberId",
-                        column: x => x.MemberId,
                         principalTable: "Members",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -219,11 +213,6 @@ namespace Members.Infrastructure.Migrations
                 name: "IX_Sentences_JudgeId",
                 table: "Sentences",
                 column: "JudgeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_VerifyCodes_MemberId",
-                table: "VerifyCodes",
-                column: "MemberId");
         }
 
         /// <inheritdoc />

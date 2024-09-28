@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Members.Infrastructure.Migrations
 {
     [DbContext(typeof(MembersDbContext))]
-    [Migration("20240916141852_InitialMigration")]
+    [Migration("20240926213843_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -42,15 +42,15 @@ namespace Members.Infrastructure.Migrations
 
             modelBuilder.Entity("Members.Domain.Entities.Guild", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                    b.Property<decimal>("Id")
+                        .HasColumnType("numeric(20,0)");
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<decimal>("DiscordGuildId")
-                        .HasColumnType("numeric(20,0)");
+                    b.Property<string>("IconUrl")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTimeOffset>("ModifiedAt")
                         .HasColumnType("timestamp with time zone");
@@ -73,11 +73,11 @@ namespace Members.Infrastructure.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("GuildId")
-                        .HasColumnType("uuid");
+                    b.Property<decimal>("GuildId")
+                        .HasColumnType("numeric(20,0)");
 
-                    b.Property<Guid>("MemberId")
-                        .HasColumnType("uuid");
+                    b.Property<decimal>("MemberId")
+                        .HasColumnType("numeric(20,0)");
 
                     b.Property<DateTimeOffset>("ModifiedAt")
                         .HasColumnType("timestamp with time zone");
@@ -161,6 +161,9 @@ namespace Members.Infrastructure.Migrations
                         .HasMaxLength(6)
                         .HasColumnType("character varying(6)");
 
+                    b.Property<decimal>("GuildId")
+                        .HasColumnType("numeric(20,0)");
+
                     b.Property<bool>("IsGameHandleVerified")
                         .HasColumnType("boolean");
 
@@ -184,7 +187,6 @@ namespace Members.Infrastructure.Migrations
             modelBuilder.Entity("Members.Domain.Entities.Role", b =>
                 {
                     b.Property<decimal>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("numeric(20,0)");
 
                     b.Property<DateTimeOffset>("CreatedAt")
@@ -260,15 +262,10 @@ namespace Members.Infrastructure.Migrations
                     b.Property<DateTimeOffset>("ExpiryDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("MemberId")
-                        .HasColumnType("uuid");
-
                     b.Property<DateTimeOffset>("ModifiedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("MemberId");
 
                     b.ToTable("VerifyCodes");
                 });
@@ -333,17 +330,6 @@ namespace Members.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Judge");
-                });
-
-            modelBuilder.Entity("Members.Domain.Entities.VerifyCode", b =>
-                {
-                    b.HasOne("Members.Domain.Entities.Member", "Member")
-                        .WithMany()
-                        .HasForeignKey("MemberId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Member");
                 });
 #pragma warning restore 612, 618
         }
