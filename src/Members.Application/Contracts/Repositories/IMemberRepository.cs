@@ -1,4 +1,5 @@
 ﻿using Members.Domain.Entities;
+using TGF.CA.Domain.Contracts.Repositories;
 using TGF.Common.ROP.HttpResult;
 
 namespace Members.Application
@@ -6,7 +7,7 @@ namespace Members.Application
     /// <summary>
     /// Provides an interface for repository operations related to the <see cref="Member"/> entity.
     /// </summary>
-    public interface IMemberRepository
+    public interface IMemberRepository : IRepositoryBase<Member, Guid>
     {
         /// <summary>
         /// Adds a new member to the repository.
@@ -21,19 +22,6 @@ namespace Members.Application
         /// <param name="aMemberToDelete">The member to delete.</param>
         /// <returns>The deleted member or Error</returns>
         Task<IHttpResult<Member>> Delete(Member aMemberToDelete, CancellationToken aCancellationToken = default);
-
-        /// <summary>
-        /// Get a Member by its Id
-        /// </summary>
-        /// <returns>The member matchign the provided Id</returns>
-        Task<IHttpResult<Member>> GetByIdAsync(Guid aMemberId, CancellationToken aCancellationToken = default);
-
-        /// <summary>
-        /// Get a list of Member by their Ids
-        /// </summary>
-        /// <returns>The list of members matchign the provided Id list</returns>
-        public Task<IHttpResult<IEnumerable<Member>>> GetByIdListAsync(IEnumerable<Guid> aMemberIdList, CancellationToken aCancellationToken = default);
-
 
         /// <summary>
         /// Retrieves a member by their Discord user ID.

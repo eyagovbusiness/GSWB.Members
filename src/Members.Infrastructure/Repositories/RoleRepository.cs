@@ -12,7 +12,7 @@ using TGF.Common.ROP.Result;
 namespace Members.Infrastructure.Repositories
 {
     internal class RoleRepository(MembersDbContext aContext, ILogger<RoleRepository> aLogger)
-        : RepositoryBase<RoleRepository, MembersDbContext>(aContext, aLogger), IRoleRepository, ISortRepository
+        : RepositoryBase<RoleRepository, MembersDbContext, Role, ulong>(aContext, aLogger), IRoleRepository, ISortRepository
     {
 
         #region IRoleRepository

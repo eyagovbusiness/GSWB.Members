@@ -8,7 +8,7 @@ using TGF.Common.ROP.HttpResult;
 namespace Members.Infrastructure.Repositories
 {
     public class MemberRepository(MembersDbContext aContext, ILogger<MemberRepository> aLogger)
-        : RepositoryBase<MemberRepository, MembersDbContext>(aContext, aLogger), IMemberRepository, ISortRepository
+        : RepositoryBase<MemberRepository, MembersDbContext, Member, Guid>(aContext, aLogger), IMemberRepository, ISortRepository
     {
         public async Task<IHttpResult<IEnumerable<Member>>> GetMembersListAsync(
             int aPage, int aPageSize,
@@ -49,7 +49,7 @@ namespace Members.Infrastructure.Repositories
         public async Task<IHttpResult<Member>> Delete(Member aMemberToDelete, CancellationToken aCancellationToken = default)
             => await TryCommandAsync(() => _context.Members.Remove(aMemberToDelete).Entity, aCancellationToken);
 
-        public async Task<IHttpResult<Member>> GetByIdAsync(Guid aMemberId, CancellationToken aCancellationToken = default)
+        public override async Task<IHttpResult<Member>> GetByIdAsync(Guid aMemberId, CancellationToken aCancellationToken = default)
         => await TryQueryAsync(async (aCancellationToken) =>
         {
             return await _context.Members
@@ -59,7 +59,7 @@ namespace Members.Infrastructure.Repositories
         .Verify(member => member != null, InfrastructureErrors.MembersDb.NotFoundId)
         .Map(member => member!);
 
-        public async Task<IHttpResult<IEnumerable<Member>>> GetByIdListAsync(IEnumerable<Guid> aMemberIdList, CancellationToken aCancellationToken = default)
+        public override async Task<IHttpResult<IEnumerable<Member>>> GetByIdListAsync(IEnumerable<Guid> aMemberIdList, CancellationToken aCancellationToken = default)
         => await TryQueryAsync(async (aCancellationToken) =>
         {
             var lMemberList = await _context.Members
