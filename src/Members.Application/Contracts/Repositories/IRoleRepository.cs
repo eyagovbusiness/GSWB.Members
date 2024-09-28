@@ -2,6 +2,7 @@
 using Common.Application.DTOs.Roles;
 using Common.Domain.ValueObjects;
 using Members.Domain.Entities;
+using TGF.CA.Domain.Contracts.Repositories;
 using TGF.Common.ROP.HttpResult;
 
 namespace Members.Application
@@ -9,7 +10,7 @@ namespace Members.Application
     /// <summary>
     /// Represents a repository for application Roles with the allowed operations.
     /// </summary>
-    public interface IRoleRepository
+    public interface IRoleRepository: IRepositoryBase<Role, ulong>
     {
         /// <summary>
         /// Asynchronously retrieves a list of roles by the associated DiscordRoleId.

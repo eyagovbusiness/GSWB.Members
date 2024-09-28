@@ -1,6 +1,6 @@
 ﻿
 
-using Common.Application.Guilds;
+using Common.Application.DTOs.Guilds;
 using Members.Domain.Entities;
 
 namespace Members.Application.Mapping

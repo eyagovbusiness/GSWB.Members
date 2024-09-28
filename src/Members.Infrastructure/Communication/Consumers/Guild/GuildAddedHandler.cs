@@ -1,4 +1,4 @@
-﻿using Common.Application.Guilds;
+﻿using Common.Application.DTOs.Guilds;
 using Members.Application.UseCases.Guilds;
 using Microsoft.Extensions.DependencyInjection;
 using TGF.CA.Infrastructure.Communication.Consumer.Handler;

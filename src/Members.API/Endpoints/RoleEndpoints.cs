@@ -55,7 +55,7 @@ namespace Members.API.Endpoints
         .ToIResult();
 
         /// <summary>
-        /// Updates a list of application roles: ONLY Permissions, RoleType and Description columns can be updated. (<see cref="RoleUpdateDTO.DiscordRoleId"/>) => is used only to determine which role has to be updated. To change the name or position it must be changed on Discord. 
+        /// Updates a list of application roles: ONLY Permissions, RoleType and Description columns can be updated. Ssee RoleUpdateDTO.DiscordRoleId=> is used only to determine which role has to be updated. To change the name or position it must be changed on Discord. 
         /// </summary>
         private async Task<IResult> Put_UpdateRoleList([FromBody] IEnumerable<RoleUpdateDTO> aRoleDTOList, IRolesService aRolesService, IIntegrationMessagePublisher aIntegrationPublisherService, CancellationToken aCancellationToken = default)
         => await aRolesService.UpdateRoleList(aRoleDTOList, aCancellationToken)
