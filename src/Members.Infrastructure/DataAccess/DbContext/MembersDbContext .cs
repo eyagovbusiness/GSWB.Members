@@ -42,6 +42,12 @@ namespace Members.Infrastructure
                     .HasColumnType("numeric(20,0)")           // Store as numeric in PostgreSQL
                     .HasConversion(ulongToDecimalConverter);  // Use the ValueConverter
             });
+
+            modelBuilder.Entity<Member>()
+            .HasOne<Guild>()                  // No navigation property in Member
+            .WithMany()                       // No navigation property in Guild
+            .HasForeignKey(m => m.GuildId)    // GuildId is the foreign key
+            .IsRequired();                    // GuildId is required
         }
 
     }

@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Members.Infrastructure.Migrations
 {
     [DbContext(typeof(MembersDbContext))]
-    [Migration("20240926213843_InitialMigration")]
+    [Migration("20240929112900_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -181,6 +181,8 @@ namespace Members.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("GuildId");
+
                     b.ToTable("Members");
                 });
 
@@ -319,6 +321,15 @@ namespace Members.Infrastructure.Migrations
                     b.Navigation("Accuser");
 
                     b.Navigation("Sentence");
+                });
+
+            modelBuilder.Entity("Members.Domain.Entities.Member", b =>
+                {
+                    b.HasOne("Members.Domain.Entities.Guild", null)
+                        .WithMany()
+                        .HasForeignKey("GuildId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Members.Domain.Entities.Sentence", b =>

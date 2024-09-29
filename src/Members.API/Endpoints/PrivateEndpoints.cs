@@ -1,9 +1,12 @@
 ﻿using Common.Application.DTOs.Members;
+using Common.Domain.Validation;
 using Common.Infrastructure.Communication.ApiRoutes;
+using TGF.Common.ROP.HttpResult;
 using Members.Application;
 using Microsoft.AspNetCore.Mvc;
 using TGF.CA.Presentation;
 using TGF.CA.Presentation.MinimalAPI;
+using TGF.Common.ROP.Result;
 
 namespace Members.API.Endpoints
 {
@@ -25,8 +28,9 @@ namespace Members.API.Endpoints
         }
 
         /// private endpoint implementation 
-        private async Task<IResult> Put_NewMember([FromBody] CreateMemberDTO aCreateMemberDTO, IMembersService aMembersService, CancellationToken aCancellationToken = default)
-            => await aMembersService.AddNewMember(aCreateMemberDTO, aCancellationToken)
+        private async Task<IResult> Put_NewMember([FromBody] CreateMemberDTO aCreateMemberDTO, DiscordIdValidator discordIdValidator, IMembersService aMembersService, CancellationToken aCancellationToken = default)
+            => await Result.ValidationResult(discordIdValidator.Validate(aCreateMemberDTO.guildId))
+            .Bind(_ => aMembersService.AddNewMember(aCreateMemberDTO, aCancellationToken))
             .ToIResult();
 
         private async Task<IResult> Get_Permissions(Guid id, IMembersService aMembersService, CancellationToken aCancellationToken = default)
