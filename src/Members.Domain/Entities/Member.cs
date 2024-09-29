@@ -81,25 +81,26 @@ namespace Members.Domain.Entities
 
 
         //ctor for EF
-        public Member(ulong DiscordUserId, string DiscordGuildDisplayName, string DiscordAvatarUrl)
+        public Member(ulong DiscordUserId, ulong guildId, string DiscordGuildDisplayName, string DiscordAvatarUrl)
         {
             this.DiscordUserId = DiscordUserId;
+            this.GuildId = guildId;
             this.DiscordGuildDisplayName = DiscordGuildDisplayName;
             this.DiscordAvatarUrl = DiscordAvatarUrl;
         }
 
-        public Member(ulong DiscordUserId, string DiscordGuildDisplayName, string DiscordAvatarUrl, ICollection<Role> Roles)
-            : this(DiscordUserId, DiscordGuildDisplayName, DiscordAvatarUrl)
+        public Member(ulong DiscordUserId, ulong guildId, string DiscordGuildDisplayName, string DiscordAvatarUrl, ICollection<Role> Roles)
+            : this(DiscordUserId, guildId, DiscordGuildDisplayName, DiscordAvatarUrl)
         {
             this.Roles = Roles;
         }
-        public Member(string DiscordUserId, string DiscordGuildDisplayName, string DiscordAvatarUrl, ICollection<Role> Roles)
-            : this(ulong.Parse(DiscordUserId), DiscordGuildDisplayName, DiscordAvatarUrl, Roles)
+        public Member(string DiscordUserId, string guildId, string DiscordGuildDisplayName, string DiscordAvatarUrl, ICollection<Role> Roles)
+            : this(ulong.Parse(DiscordUserId), ulong.Parse(guildId), DiscordGuildDisplayName, DiscordAvatarUrl, Roles)
         {
 
         }
-        public Member(string DiscordUserId, string DiscordGuildDisplayName, string DiscordAvatarUrl, string? GameHandle, string? SpectrumCommunityMoniker, ICollection<Role> Roles)
-            : this(DiscordUserId, DiscordGuildDisplayName, DiscordAvatarUrl, Roles)
+        public Member(string DiscordUserId, string guildId, string DiscordGuildDisplayName, string DiscordAvatarUrl, string? GameHandle, string? SpectrumCommunityMoniker, ICollection<Role> Roles)
+            : this(DiscordUserId, guildId, DiscordGuildDisplayName, DiscordAvatarUrl, Roles)
         {
             if (GameHandle != null)
                 this.GameHandle = GameHandle;

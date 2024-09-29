@@ -12,7 +12,7 @@ namespace Members.Application.Mapping
             var lRoleDTOList = aMember.Roles
                 .Select(role => role.ToDto())
                 .ToImmutableArray();
-            return new MemberDTO(aMember.Id, aMember.DiscordGuildDisplayName, aMember.GameHandle, aMember.Status, lRoleDTOList);
+            return new MemberDTO(aMember.Id, aMember.GuildId.ToString(), aMember.DiscordGuildDisplayName, aMember.GameHandle, aMember.Status, lRoleDTOList);
         }
         public static MemberDetailDTO ToDetailDto(this Member aMember, bool aIncludeDiscordOnlyRoles = true)
         {
@@ -23,7 +23,7 @@ namespace Members.Application.Mapping
                     .OrderByDescending(role => role.Position);
 
             var lRoleDTOList = lRoleList.Select(role => role.ToDto()).ToImmutableArray();
-            return new MemberDetailDTO(aMember.Id, aMember.DiscordGuildDisplayName, aMember.DiscordAvatarUrl, aMember.GameHandle, aMember.SpectrumCommunityMoniker, aMember.IsGameHandleVerified, aMember.Status, lRoleDTOList);
+            return new MemberDetailDTO(aMember.Id, aMember.GuildId.ToString(), aMember.DiscordGuildDisplayName, aMember.DiscordAvatarUrl, aMember.GameHandle, aMember.SpectrumCommunityMoniker, aMember.IsGameHandleVerified, aMember.Status, lRoleDTOList);
         }
     }
 }

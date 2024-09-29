@@ -1,4 +1,5 @@
-﻿using Common.Application.DTOs.Members;
+﻿using Common.Application.DTOs.Guilds;
+using Common.Application.DTOs.Members;
 using Common.Application.DTOs.Roles;
 using Common.Domain.ValueObjects;
 using Common.Infrastructure.Communication.ApiRoutes;
@@ -23,16 +24,7 @@ namespace Members.API.Endpoints
         {
             //aWebApplication.MapGet(MembersApiRoutes.members, Get_MembersList)
             //    .RequirePermissions(PermissionsEnum.AccessMembers)
-            //    .SetResponseMetadata<PaginatedMemberListDTO[]>(200)
-            //    .ProducesValidationProblem();
-
-            //aWebApplication.MapPost(MembersApiRoutes.members_getByIds, Post_MembersByIdList)
-            //    .RequirePermissions(PermissionsEnum.AccessMembers)
-            //    .SetResponseMetadata<MemberDetailDTO[]>(200)
-            //    .ProducesValidationProblem();
-
-            //aWebApplication.MapGet(MembersApiRoutes.members_count, Get_MembersCount)
-            //    .SetResponseMetadata<int>(200);
+            //    .SetResponseMetadata<MemberGuildDTO[]>(200);
         }
 
         /// <inheritdoc/>

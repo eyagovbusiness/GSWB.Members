@@ -178,6 +178,8 @@ namespace Members.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("GuildId");
+
                     b.ToTable("Members");
                 });
 
@@ -316,6 +318,15 @@ namespace Members.Infrastructure.Migrations
                     b.Navigation("Accuser");
 
                     b.Navigation("Sentence");
+                });
+
+            modelBuilder.Entity("Members.Domain.Entities.Member", b =>
+                {
+                    b.HasOne("Members.Domain.Entities.Guild", null)
+                        .WithMany()
+                        .HasForeignKey("GuildId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Members.Domain.Entities.Sentence", b =>

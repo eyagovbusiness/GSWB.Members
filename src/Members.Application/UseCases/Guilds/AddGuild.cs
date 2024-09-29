@@ -14,7 +14,7 @@ namespace Members.Application.UseCases.Guilds
         public async Task<IHttpResult<GuildDTO>> ExecuteAsync(GuildDTO guildDTO, CancellationToken aCancellationToken = default)
         {
             var exsitingGuildResult = await guildRepository.GetByIdAsync(ulong.Parse(guildDTO.Id), aCancellationToken);
-            if(exsitingGuildResult.IsSuccess && exsitingGuildResult.Value == null)
+            if(!exsitingGuildResult.IsSuccess)
                 return await guildRepository.AddAsync(new Guild(guildDTO.Id, guildDTO.Name, guildDTO.IconUrl), aCancellationToken)
                     .Map(guild => guild.ToDto());
             if (exsitingGuildResult.IsSuccess && exsitingGuildResult.Value != null)

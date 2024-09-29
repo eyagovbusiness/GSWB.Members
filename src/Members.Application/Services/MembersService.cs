@@ -204,6 +204,7 @@ namespace Members.Application.Services
         private Member GetNewMemberEntity(CreateMemberDTO aCreateMemberDTO, DiscordProfileDTO aDiscordProfileDTO, IEnumerable<Role> aRoleList)
         => new(
             DiscordUserId: aCreateMemberDTO.DiscordCookieUserInfo.UserNameIdentifier,
+            aCreateMemberDTO.guildId,
             DiscordGuildDisplayName: GetDiscordGuildDisplayName(aCreateMemberDTO.DiscordCookieUserInfo, aDiscordProfileDTO),
             DiscordAvatarUrl: aDiscordProfileDTO.AvatarUrl,
             GameHandle: aCreateMemberDTO.SignUpData?.GameHandle,
