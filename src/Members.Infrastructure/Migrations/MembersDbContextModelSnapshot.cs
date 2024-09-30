@@ -147,9 +147,6 @@ namespace Members.Infrastructure.Migrations
                         .HasMaxLength(32)
                         .HasColumnType("character varying(32)");
 
-                    b.Property<decimal>("DiscordUserId")
-                        .HasColumnType("numeric(20,0)");
-
                     b.Property<string>("GameHandle")
                         .HasColumnType("text");
 
@@ -172,6 +169,9 @@ namespace Members.Infrastructure.Migrations
 
                     b.Property<byte>("Status")
                         .HasColumnType("smallint");
+
+                    b.Property<decimal>("UserId")
+                        .HasColumnType("numeric(20,0)");
 
                     b.Property<DateTimeOffset>("VerificationCodeExpiryDate")
                         .HasColumnType("timestamp with time zone");

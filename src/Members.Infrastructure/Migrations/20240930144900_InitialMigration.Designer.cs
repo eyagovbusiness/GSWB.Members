@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Members.Infrastructure.Migrations
 {
     [DbContext(typeof(MembersDbContext))]
-    [Migration("20240929112900_InitialMigration")]
+    [Migration("20240930144900_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -150,9 +150,6 @@ namespace Members.Infrastructure.Migrations
                         .HasMaxLength(32)
                         .HasColumnType("character varying(32)");
 
-                    b.Property<decimal>("DiscordUserId")
-                        .HasColumnType("numeric(20,0)");
-
                     b.Property<string>("GameHandle")
                         .HasColumnType("text");
 
@@ -175,6 +172,9 @@ namespace Members.Infrastructure.Migrations
 
                     b.Property<byte>("Status")
                         .HasColumnType("smallint");
+
+                    b.Property<decimal>("UserId")
+                        .HasColumnType("numeric(20,0)");
 
                     b.Property<DateTimeOffset>("VerificationCodeExpiryDate")
                         .HasColumnType("timestamp with time zone");

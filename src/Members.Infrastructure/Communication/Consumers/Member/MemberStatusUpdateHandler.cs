@@ -20,9 +20,9 @@ namespace Members.Infrastructure.Communication.MessageConsumer.Member
             var lMembersService = lScope.ServiceProvider.GetRequiredService<IMembersService>();
             var lMemberStatus = aIntegrationMessage.Content.IsMemberBanned ? MemberStatusEnum.Banned : MemberStatusEnum.Active;
 
-            await lMembersService.UpdateMemberStatus(ulong.Parse(aIntegrationMessage.Content.DiscordUserId), /*aIntegrationMessage.Content.DiscordGuildId,*/ lMemberStatus, aCancellationToken)
-            .Tap(_ => lScope.ServiceProvider.GetRequiredService<IIntegrationMessagePublisher>()
-                      .Publish(new MemberTokenRevoked([aIntegrationMessage.Content.DiscordUserId]), routingKey: RoutingKeys.Members.Member_revoke));
+            await lMembersService.UpdateMemberStatus(ulong.Parse(aIntegrationMessage.Content.UserId), ulong.Parse(aIntegrationMessage.Content.GuildId), lMemberStatus, aCancellationToken)
+            .Tap(member => lScope.ServiceProvider.GetRequiredService<IIntegrationMessagePublisher>()
+                      .Publish(new MemberTokenRevoked([member.Id]), routingKey: RoutingKeys.Members.Member_revoke));
         }
     }
 }
