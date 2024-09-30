@@ -44,6 +44,10 @@ namespace Members.Application.Services
         => await _memberRepository.GetByIdListAsync(aMemberIdList, aCancellationToken)
             .Map(memberList => memberList.Select(member => member.ToDetailDto()));
 
+        public async Task<IHttpResult<MemberDetailDTO>> GetByUserAndGuildIdsAsync(ulong userId, ulong guildId, CancellationToken aCancellationToken = default)
+        => await _memberRepository.GetByUserAndGuildIdsAsync(userId, guildId, aCancellationToken)
+            .Map(member => member.ToDetailDto());
+
 
         public async Task<IHttpResult<int>> GetMembersCount(CancellationToken aCancellationToken = default)
         => await _memberRepository.GetCountAsync();
@@ -55,7 +59,7 @@ namespace Members.Application.Services
 
         public async Task<IHttpResult<MemberDetailDTO>> AddNewMember(CreateMemberDTO aCreateMemberDTO, CancellationToken aCancellationToken = default)
         {
-            var lExistingMemberResultResult = await _memberRepository.GetByDiscordUserIdAsync(ulong.Parse(aCreateMemberDTO.DiscordCookieUserInfo.UserNameIdentifier), aCancellationToken);
+            var lExistingMemberResultResult = await _memberRepository.GetByUserAndGuildIdsAsync(ulong.Parse(aCreateMemberDTO.DiscordCookieUserInfo.UserNameIdentifier), ulong.Parse(aCreateMemberDTO.GuildId), aCancellationToken);
             if (lExistingMemberResultResult.IsSuccess)
                 return Result.Failure<MemberDetailDTO>(ApplicationErrors.Members.DiscordAccountAlreadyRegistered);
 
@@ -73,56 +77,67 @@ namespace Members.Application.Services
 
         }
 
-        public async Task<IHttpResult<MemberDTO>> GetByDiscordUserId(ulong aDiscordUserId, CancellationToken aCancellationToken = default)
-        => await _memberRepository.GetByDiscordUserIdAsync(aDiscordUserId, aCancellationToken)
+        public async Task<IHttpResult<MemberDTO>> GetByDiscordUserId(Guid id, CancellationToken aCancellationToken = default)
+        => await _memberRepository.GetByIdAsync(id, aCancellationToken)
             .Map(member => member!.ToDto());
 
-        public async Task<IHttpResult<MemberDetailDTO>> GetDetailByDiscordUserId(ulong aDiscordUserId, CancellationToken aCancellationToken = default)
-        => await _memberRepository.GetByDiscordUserIdAsync(aDiscordUserId, aCancellationToken)
+        public async Task<IHttpResult<MemberDetailDTO>> GetDetailByDiscordUserId(Guid id, CancellationToken aCancellationToken = default)
+        => await _memberRepository.GetByIdAsync(id, aCancellationToken)
             .Map(member => member!.ToDetailDto());
 
-        public async Task<IHttpResult<MemberDetailDTO>> UpdateMemberDetail(MemberProfileUpdateDTO aMemberProfileDTO, ulong aDiscordUserId, CancellationToken aCancellationToken = default)
-        => await _memberRepository.GetByDiscordUserIdAsync(aDiscordUserId, aCancellationToken)
+        public async Task<IHttpResult<MemberDetailDTO>> UpdateMemberDetail(MemberProfileUpdateDTO aMemberProfileDTO, Guid id, CancellationToken aCancellationToken = default)
+        => await _memberRepository.GetByIdAsync(id, aCancellationToken)
             .Bind(member => UpdateMemberProfile(member!, aMemberProfileDTO, aCancellationToken))
             .Map(member => member.ToDetailDto());
 
-        public async Task<IHttpResult<MemberDetailDTO>> UpdateMemberDiscordDisplayName(ulong aDiscordUserId, string aNewDisplayName, CancellationToken aCancellationToken = default)
-        => await _memberRepository.GetByDiscordUserIdAsync(aDiscordUserId, aCancellationToken)
+        public async Task<IHttpResult<MemberDetailDTO>> UpdateMemberDiscordDisplayName(ulong userId, ulong guildId, string aNewDisplayName, CancellationToken aCancellationToken = default)
+        => await _memberRepository.GetByUserAndGuildIdsAsync(userId, guildId, aCancellationToken)
             .Bind(member => UpdateMemberDisplayName(member!, aNewDisplayName, aCancellationToken))
             .Map(member => member.ToDetailDto());
 
-        public async Task<IHttpResult<MemberDetailDTO>> UpdateMemberAvatar(ulong aDiscordUserId, string aNewAvatarUrl, CancellationToken aCancellationToken = default)
-        => await _memberRepository.GetByDiscordUserIdAsync(aDiscordUserId, aCancellationToken)
+        public async Task<IHttpResult<MemberDetailDTO>> UpdateMemberAvatar(ulong userId, ulong guildId, string aNewAvatarUrl, CancellationToken aCancellationToken = default)
+        => await _memberRepository.GetByUserAndGuildIdsAsync(userId, guildId, aCancellationToken)
             .Bind(member => UpdateAvatar(member!, aNewAvatarUrl, aCancellationToken))
             .Map(member => member.ToDetailDto());
 
-        public async Task<IHttpResult<bool>> AssignMemberRoleList(ulong aDiscordUserId, IEnumerable<DiscordRoleDTO> aAssignRoleList, CancellationToken aCancellationToken = default)
-        => await _memberRepository.GetByDiscordUserIdAsync(aDiscordUserId, aCancellationToken)
-            .Bind(member => AssignRoleList(member!, aAssignRoleList, aCancellationToken));
+        public async Task<IHttpResult<MayUpdateMemberPermissionsDTO>> AssignMemberRoleList(ulong userId, ulong guildId, IEnumerable<DiscordRoleDTO> aAssignRoleList, CancellationToken aCancellationToken = default)
+        {
+            var memberResult = await _memberRepository.GetByUserAndGuildIdsAsync(userId, guildId, aCancellationToken);
 
-        public async Task<IHttpResult<bool>> RevokeMemberRoleList(ulong aDiscordUserId, IEnumerable<DiscordRoleDTO> aRevokeRoleList, CancellationToken aCancellationToken = default)
-        => await _memberRepository.GetByDiscordUserIdAsync(aDiscordUserId, aCancellationToken)
-            .Bind(member => RevokeRoleList(member!, aRevokeRoleList, aCancellationToken));
+            return await memberResult
+                .Bind(member => AssignRoleList(member!, aAssignRoleList, aCancellationToken))
+                .Map(isPermissionsChanged => new MayUpdateMemberPermissionsDTO(memberResult.Value.ToDto(), isPermissionsChanged));
 
-        public async Task<IHttpResult<Member>> DeleteMember(ulong aDiscordUserId, CancellationToken aCancellationToken = default)
-         => await _memberRepository.GetByDiscordUserIdAsync(aDiscordUserId, aCancellationToken)
+        }
+        public async Task<IHttpResult<MayUpdateMemberPermissionsDTO>> RevokeMemberRoleList(ulong userId, ulong guildId, IEnumerable<DiscordRoleDTO> aRevokeRoleList, CancellationToken aCancellationToken = default)
+        {
+            var memberResult = await _memberRepository.GetByUserAndGuildIdsAsync(userId, guildId, aCancellationToken);
+
+            return await memberResult
+                .Bind(member => RevokeRoleList(member!, aRevokeRoleList, aCancellationToken))
+                .Map(isPermissionsChanged => new MayUpdateMemberPermissionsDTO(memberResult.Value.ToDto(), isPermissionsChanged));
+
+        }
+
+        public async Task<IHttpResult<Member>> DeleteMember(Guid id, CancellationToken aCancellationToken = default)
+         => await _memberRepository.GetByIdAsync(id, aCancellationToken)
             .Bind(member => _memberRepository.Delete(member!, aCancellationToken));
 
-        public async Task<IHttpResult<MemberDetailDTO>> UpdateMemberStatus(ulong aDiscordUserId, MemberStatusEnum aMemberStatus, CancellationToken aCancellationToken = default)
-        => await _memberRepository.GetByDiscordUserIdAsync(aDiscordUserId, aCancellationToken)
+        public async Task<IHttpResult<MemberDetailDTO>> UpdateMemberStatus(ulong userId, ulong guildId, MemberStatusEnum aMemberStatus, CancellationToken aCancellationToken = default)
+        => await _memberRepository.GetByUserAndGuildIdsAsync(userId, guildId, aCancellationToken)
             .Bind(member => UpdateMemberStatus(member!, aMemberStatus, aCancellationToken))
             .Map(member => member.ToDetailDto());
 
         #region Verify
 
-        public async Task<IHttpResult<MemberVerificationStateDTO>> Get_GetVerifyInfo(ulong aDiscordUserId, CancellationToken aCancellationToken = default)
-        => await _memberRepository.GetByDiscordUserIdAsync(aDiscordUserId, aCancellationToken)
+        public async Task<IHttpResult<MemberVerificationStateDTO>> Get_GetVerifyInfo(Guid id, CancellationToken aCancellationToken = default)
+        => await _memberRepository.GetByIdAsync(id, aCancellationToken)
             .Bind(member => TryUpdateGameHandleVerifyCode(member!, aCancellationToken))
             .Map(member => new MemberVerificationStateDTO(member.IsGameHandleVerified, member!.GameHandleVerificationCode, member.VerificationCodeExpiryDate));
 
-        public async Task<IHttpResult<MemberDetailDTO>> VerifyGameHandle(ulong aDiscordUserId, CancellationToken aCancellationToken = default)
+        public async Task<IHttpResult<MemberDetailDTO>> VerifyGameHandle(Guid id, CancellationToken aCancellationToken = default)
         {
-            var lMemberResult = await _memberRepository.GetByDiscordUserIdAsync(aDiscordUserId, aCancellationToken);
+            var lMemberResult = await _memberRepository.GetByIdAsync(id, aCancellationToken);
             return await lMemberResult.Verify(member => member?.GameHandle != null, ApplicationErrors.MemberValidation.GameHandleNotSet)
                 .Verify(member => member!.VerificationCodeExpiryDate > DateTimeOffset.Now, ApplicationErrors.MemberValidation.GameHandleVerificationCodeExpired)
                 .Bind(member => _gameVerificationService.VerifyGameHandle(member!.GameHandle!, member.GameHandleVerificationCode, aCancellationToken))
@@ -203,8 +218,8 @@ namespace Members.Application.Services
 
         private Member GetNewMemberEntity(CreateMemberDTO aCreateMemberDTO, DiscordProfileDTO aDiscordProfileDTO, IEnumerable<Role> aRoleList)
         => new(
-            DiscordUserId: aCreateMemberDTO.DiscordCookieUserInfo.UserNameIdentifier,
-            aCreateMemberDTO.guildId,
+            UserId: aCreateMemberDTO.DiscordCookieUserInfo.UserNameIdentifier,
+            aCreateMemberDTO.GuildId,
             DiscordGuildDisplayName: GetDiscordGuildDisplayName(aCreateMemberDTO.DiscordCookieUserInfo, aDiscordProfileDTO),
             DiscordAvatarUrl: aDiscordProfileDTO.AvatarUrl,
             GameHandle: aCreateMemberDTO.SignUpData?.GameHandle,

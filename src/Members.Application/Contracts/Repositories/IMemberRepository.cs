@@ -28,7 +28,13 @@ namespace Members.Application
         /// </summary>
         /// <param name="aDiscordUserId">The Discord user ID to search for.</param>
         /// <returns>The member matching the given Id or Error.</returns>
-        Task<IHttpResult<Member>> GetByDiscordUserIdAsync(ulong aDiscordUserId, CancellationToken aCancellationToken = default);
+        Task<IHttpResult<Member>> GetByDiscordUserIdAsync(Guid id, CancellationToken aCancellationToken = default);
+
+        /// <summary>
+        /// Get a member identified by the GuildId and the UserId.
+        /// </summary>
+        /// <returns>The member matching the given GuildId and UserId or Error.</returns>
+        Task<IHttpResult<Member>> GetByUserAndGuildIdsAsync(ulong userId, ulong guildId, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Retrieves a paginated list of members.

@@ -85,7 +85,7 @@ namespace Members.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    DiscordUserId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    UserId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     DiscordGuildDisplayName = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
                     DiscordAvatarUrl = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     GuildId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
