@@ -3,10 +3,14 @@ using Common.Application.DTOs.Members;
 using Common.Application.DTOs.Roles;
 using Common.Domain.ValueObjects;
 using Common.Infrastructure.Communication.ApiRoutes;
+using Common.Infrastructure.Security;
 using Common.Presentation.Validation;
+using HealthChecks.UI.Client;
 using Members.API.Validation;
 using Members.Application;
+using Members.Application.UseCases.Guilds;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using TGF.CA.Infrastructure.Security.Identity.Authorization.Permissions;
 using TGF.CA.Presentation;
 using TGF.CA.Presentation.Middleware;
@@ -22,9 +26,15 @@ namespace Members.API.Endpoints
         /// <inheritdoc/>
         public void DefineEndpoints(WebApplication aWebApplication)
         {
-            //aWebApplication.MapGet(MembersApiRoutes.members, Get_MembersList)
-            //    .RequirePermissions(PermissionsEnum.AccessMembers)
+            //aWebApplication.MapGet(MembersApiRoutes.members_guilds, Get_MemberGuildList)
             //    .SetResponseMetadata<MemberGuildDTO[]>(200);
+
+            aWebApplication.MapGet(MembersApiRoutes.members_me_guild, Get_MemberGuild)
+                .SetResponseMetadata<GuildDTO>(200);
+
+            //aWebApplication.MapPut(MembersApiRoutes.members_guild, Get_MembersList)
+            //    .RequirePermissions(PermissionsEnum.Admin)
+            //    .SetResponseMetadata<GuildDTO>(200);
         }
 
         /// <inheritdoc/>
@@ -32,20 +42,21 @@ namespace Members.API.Endpoints
         {
         }
 
-        /// <summary>
-        /// Get the list of guild members(<see cref="PaginatedMemberListDTO"/>) under filtering and pagination conditions specified in the request's query parameters and sorted by a given column name.
-        /// </summary>
-        private async Task<IResult> Get_MembersList(IMembersService aMembersService, PaginationValidator aPaginationValidator, MembersSortByValidator aSortByValidator,
-            string? discordNameFilter, string? gameHandleFilter, ulong? roleIdFilter, bool? isVerifiedFilter,
-            int page = 1, int pageSize = 20, string sortBy = nameof(MemberDTO.Roles),
-            CancellationToken aCancellationToken = default)
-        =>
-        await Result.CancellationTokenResult(aCancellationToken)
-        .ValidateMany(
-            aPaginationValidator.Validate(new PaginationValParams(page, pageSize)),
-            aSortByValidator.Validate(sortBy))
-        .Bind(_ => aMembersService.GetMemberList(page, pageSize, sortBy, discordNameFilter, gameHandleFilter, roleIdFilter, isVerifiedFilter, aCancellationToken))
-        .ToIResult();
+        ///// <summary>
+        ///// Get the list of guild members(<see cref="PaginatedMemberListDTO"/>) under filtering and pagination conditions specified in the request's query parameters and sorted by a given column name.
+        ///// </summary>
+        //private async Task<IResult> Get_MemberGuildList(IMembersService aMembersService, PaginationValidator aPaginationValidator, MembersSortByValidator aSortByValidator,CancellationToken aCancellationToken = default)
+        //=>
+        //await Result.CancellationTokenResult(aCancellationToken)
+        //.ValidateMany(
+        //    aPaginationValidator.Validate(new PaginationValParams(page, pageSize)),
+        //    aSortByValidator.Validate(sortBy))
+        //.Bind(_ => aMembersService.GetMemberList(page, pageSize, sortBy, discordNameFilter, gameHandleFilter, roleIdFilter, isVerifiedFilter, aCancellationToken))
+        //.ToIResult();
+
+        private async Task<IResult> Get_MemberGuild(HttpContext httpContext, GetGuild getGuildUseCase, CancellationToken aCancellationToken = default)
+            => await getGuildUseCase.ExecuteAsync(httpContext.User.Claims.First(c => c.Type == GuildSwarmClaims.GuildId).Value)
+            .ToIResult();
 
 
         /// <summary>
