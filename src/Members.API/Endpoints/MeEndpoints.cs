@@ -1,8 +1,10 @@
-﻿using Common.Application.DTOs.Members;
+﻿using Common.Application.DTOs.Guilds;
+using Common.Application.DTOs.Members;
 using Common.Infrastructure.Communication.ApiRoutes;
 using Common.Infrastructure.Communication.Messages;
 using Common.Infrastructure.Security;
 using Members.Application;
+using Members.Application.UseCases.Guilds;
 using Microsoft.AspNetCore.Mvc;
 using SwarmBot.Infrastructure.Communication;
 using System.Security.Claims;
@@ -23,6 +25,7 @@ namespace Members.API.Endpoints
         public void DefineEndpoints(WebApplication aWebApplication)
         {
             aWebApplication.MapGet(MembersApiRoutes.members_me, Get_Me).RequireJWTBearer().SetResponseMetadata<MemberDetailDTO>(200, 404);
+            aWebApplication.MapGet(MembersApiRoutes.members_me_guild, Get_MemberGuild).SetResponseMetadata<GuildDTO>(200);
             aWebApplication.MapPut(MembersApiRoutes.members_me, Put_MeUpdate).RequireJWTBearer().SetResponseMetadata<MemberDetailDTO>(200, 404);
             aWebApplication.MapDelete(MembersApiRoutes.members_me, Delete_MeDelete).RequireJWTBearer().SetResponseMetadata<Unit>(200, 404);
             aWebApplication.MapGet(MembersApiRoutes.members_me_verify, Get_GetVerifyInfo).RequireJWTBearer().SetResponseMetadata<MemberVerificationStateDTO>(200, 404);
@@ -42,6 +45,13 @@ namespace Members.API.Endpoints
         private async Task<IResult> Get_Me(IMembersService aMembersService, ClaimsPrincipal aClaims, CancellationToken aCancellationToken = default)
             => await aMembersService.GetDetailByDiscordUserId(Guid.Parse(aClaims.FindFirstValue(GuildSwarmClaims.MemberId)!), aCancellationToken)
             .ToIResult();
+
+        /// <summary>
+        /// Get the Guild information of the current membership checked-in
+        /// </summary>
+        private async Task<IResult> Get_MemberGuild(HttpContext httpContext, GetGuild getGuildUseCase, CancellationToken aCancellationToken = default)
+        => await getGuildUseCase.ExecuteAsync(httpContext.User.Claims.First(c => c.Type == GuildSwarmClaims.GuildId).Value)
+        .ToIResult();
 
         /// <summary>
         /// Updates the basic profile data(<see cref="MemberProfileUpdateDTO"/>) for the current authenticated member.
