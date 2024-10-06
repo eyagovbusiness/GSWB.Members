@@ -9,8 +9,8 @@ namespace Members.Application.UseCases.Guilds
     public class GetGuild(IGuildRepository guildRepository)
         : IUseCase<IHttpResult<GuildDTO>, string>
     {
-        public async Task<IHttpResult<GuildDTO>> ExecuteAsync(string guildId, CancellationToken aCancellationToken = default)
-        => await guildRepository.GetByIdAsync(ulong.Parse(guildId), aCancellationToken)
+        public async Task<IHttpResult<GuildDTO>> ExecuteAsync(string guildId, CancellationToken cancellationToken = default)
+        => await guildRepository.GetByIdAsync(ulong.Parse(guildId), cancellationToken)
         .Map(guild => guild.ToDto());
     }
 }
