@@ -1,9 +1,12 @@
 ﻿using Common.Application.DTOs.Members;
+using Common.Domain.Validation;
 using Common.Infrastructure.Communication.ApiRoutes;
+using TGF.Common.ROP.HttpResult;
 using Members.Application;
 using Microsoft.AspNetCore.Mvc;
 using TGF.CA.Presentation;
 using TGF.CA.Presentation.MinimalAPI;
+using TGF.Common.ROP.Result;
 
 namespace Members.API.Endpoints
 {
@@ -13,7 +16,8 @@ namespace Members.API.Endpoints
         /// <inheritdoc/>
         public void DefineEndpoints(WebApplication aWebApplication)
         {
-            aWebApplication.MapGet(MembersApiRoutes.private_members_discordUserId, Get_GetByDiscordUserId);
+            aWebApplication.MapGet(MembersApiRoutes.private_members_id, Get_GetMemberById);
+            aWebApplication.MapGet(MembersApiRoutes.private_members_userId_guildId, Get_MemberByUserAndGuildIds);
             aWebApplication.MapGet(MembersApiRoutes.private_members_permissions, Get_Permissions);
             aWebApplication.MapPut(MembersApiRoutes.private_members, Put_NewMember);
 
@@ -25,17 +29,26 @@ namespace Members.API.Endpoints
         }
 
         /// private endpoint implementation 
-        private async Task<IResult> Put_NewMember([FromBody] CreateMemberDTO aCreateMemberDTO, IMembersService aMembersService, CancellationToken aCancellationToken = default)
-            => await aMembersService.AddNewMember(aCreateMemberDTO, aCancellationToken)
+        private async Task<IResult> Put_NewMember([FromBody] CreateMemberDTO aCreateMemberDTO, DiscordIdValidator discordIdValidator, IMembersService aMembersService, CancellationToken aCancellationToken = default)
+            => await Result.ValidationResult(discordIdValidator.Validate(aCreateMemberDTO.GuildId))
+            .Bind(_ => aMembersService.AddNewMember(aCreateMemberDTO, aCancellationToken))
             .ToIResult();
 
+        /// private endpoint implementation 
         private async Task<IResult> Get_Permissions(Guid id, IMembersService aMembersService, CancellationToken aCancellationToken = default)
             => await aMembersService.GetPermissions(id, aCancellationToken)
             .ToIResult(); 
 
         /// private endpoint implementation 
-        private async Task<IResult> Get_GetByDiscordUserId(ulong id, IMembersService aMembersService, CancellationToken aCancellationToken = default)
+        private async Task<IResult> Get_GetMemberById(Guid id, IMembersService aMembersService, CancellationToken aCancellationToken = default)
             => await aMembersService.GetByDiscordUserId(id, aCancellationToken)
+            .ToIResult();
+
+        /// private endpoint implementation 
+        private async Task<IResult> Get_MemberByUserAndGuildIds(string userId, string guildId, DiscordIdValidator discordIdValidator, IMembersService aMembersService, CancellationToken aCancellationToken = default)
+            => await Result.ValidationResult(discordIdValidator.Validate(userId))
+            .Validate(userId, discordIdValidator)
+            .Bind(_ => aMembersService.GetByUserAndGuildIdsAsync(ulong.Parse(userId), ulong.Parse(guildId), aCancellationToken))
             .ToIResult();
 
     }

@@ -1,4 +1,5 @@
 ﻿using Members.Domain.Entities;
+using TGF.CA.Domain.Contracts.Repositories;
 using TGF.Common.ROP.HttpResult;
 
 namespace Members.Application
@@ -6,7 +7,7 @@ namespace Members.Application
     /// <summary>
     /// Provides an interface for repository operations related to the <see cref="Member"/> entity.
     /// </summary>
-    public interface IMemberRepository
+    public interface IMemberRepository : IRepositoryBase<Member, Guid>
     {
         /// <summary>
         /// Adds a new member to the repository.
@@ -23,24 +24,17 @@ namespace Members.Application
         Task<IHttpResult<Member>> Delete(Member aMemberToDelete, CancellationToken aCancellationToken = default);
 
         /// <summary>
-        /// Get a Member by its Id
-        /// </summary>
-        /// <returns>The member matchign the provided Id</returns>
-        Task<IHttpResult<Member>> GetByIdAsync(Guid aMemberId, CancellationToken aCancellationToken = default);
-
-        /// <summary>
-        /// Get a list of Member by their Ids
-        /// </summary>
-        /// <returns>The list of members matchign the provided Id list</returns>
-        public Task<IHttpResult<IEnumerable<Member>>> GetByIdListAsync(IEnumerable<Guid> aMemberIdList, CancellationToken aCancellationToken = default);
-
-
-        /// <summary>
         /// Retrieves a member by their Discord user ID.
         /// </summary>
         /// <param name="aDiscordUserId">The Discord user ID to search for.</param>
         /// <returns>The member matching the given Id or Error.</returns>
-        Task<IHttpResult<Member>> GetByDiscordUserIdAsync(ulong aDiscordUserId, CancellationToken aCancellationToken = default);
+        Task<IHttpResult<Member>> GetByDiscordUserIdAsync(Guid id, CancellationToken aCancellationToken = default);
+
+        /// <summary>
+        /// Get a member identified by the GuildId and the UserId.
+        /// </summary>
+        /// <returns>The member matching the given GuildId and UserId or Error.</returns>
+        Task<IHttpResult<Member>> GetByUserAndGuildIdsAsync(ulong userId, ulong guildId, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Retrieves a paginated list of members.

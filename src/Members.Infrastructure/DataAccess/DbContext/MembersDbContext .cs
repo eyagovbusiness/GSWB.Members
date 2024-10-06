@@ -29,9 +29,25 @@ namespace Members.Infrastructure
             {
                 // Map Id property to PostgreSQL numeric(20,0) and apply the converter because ulong is not directly supported in postgres
                 entity.Property(e => e.Id)
+                    .ValueGeneratedNever()
                     .HasColumnType("numeric(20,0)")           // Store as numeric in PostgreSQL
                     .HasConversion(ulongToDecimalConverter);  // Use the ValueConverter
             });
+
+            modelBuilder.Entity<Guild>(entity =>
+            {
+                // Map Id property to PostgreSQL numeric(20,0) and apply the converter because ulong is not directly supported in postgres
+                entity.Property(e => e.Id)
+                    .ValueGeneratedNever()
+                    .HasColumnType("numeric(20,0)")           // Store as numeric in PostgreSQL
+                    .HasConversion(ulongToDecimalConverter);  // Use the ValueConverter
+            });
+
+            modelBuilder.Entity<Member>()
+            .HasOne<Guild>()                  // No navigation property in Member
+            .WithMany()                       // No navigation property in Guild
+            .HasForeignKey(m => m.GuildId)    // GuildId is the foreign key
+            .IsRequired();                    // GuildId is required
         }
 
     }

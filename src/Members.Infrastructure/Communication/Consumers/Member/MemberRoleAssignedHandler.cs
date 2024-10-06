@@ -18,12 +18,12 @@ namespace Members.Infrastructure.Communication.MessageConsumer.Member
             using var lScope = aServiceScopeFactory.CreateScope();
             var lMembersService = lScope.ServiceProvider.GetRequiredService<IMembersService>();
 
-            await lMembersService.AssignMemberRoleList(ulong.Parse(aIntegrationMessage.Content.DiscordUserId), aIntegrationMessage.Content.DiscordRoleList, aCancellationToken)
-            .Tap(isPermissionsChanged =>
+            await lMembersService.AssignMemberRoleList(ulong.Parse(aIntegrationMessage.Content.UserId), ulong.Parse(aIntegrationMessage.Content.GuildId), aIntegrationMessage.Content.DiscordRoleList, aCancellationToken)
+            .Tap(updateMemberRolesResultDto =>
             {
-                if (isPermissionsChanged)
+                if (updateMemberRolesResultDto.IsPermissionsChanged)
                     lScope.ServiceProvider.GetRequiredService<IIntegrationMessagePublisher>()
-                        .Publish(new MemberTokenRevoked([aIntegrationMessage.Content.DiscordUserId]), routingKey: RoutingKeys.Members.Member_revoke);
+                        .Publish(new MemberTokenRevoked([updateMemberRolesResultDto.Member.Id]), routingKey: RoutingKeys.Members.Member_revoke);
             });
         }
     }

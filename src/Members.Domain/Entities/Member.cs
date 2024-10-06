@@ -1,5 +1,6 @@
 ﻿using Common.Domain.ValueObjects;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using TGF.CA.Domain.Primitives;
 
 namespace Members.Domain.Entities
@@ -12,8 +13,7 @@ namespace Members.Domain.Entities
         /// <summary>
         /// Discord user ID from OAuth with discord.
         /// </summary>
-        [Required]
-        public ulong DiscordUserId { get; set; }
+        public required ulong UserId { get; set; }
 
         /// <summary>
         /// The display name of this member in the guild's discord server. The value is taken from the global display name from the discord account or the in-server nickname override if it is set.
@@ -31,10 +31,10 @@ namespace Members.Domain.Entities
         [Required]
         public string DiscordAvatarUrl { get; set; }
 
-        ///// <summary>
-        ///// The guild of this member.
-        ///// </summary>
-        //public Guild Guild { get; set; }
+        /// <summary>
+        /// The Guild Id of this member.
+        /// </summary>
+        public required ulong GuildId { get; set; }
 
         /// <summary>
         /// The Community Moniker displays under your Handle in Spectrum forum posts. You can change your moniker anytime, as many times as you like. This is not your character name in game and is used solely for interactions on our forums and chat channels on the Spectrum website.
@@ -55,8 +55,13 @@ namespace Members.Domain.Entities
         /// <summary>
         /// Users can verify the ownership of the game account they claimed by automatic verification or human verification with a guild administrator.
         /// </summary>
-        /// <remarks>User DiscordUserId as verification code seed.</remarks>
+        /// <remarks>User UserId as verification code seed.</remarks>
         public bool IsGameHandleVerified { get; set; }
+
+        ///// <summary>
+        ///// The verification code generated for this member enitiy.
+        ///// </summary>
+        //public virtual VerifyCode? VerifyCode { get; set; }
 
         /// <summary>
         /// 6-digit verification code used to verify the current <see cref="GameHandle"/> set in this Member.
@@ -76,25 +81,27 @@ namespace Members.Domain.Entities
 
 
         //ctor for EF
-        public Member(ulong DiscordUserId, string DiscordGuildDisplayName, string DiscordAvatarUrl)
+        public Member(ulong UserId, ulong guildId, string DiscordGuildDisplayName, string DiscordAvatarUrl)
         {
-            this.DiscordUserId = DiscordUserId;
+            this.UserId = UserId;
+            this.GuildId = guildId;
             this.DiscordGuildDisplayName = DiscordGuildDisplayName;
             this.DiscordAvatarUrl = DiscordAvatarUrl;
         }
 
-        public Member(ulong DiscordUserId, string DiscordGuildDisplayName, string DiscordAvatarUrl, ICollection<Role> Roles)
-            : this(DiscordUserId, DiscordGuildDisplayName, DiscordAvatarUrl)
+        public Member(ulong UserId, ulong guildId, string DiscordGuildDisplayName, string DiscordAvatarUrl, ICollection<Role> Roles)
+            : this(UserId, guildId, DiscordGuildDisplayName, DiscordAvatarUrl)
         {
             this.Roles = Roles;
         }
-        public Member(string DiscordUserId, string DiscordGuildDisplayName, string DiscordAvatarUrl, ICollection<Role> Roles)
-            : this(ulong.Parse(DiscordUserId), DiscordGuildDisplayName, DiscordAvatarUrl, Roles)
+        public Member(string UserId, string guildId, string DiscordGuildDisplayName, string DiscordAvatarUrl, ICollection<Role> Roles)
+            : this(ulong.Parse(UserId), ulong.Parse(guildId), DiscordGuildDisplayName, DiscordAvatarUrl, Roles)
         {
 
         }
-        public Member(string DiscordUserId, string DiscordGuildDisplayName, string DiscordAvatarUrl, string? GameHandle, string? SpectrumCommunityMoniker, ICollection<Role> Roles)
-            : this(DiscordUserId, DiscordGuildDisplayName, DiscordAvatarUrl, Roles)
+        [SetsRequiredMembers]
+        public Member(string UserId, string guildId, string DiscordGuildDisplayName, string DiscordAvatarUrl, string? GameHandle, string? SpectrumCommunityMoniker, ICollection<Role> Roles)
+            : this(UserId, guildId, DiscordGuildDisplayName, DiscordAvatarUrl, Roles)
         {
             if (GameHandle != null)
                 this.GameHandle = GameHandle;
