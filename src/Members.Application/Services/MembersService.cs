@@ -64,7 +64,7 @@ namespace Members.Application.Services
                 return Result.Failure<MemberDetailDTO>(ApplicationErrors.Members.DiscordAccountAlreadyRegistered);
 
             var lApplicationRoleListResult = await Result.CancellationTokenResult(aCancellationToken)
-                .Bind(_ => _SwarmBotCommunicationService.GetDiscordUserRoleList(aCreateMemberDTO.DiscordCookieUserInfo.UserNameIdentifier, aCancellationToken))
+                .Bind(_ => _SwarmBotCommunicationService.GetMemberRoleList(aCreateMemberDTO.GuildId, aCreateMemberDTO.DiscordCookieUserInfo.UserNameIdentifier, aCancellationToken))
                 .Bind(discordRoleList => _roleRepository.GetListByDiscordRoleId(discordRoleList.Select(r => ulong.Parse(r.Id)), aCancellationToken));
 
             var lNewMemberResult = await lApplicationRoleListResult
