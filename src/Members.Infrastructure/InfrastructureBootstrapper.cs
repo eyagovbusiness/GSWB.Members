@@ -62,7 +62,7 @@ namespace Members.Infrastructure
         /// <returns>A task that represents the asynchronous operation.</returns>
         public static async Task UseInfrastructure(this WebApplication aWebApplication)
         {
-            aWebApplication.UseCommonInfrastructure();
+            await aWebApplication.UseCommonInfrastructure();
             await aWebApplication.UseMigrations<MembersDbContext>();
         }
 
