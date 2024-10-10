@@ -28,7 +28,7 @@ namespace Members.Infrastructure.Services
                 _logger.LogInformation("StartupHostedService started.Synchronizing roles with Discord...");
                 using var lScope = _serviceProvider.CreateScope();
                 var lRolesInfrastructureService = lScope.ServiceProvider.GetRequiredService<IRolesInfrastructureService>();
-                await lRolesInfrastructureService.SyncRolesWithDiscordAsync(aCancellationToken);
+                //await lRolesInfrastructureService.SyncRolesWithDiscordAsync(aCancellationToken);
                 _logger.LogInformation("StartupHostedService finished. Roles with Discord synchronized.");
             }
             catch (Exception lEx)

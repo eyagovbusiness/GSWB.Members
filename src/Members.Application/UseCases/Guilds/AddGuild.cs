@@ -8,7 +8,7 @@ using Common.Application.DTOs.Guilds;
 
 namespace Members.Application.UseCases.Guilds
 {
-    public class AddGuildUseCase(IGuildRepository guildRepository)
+    public class AddGuildUseCase(IGuildRepository guildRepository, IRolesInfrastructureService rolesInfrastructureService)
         : IUseCase<IHttpResult<GuildDTO>, GuildDTO>
     {
         public async Task<IHttpResult<GuildDTO>> ExecuteAsync(GuildDTO guildDTO, CancellationToken aCancellationToken = default)
@@ -16,6 +16,7 @@ namespace Members.Application.UseCases.Guilds
             var exsitingGuildResult = await guildRepository.GetByIdAsync(ulong.Parse(guildDTO.Id), aCancellationToken);
             if(!exsitingGuildResult.IsSuccess)
                 return await guildRepository.AddAsync(new Guild(guildDTO.Id, guildDTO.Name, guildDTO.IconUrl), aCancellationToken)
+                    .Tap(guild => rolesInfrastructureService.SyncRolesWithDiscordAsync(guild.Id, aCancellationToken))
                     .Map(guild => guild.ToDto());
             if (exsitingGuildResult.IsSuccess && exsitingGuildResult.Value != null)
                 return exsitingGuildResult.Map(guild => guild.ToDto());

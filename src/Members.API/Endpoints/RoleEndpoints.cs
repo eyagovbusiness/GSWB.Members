@@ -3,11 +3,13 @@ using Common.Application.DTOs.Roles;
 using Common.Domain.ValueObjects;
 using Common.Infrastructure.Communication.ApiRoutes;
 using Common.Infrastructure.Communication.Messages;
+using Common.Infrastructure.Security;
 using Common.Presentation.Validation;
 using Members.API.Validation;
 using Members.Application;
 using Microsoft.AspNetCore.Mvc;
 using SwarmBot.Infrastructure.Communication;
+using System.Security.Claims;
 using TGF.CA.Infrastructure.Communication.Publisher.Integration;
 using TGF.CA.Infrastructure.Security.Identity.Authorization.Permissions;
 using TGF.CA.Presentation;
@@ -37,8 +39,8 @@ namespace Members.API.Endpoints
         /// <summary>
         /// Synchronizes the application roles with the Discord guild's server roles.
         /// </summary>
-        private async Task Post_SyncRolesWithDiscord(IRolesInfrastructureService aRolesInfrastructureService, CancellationToken aCancellationToken = default)
-            => await aRolesInfrastructureService.SyncRolesWithDiscordAsync(aCancellationToken);
+        private async Task Post_SyncRolesWithDiscord(ClaimsPrincipal claimsPrincipal, IRolesInfrastructureService aRolesInfrastructureService, CancellationToken aCancellationToken = default)
+            => await aRolesInfrastructureService.SyncRolesWithDiscordAsync(ulong.Parse(claimsPrincipal.FindFirstValue(GuildSwarmClaims.GuildId)!), aCancellationToken);
 
         /// <summary>
         /// Get the list of guild members(<see cref="PaginatedRoleListDTO"/>) under filtering and pagination conditions specified in the request's query parameters and sorted by a given column name.

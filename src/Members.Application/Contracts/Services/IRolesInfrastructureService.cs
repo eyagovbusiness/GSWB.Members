@@ -13,6 +13,6 @@ namespace Members.Application
         /// Synchronizes the roles in the database with roles fetched from Discord.
         /// </summary>
         /// <returns>True if the synchronization was successful.</returns>
-        public Task<bool> SyncRolesWithDiscordAsync(CancellationToken aCancellationToken = default);
+        public Task<bool> SyncRolesWithDiscordAsync(ulong guildId, CancellationToken aCancellationToken = default);
     }
 }

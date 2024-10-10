@@ -23,11 +23,11 @@ namespace Members.Infrastructure.Services
 
         #region IRolesInfrastructureService
 
-        public async Task<bool> SyncRolesWithDiscordAsync(CancellationToken aCancellationToken)
+        public async Task<bool> SyncRolesWithDiscordAsync(ulong guildId, CancellationToken aCancellationToken)
         {
 
             var GetDiscordRoleListResult = await RetryUtility.ExecuteWithRetryAsync(
-                _SwarmBotCommunicationService.GetDiscordRoleList(aCancellationToken),
+                _SwarmBotCommunicationService.GetGuildDiscordRoleList(guildId.ToString(), aCancellationToken),
                 result => !result.IsSuccess,
                 aMaxRetries: 3,
                 aDelayMilliseconds: 1000,
