@@ -37,7 +37,7 @@ namespace Members.Infrastructure.Repositories
             .Include(m => m.Roles.OrderByDescending(r => r.Position))
             .SingleOrDefaultAsync(m => m.Id == Id, aCancellationToken);
         }, aCancellationToken)
-        .Verify(member => member != null, InfrastructureErrors.MembersDb.NotFoundDiscordUserId)
+        .Verify(member => member! != null!, InfrastructureErrors.MembersDb.NotFoundDiscordUserId)
         .Map(member => member!);
 
         public async Task<IHttpResult<Member>> GetByUserAndGuildIdsAsync(ulong userId, ulong guildId, CancellationToken cancellationToken = default)
@@ -47,7 +47,7 @@ namespace Members.Infrastructure.Repositories
             .Include(m => m.Roles.OrderByDescending(r => r.Position))
             .SingleOrDefaultAsync(m => m.UserId == userId && m.GuildId == guildId, aCancellationToken);
         }, cancellationToken)
-        .Verify(member => member != null, InfrastructureErrors.MembersDb.NotFoundDiscordUserId)
+        .Verify(member => member! != null!, InfrastructureErrors.MembersDb.NotFoundDiscordUserId)
         .Map(member => member!);
 
         public async Task<IHttpResult<Member>> Add(Member aNewMember, CancellationToken aCancellationToken = default)
@@ -66,7 +66,7 @@ namespace Members.Infrastructure.Repositories
             .Include(m => m.Roles.OrderByDescending(r => r.Position))
             .SingleOrDefaultAsync(m => m.Id == id, aCancellationToken);
         }, cancellationToken)
-        .Verify(member => member != null, InfrastructureErrors.MembersDb.NotFoundId)
+        .Verify(member => member! != null!, InfrastructureErrors.MembersDb.NotFoundId)
         .Map(member => member!);
 
         public override async Task<IHttpResult<IEnumerable<Member>>> GetByIdListAsync(IEnumerable<Guid> aMemberIdList, CancellationToken aCancellationToken = default)

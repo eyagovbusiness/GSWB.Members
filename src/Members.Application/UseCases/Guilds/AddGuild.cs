@@ -18,8 +18,10 @@ namespace Members.Application.UseCases.Guilds
                 return await guildRepository.AddAsync(new Guild(guildDTO.Id, guildDTO.Name, guildDTO.IconUrl), aCancellationToken)
                     .Tap(guild => rolesInfrastructureService.SyncRolesWithDiscordAsync(guild.Id, aCancellationToken))
                     .Map(guild => guild.ToDto());
-            if (exsitingGuildResult.IsSuccess && exsitingGuildResult.Value != null)
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+            if (exsitingGuildResult.IsSuccess && exsitingGuildResult.Value != null!)
                 return exsitingGuildResult.Map(guild => guild.ToDto());
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
             return Result.Failure<GuildDTO>(ApplicationErrors.Guilds.NotAdded);
         }
     }

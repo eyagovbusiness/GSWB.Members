@@ -33,7 +33,6 @@ namespace Members.Infrastructure
             aWebApplicationBuilder.Services.AddScoped<IRoleRepository, RoleRepository>();
             aWebApplicationBuilder.Services.AddScoped<IMemberRepository, MemberRepository>();
             aWebApplicationBuilder.Services.AddScoped<IGuildRepository, GuildRepository>();
-            aWebApplicationBuilder.Services.AddHostedService<StartupHostedService>();
 
             aWebApplicationBuilder.Services.AddHttpClient();
             aWebApplicationBuilder.Services.AddScoped<IRolesInfrastructureService, RolesInfrastructureService>();
