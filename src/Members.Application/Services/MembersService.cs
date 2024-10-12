@@ -68,7 +68,7 @@ namespace Members.Application.Services
                 .Bind(discordRoleList => _roleRepository.GetListByDiscordRoleId(discordRoleList.Select(r => ulong.Parse(r.Id)), aCancellationToken));
 
             var lNewMemberResult = await lApplicationRoleListResult
-            .Bind(_ => _SwarmBotCommunicationService.GetMemberProfileFromId(aCreateMemberDTO.DiscordCookieUserInfo.UserNameIdentifier))
+            .Bind(_ => _SwarmBotCommunicationService.GetMemberProfileFromId(aCreateMemberDTO.GuildId, aCreateMemberDTO.DiscordCookieUserInfo.UserNameIdentifier))
             .Map(discordMemberProfile => this.GetNewMemberEntity(aCreateMemberDTO, discordMemberProfile, lApplicationRoleListResult.Value))
             .Bind(newMember => _memberRepository.Add(newMember, aCancellationToken))
             .Map(newMember => newMember.ToDetailDto(aIncludeDiscordOnlyRoles: false));
