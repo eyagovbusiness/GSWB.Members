@@ -6,6 +6,7 @@ using Common.Presentation.Validation;
 using Members.API.Validation;
 using Members.Application;
 using Microsoft.AspNetCore.Mvc;
+using TGF.CA.Infrastructure.Security.Identity.Authentication;
 using TGF.CA.Infrastructure.Security.Identity.Authorization.Permissions;
 using TGF.CA.Presentation;
 using TGF.CA.Presentation.Middleware;
@@ -22,11 +23,13 @@ namespace Members.API.Endpoints
         public void DefineEndpoints(WebApplication aWebApplication)
         {
             aWebApplication.MapGet(MembersApiRoutes.members, Get_MembersList)
+                .RequireJWTBearer()
                 .RequirePermissions(PermissionsEnum.AccessMembers)
                 .SetResponseMetadata<PaginatedMemberListDTO[]>(200)
                 .ProducesValidationProblem();
 
             aWebApplication.MapPost(MembersApiRoutes.members_getByIds, Post_MembersByIdList)
+                .RequireJWTBearer()
                 .RequirePermissions(PermissionsEnum.AccessMembers)
                 .SetResponseMetadata<MemberDetailDTO[]>(200)
                 .ProducesValidationProblem();
