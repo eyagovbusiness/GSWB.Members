@@ -6,7 +6,6 @@ using Common.Application.DTOs.Roles;
 using Common.Domain.ValueObjects;
 using Members.Application.Mapping;
 using Members.Domain.Entities;
-using System.Collections.Immutable;
 using TGF.Common.ROP.HttpResult;
 using TGF.Common.ROP.Result;
 
@@ -52,30 +51,6 @@ namespace Members.Application.Services
         public async Task<IHttpResult<int>> GetMembersCount(CancellationToken aCancellationToken = default)
         => await _memberRepository.GetCountAsync();
 
-        public async Task<IHttpResult<PermissionsEnum>> GetPermissions(Guid aMemberId, CancellationToken aCancellationToken = default)
-        => await _memberRepository.GetByIdAsync(aMemberId, aCancellationToken)
-            .Map(member => member.CalculatePermissions());
-
-
-        public async Task<IHttpResult<MemberDetailDTO>> AddNewMember(CreateMemberDTO aCreateMemberDTO, CancellationToken aCancellationToken = default)
-        {
-            var lExistingMemberResultResult = await _memberRepository.GetByUserAndGuildIdsAsync(ulong.Parse(aCreateMemberDTO.DiscordCookieUserInfo.UserNameIdentifier), ulong.Parse(aCreateMemberDTO.GuildId), aCancellationToken);
-            if (lExistingMemberResultResult.IsSuccess)
-                return Result.Failure<MemberDetailDTO>(ApplicationErrors.Members.DiscordAccountAlreadyRegistered);
-
-            var lApplicationRoleListResult = await Result.CancellationTokenResult(aCancellationToken)
-                .Bind(_ => _SwarmBotCommunicationService.GetMemberRoleList(aCreateMemberDTO.GuildId, aCreateMemberDTO.DiscordCookieUserInfo.UserNameIdentifier, aCancellationToken))
-                .Bind(discordRoleList => _roleRepository.GetListByDiscordRoleId(discordRoleList.Select(r => ulong.Parse(r.Id)), aCancellationToken));
-
-            var lNewMemberResult = await lApplicationRoleListResult
-            .Bind(_ => _SwarmBotCommunicationService.GetMemberProfileFromId(aCreateMemberDTO.GuildId, aCreateMemberDTO.DiscordCookieUserInfo.UserNameIdentifier))
-            .Map(discordMemberProfile => this.GetNewMemberEntity(aCreateMemberDTO, discordMemberProfile, lApplicationRoleListResult.Value))
-            .Bind(newMember => _memberRepository.Add(newMember, aCancellationToken))
-            .Map(newMember => newMember.ToDetailDto(aIncludeDiscordOnlyRoles: false));
-
-            return lNewMemberResult;
-
-        }
 
         public async Task<IHttpResult<MemberDTO>> GetByDiscordUserId(Guid id, CancellationToken aCancellationToken = default)
         => await _memberRepository.GetByIdAsync(id, aCancellationToken)
@@ -100,24 +75,6 @@ namespace Members.Application.Services
             .Bind(member => UpdateAvatar(member!, aNewAvatarUrl, aCancellationToken))
             .Map(member => member.ToDetailDto());
 
-        public async Task<IHttpResult<MayUpdateMemberPermissionsDTO>> AssignMemberRoleList(ulong userId, ulong guildId, IEnumerable<DiscordRoleDTO> aAssignRoleList, CancellationToken aCancellationToken = default)
-        {
-            var memberResult = await _memberRepository.GetByUserAndGuildIdsAsync(userId, guildId, aCancellationToken);
-
-            return await memberResult
-                .Bind(member => AssignRoleList(member!, aAssignRoleList, aCancellationToken))
-                .Map(isPermissionsChanged => new MayUpdateMemberPermissionsDTO(memberResult.Value.ToDto(), isPermissionsChanged));
-
-        }
-        public async Task<IHttpResult<MayUpdateMemberPermissionsDTO>> RevokeMemberRoleList(ulong userId, ulong guildId, IEnumerable<DiscordRoleDTO> aRevokeRoleList, CancellationToken aCancellationToken = default)
-        {
-            var memberResult = await _memberRepository.GetByUserAndGuildIdsAsync(userId, guildId, aCancellationToken);
-
-            return await memberResult
-                .Bind(member => RevokeRoleList(member!, aRevokeRoleList, aCancellationToken))
-                .Map(isPermissionsChanged => new MayUpdateMemberPermissionsDTO(memberResult.Value.ToDto(), isPermissionsChanged));
-
-        }
 
         public async Task<IHttpResult<Member>> DeleteMember(Guid id, CancellationToken aCancellationToken = default)
          => await _memberRepository.GetByIdAsync(id, aCancellationToken)
@@ -172,35 +129,6 @@ namespace Members.Application.Services
             return await _memberRepository.Update(aMember, aCancellationToken);
         }
 
-        private async Task<IHttpResult<bool>> AssignRoleList(Member aMember, IEnumerable<DiscordRoleDTO> aAssignRoleList, CancellationToken aCancellationToken = default)
-        {
-            bool lUpdatesPermissions = default;
-            return await _roleRepository.GetListByDiscordRoleId(aAssignRoleList.Select(role => ulong.Parse(role.Id)).ToArray(), aCancellationToken)
-                .Tap(roleToAssignList =>
-                {
-                    foreach (Role lRoleToAssign in roleToAssignList)
-                        aMember.Roles.Add(lRoleToAssign);
-
-                    lUpdatesPermissions = roleToAssignList.Any(role => role.IsApplicationRole() && role.Position > (aMember.GetHighestRole()?.Position ?? default));
-                })
-                .Bind(_ => _memberRepository.Update(aMember, aCancellationToken))
-                .Map(_ => lUpdatesPermissions);
-        }
-
-        private async Task<IHttpResult<bool>> RevokeRoleList(Member aMember, IEnumerable<DiscordRoleDTO> aRevokeRoleList, CancellationToken aCancellationToken = default)
-        {
-            var lCurrentHighestRolePosition = aMember.GetHighestRole()?.Position ?? default;
-            var lDiscordRoleIdRevokeList = aRevokeRoleList.Select(role => ulong.Parse(role.Id)).ToArray();
-
-            bool lUpdatesPermissions = aRevokeRoleList.Any(roleDTO => roleDTO.Position == lCurrentHighestRolePosition);
-
-            foreach (Role lRoleToRevoke in aMember.Roles.Where(role => lDiscordRoleIdRevokeList.Contains(role.Id)).ToArray())
-                aMember.Roles.Remove(lRoleToRevoke);
-
-            return await _memberRepository.Update(aMember, aCancellationToken)
-                .Map(member => lUpdatesPermissions);
-        }
-
         private async Task<IHttpResult<Member>> TryUpdateGameHandleVerifyCode(Member aMember, CancellationToken aCancellationToken = default)
         => aMember.TryRefreshGameHandleVerificationCode()
             ? await _memberRepository.Update(aMember, aCancellationToken)
@@ -216,26 +144,6 @@ namespace Members.Application.Services
                 .Map(member => member.ToDetailDto())
             : Result.Failure<MemberDetailDTO>(ApplicationErrors.MemberValidation.GameHandleVerificationFailed);
 
-        private Member GetNewMemberEntity(CreateMemberDTO aCreateMemberDTO, DiscordProfileDTO aDiscordProfileDTO, IEnumerable<Role> aRoleList)
-        => new(
-            UserId: aCreateMemberDTO.DiscordCookieUserInfo.UserNameIdentifier,
-            aCreateMemberDTO.GuildId,
-            DiscordGuildDisplayName: GetDiscordGuildDisplayName(aCreateMemberDTO.DiscordCookieUserInfo, aDiscordProfileDTO),
-            DiscordAvatarUrl: aDiscordProfileDTO.AvatarUrl,
-            GameHandle: aCreateMemberDTO.SignUpData?.GameHandle,
-            SpectrumCommunityMoniker: aCreateMemberDTO.SignUpData?.SpectrumCommunityMoniker,
-            Roles: aRoleList.ToArray());
-
-        //TO-DO: GSWB-27
-        private string GetDiscordGuildDisplayName(DiscordCookieUserInfo aDiscordCookieUserInfo, DiscordProfileDTO aDiscordProfileDTO)
-        {
-            if (string.IsNullOrWhiteSpace(aDiscordProfileDTO.UserDisplayName) && !string.IsNullOrWhiteSpace(aDiscordCookieUserInfo.GivenName))
-                return aDiscordCookieUserInfo.GivenName;
-
-            return !string.IsNullOrWhiteSpace(aDiscordProfileDTO.UserDisplayName)
-                   ? aDiscordProfileDTO.UserDisplayName
-                   : aDiscordCookieUserInfo.UserName;
-        }
 
         #endregion
 

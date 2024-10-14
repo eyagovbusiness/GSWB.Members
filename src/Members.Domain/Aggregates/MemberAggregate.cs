@@ -1,29 +1,35 @@
-﻿namespace Members.Domain.Aggregates
+﻿using Members.Domain.Validation.Guild;
+using System.Collections.Immutable;
+using TGF.Common.ROP.HttpResult;
+using TGF.Common.ROP.Result;
+
+namespace Members.Domain.Entities
 {
-    //Aggregates not needed for now
-    //public class MemberAggregate
-    //{
-    //    public Member Member { get; private set; }
-    //    public ICollection<Role> Roles { get; private set; }
-    //    public ICollection<IncidentReport> IncidentReportsAsAccuser { get; private set; }
-    //    public ICollection<IncidentReport> IncidentReportsAsAccused { get; private set; }
-    //    public ICollection<Sentence> SentencesAsJudge { get; private set; }
+    public partial class Member
+    {
+        public virtual ICollection<MemberRole> Roles { get; protected set; } = [];
 
-    //    // You can also add methods that perform actions on the aggregate as a whole.
-    //    public void AssignRole(Role role)
-    //    {
-    //        // Add business logic to ensure that role can be added
-    //        // ...
-    //        Roles.Add(role);
-    //    }
+        internal async Task<IHttpResult<Member>> AssignRoles(IEnumerable<ulong> roleIdList, GuildRoleIdValidator guildRoleIdValidator)
+        {
+            var lValidationResult = await guildRoleIdValidator.ValidateAsync(new GuildRoleIdValidationData(GuildId, roleIdList));
 
-    //    public void ReportIncident(IncidentReport report)
-    //    {
-    //        // Add business logic to ensure that an incident can be reported
-    //        // ...
-    //        IncidentReportsAsAccuser.Add(report);
-    //    }
+            if (!lValidationResult.IsValid)
+                return Result.Failure<Member>(lValidationResult.Errors
+                    .Select(e => ValidateSwitchExtensions.GetValidationError(e.ErrorCode, e.ErrorMessage))
+                    .ToImmutableArray());
 
-    //    // Add more methods based on your domain logic as necessary.
-    //}
+            roleIdList.Where(roleId => Roles.Any(role => role.RoleId == roleId))
+            .ToList()
+            .ForEach(roleId => Roles.Add(new MemberRole() { Member = this, RoleId = roleId }));
+
+            return Result.SuccessHttp(this);
+        }
+
+        internal IHttpResult<Member> RevokeRoles(IEnumerable<ulong> roleIdList)
+        => Result.SuccessHttp(roleIdList)
+            .Map(roleIdList => Roles.Where(memberRole => roleIdList.Contains(memberRole.RoleId)))
+            .Tap(memberRoleList => Roles = Roles.Except(memberRoleList).ToList())
+            .Map(_ => this);
+
+    }
 }

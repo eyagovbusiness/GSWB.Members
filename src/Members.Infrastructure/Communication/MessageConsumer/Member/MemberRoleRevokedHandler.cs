@@ -1,5 +1,8 @@
-﻿using Common.Infrastructure.Communication.Messages;
+﻿using Common.Application.DTOs.Members;
+using Common.Domain.ValueObjects;
+using Common.Infrastructure.Communication.Messages;
 using Members.Application;
+using Members.Application.UseCases.Members;
 using Microsoft.Extensions.DependencyInjection;
 using SwarmBot.Infrastructure.Communication;
 using TGF.CA.Infrastructure.Communication.Consumer.Handler;
@@ -21,9 +24,9 @@ namespace Members.Infrastructure.Communication.MessageConsumer.Member
         public async Task Handle(IntegrationMessage<MemberRoleRevoked> aIntegrationMessage, CancellationToken aCancellationToken = default)
         {
             using var lScope = aServiceScopeFactory.CreateScope();
-            var lMembersService = lScope.ServiceProvider.GetRequiredService<IMembersService>();
+            var revokeMemberRolesUseCase = lScope.ServiceProvider.GetRequiredService<RevokeMemberRoles>();
 
-            await lMembersService.RevokeMemberRoleList(ulong.Parse(aIntegrationMessage.Content.UserId), ulong.Parse(aIntegrationMessage.Content.GuildId), aIntegrationMessage.Content.DiscordRoleList, aCancellationToken)
+            await revokeMemberRolesUseCase.ExecuteAsync(new MemberRolesDTO(aIntegrationMessage.Content.GuildId, aIntegrationMessage.Content.UserId, aIntegrationMessage.Content.DiscordRoleList.Select(x => x.Id)), aCancellationToken)
             .Tap(updateResult =>
             {
                 if (updateResult.IsPermissionsChanged)
