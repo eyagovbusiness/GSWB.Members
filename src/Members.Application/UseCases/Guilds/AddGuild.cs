@@ -1,13 +1,16 @@
-﻿using Members.Application.Contracts.Repositories;
-using Members.Domain.Entities;
+﻿using Members.Domain.Entities;
 using TGF.CA.Application.UseCases;
 using TGF.Common.ROP.HttpResult;
 using Members.Application.Mapping;
 using TGF.Common.ROP.Result;
 using Common.Application.DTOs.Guilds;
+using Members.Domain.Contracts.Repositories;
 
 namespace Members.Application.UseCases.Guilds
 {
+    /// <summary>
+    /// Use case to add a new guild
+    /// </summary>
     public class AddGuildUseCase(IGuildRepository guildRepository, IRolesInfrastructureService rolesInfrastructureService)
         : IUseCase<IHttpResult<GuildDTO>, GuildDTO>
     {

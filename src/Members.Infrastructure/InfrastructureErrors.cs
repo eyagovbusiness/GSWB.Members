@@ -6,6 +6,14 @@ namespace Members.Infrastructure
     internal static class InfrastructureErrors
     {
 
+        public static class GuildsDb
+        {
+            public static HttpError NotFoundId => new(
+            new Error("GuildsDb.NotFoundId",
+                "No registered guild was found under the specified Id."),
+            HttpStatusCode.NotFound);
+        }
+
         public static class MembersDb
         {
             public static HttpError NotFoundId => new(

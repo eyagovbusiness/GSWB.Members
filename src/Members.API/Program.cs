@@ -2,6 +2,7 @@ using Common.Domain;
 using Common.Presentation;
 using Members.API;
 using Members.Application;
+using Members.Domain;
 using Members.Infrastructure;
 
 

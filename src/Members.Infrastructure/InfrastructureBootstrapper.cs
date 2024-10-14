@@ -2,7 +2,7 @@
 using Common.Infrastructure;
 using Common.Infrastructure.Communication.HTTP;
 using Members.Application;
-using Members.Application.Contracts.Repositories;
+using Members.Domain.Contracts.Repositories;
 using Members.Infrastructure.Communication.MessageConsumer.Member;
 using Members.Infrastructure.Repositories;
 using Members.Infrastructure.Services;

@@ -74,12 +74,7 @@ namespace Members.Domain.Entities
         /// </summary>
         public DateTimeOffset VerificationCodeExpiryDate { get; set; }
 
-        /// <summary>
-        /// The Roles assigned to this member.
-        /// </summary>
-        public virtual ICollection<Role> Roles { get; set; } = [];
-
-
+        #region Constructors
         //ctor for EF
         public Member(ulong UserId, ulong guildId, string DiscordGuildDisplayName, string DiscordAvatarUrl)
         {
@@ -89,24 +84,77 @@ namespace Members.Domain.Entities
             this.DiscordAvatarUrl = DiscordAvatarUrl;
         }
 
-        public Member(ulong UserId, ulong guildId, string DiscordGuildDisplayName, string DiscordAvatarUrl, ICollection<Role> Roles)
-            : this(UserId, guildId, DiscordGuildDisplayName, DiscordAvatarUrl)
-        {
-            this.Roles = Roles;
-        }
-        public Member(string UserId, string guildId, string DiscordGuildDisplayName, string DiscordAvatarUrl, ICollection<Role> Roles)
-            : this(ulong.Parse(UserId), ulong.Parse(guildId), DiscordGuildDisplayName, DiscordAvatarUrl, Roles)
+        public Member(string UserId, string guildId, string DiscordGuildDisplayName, string DiscordAvatarUrl)
+            : this(ulong.Parse(UserId), ulong.Parse(guildId), DiscordGuildDisplayName, DiscordAvatarUrl)
         {
 
         }
         [SetsRequiredMembers]
-        public Member(string UserId, string guildId, string DiscordGuildDisplayName, string DiscordAvatarUrl, string? GameHandle, string? SpectrumCommunityMoniker, ICollection<Role> Roles)
-            : this(UserId, guildId, DiscordGuildDisplayName, DiscordAvatarUrl, Roles)
+        public Member(string UserId, string guildId, string DiscordGuildDisplayName, string DiscordAvatarUrl, string? GameHandle, string? SpectrumCommunityMoniker)
+            : this(UserId, guildId, DiscordGuildDisplayName, DiscordAvatarUrl)
         {
             if (GameHandle != null)
                 this.GameHandle = GameHandle;
             if (SpectrumCommunityMoniker != null)
                 this.SpectrumCommunityMoniker = SpectrumCommunityMoniker;
         }
+        #endregion
+
+        #region Business Logic
+        /// <summary>
+        /// Updates basic member profile fields, GameHandle and SpectrumCommunityMoniker.
+        /// </summary>
+        /// <param name="aGameHandle">New value to update the GameHandle with.</param>
+        /// <param name="aSpectrumCommunityMoniker">New value to update the SpectrumCommunityMoniker with.</param>
+        /// <returns>True if any field was updated, otherwise false.</returns>
+        public bool UpdateProfile(string? aGameHandle, string? aSpectrumCommunityMoniker)
+        {
+            bool lHasBeenUpdated = false;
+
+            if (aGameHandle != null && GameHandle != aGameHandle)
+            {
+                GameHandle = aGameHandle;
+                IsGameHandleVerified = false;
+                lHasBeenUpdated = true;
+            }
+
+            if (aSpectrumCommunityMoniker != null && SpectrumCommunityMoniker != aSpectrumCommunityMoniker)
+            {
+                SpectrumCommunityMoniker = aSpectrumCommunityMoniker;
+                lHasBeenUpdated = true;
+            }
+
+            return lHasBeenUpdated;
+        }
+
+        /// <summary>
+        /// Verifies the GameHandle if the VerificationCodeExpiryDate has not expired yet, setting IsGameHandleVerified to true.
+        /// </summary>
+        /// <returns>True in case IsGameHandleVerified was false and got updated to tue, otherwise false.</returns>
+        public bool Verify()
+        {
+            if (!IsGameHandleVerified
+                && VerificationCodeExpiryDate > DateTimeOffset.Now)
+            {
+                IsGameHandleVerified = true;
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Update game handle verification code ONLY if the game handle was not verified already and the code has expired already.
+        /// </summary>
+        /// <returns>True if GameHandleVerificationCode was updated, otherwise false.</returns>
+        public bool TryRefreshGameHandleVerificationCode()
+        {
+            if (IsGameHandleVerified || VerificationCodeExpiryDate > DateTimeOffset.Now)
+                return false;
+            GameHandleVerificationCode = new Random().Next(100000, 999999).ToString();
+            VerificationCodeExpiryDate = DateTimeOffset.Now.AddMinutes(1);
+            return true;
+        }
+        #endregion
+
     }
 }
