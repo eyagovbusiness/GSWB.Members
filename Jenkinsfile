@@ -5,7 +5,7 @@ pipeline {
     environment {
         REGISTRY = 'registry.guildswarm.org'
         TOOL_LABEL = "members"
-        ENVIRONMENT = ENVIRONMENT = "${env.BRANCH_NAME == 'integration' ? 'staging' : (env.BRANCH_NAME == 'main' || env.BRANCH_NAME == 'master') ? 'production' : env.BRANCH_NAME}"
+        ENVIRONMENT = "${env.BRANCH_NAME == 'integration' ? 'staging' : (env.BRANCH_NAME == 'main' || env.BRANCH_NAME == 'master') ? 'production' : env.BRANCH_NAME}"
         IMAGE = 'members'
     }
     stages {
@@ -16,9 +16,9 @@ pipeline {
                     env.VERSION = version
                     sh '''find . \\( -name "*.csproj" -o -name "*.sln" -o -name "NuGet.docker.config" \\) -print0 | tar -cvf projectfiles.tar -T -'''
                     try {
-                        withCredentials([usernamePassword(credentialsId: "backend${REPO}", usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        withCredentials([usernamePassword(credentialsId: "backend${ENVIRONMENT}", usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                             sh "docker login -u '${DOCKER_USERNAME}' -p '${DOCKER_PASSWORD}' ${REGISTRY}"
-                            sh "docker build . --build-arg ENVIRONMENT='${ENVIRONMENT}' -t ${REGISTRY}/${REPO}/${IMAGE}:${version} -t ${REGISTRY}/${REPO}/${IMAGE}:latest"
+                            sh "docker build . --build-arg ENVIRONMENT='${ENVIRONMENT}' -t ${REGISTRY}/${ENVIRONMENT}/${IMAGE}:${version} -t ${REGISTRY}/${ENVIRONMENT}/${IMAGE}:latest"
                             sh 'docker logout'
                         }
                     } finally {
@@ -31,10 +31,10 @@ pipeline {
             steps {
                 script {
                     if (env.CHANGE_ID == null) {
-                        withCredentials([usernamePassword(credentialsId: "harbor-${REPO}", usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        withCredentials([usernamePassword(credentialsId: "harbor-${ENVIRONMENT}", usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                             sh "docker login -u '${DOCKER_USERNAME}' -p '${DOCKER_PASSWORD}' ${REGISTRY}"
-                            sh "docker push ${REGISTRY}/${REPO}/${IMAGE}:${version}"
-                            sh "docker push ${REGISTRY}/${REPO}/${IMAGE}:latest"
+                            sh "docker push ${REGISTRY}/${ENVIRONMENT}/${IMAGE}:${version}"
+                            sh "docker push ${REGISTRY}/${ENVIRONMENT}/${IMAGE}:latest"
                             sh 'docker logout'
                         }
                     } else {
@@ -46,8 +46,8 @@ pipeline {
         stage('Remove Docker Images') {
             steps {
                 script {
-                    sh "docker rmi ${REGISTRY}/${REPO}/${IMAGE}:${version}"
-                    sh "docker rmi ${REGISTRY}/${REPO}/${IMAGE}:latest"
+                    sh "docker rmi ${REGISTRY}/${ENVIRONMENT}/${IMAGE}:${version}"
+                    sh "docker rmi ${REGISTRY}/${ENVIRONMENT}/${IMAGE}:latest"
                 }
             }
         }
@@ -56,7 +56,7 @@ pipeline {
                 script {
                     node('alpine_kubectl') {
                         sh 'mkdir -p ~/.kube/'
-                        withCredentials([file(credentialsId: "kubernetes-${REPO}", variable: 'KUBECONFIG_FILE')]) {
+                        withCredentials([file(credentialsId: "kubernetes-${ENVIRONMENT}", variable: 'KUBECONFIG_FILE')]) {
                             // Move the credentials to a temporary location
                             sh "mv ${KUBECONFIG_FILE} ~/.kube/config"
                         }
