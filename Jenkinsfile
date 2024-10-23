@@ -5,7 +5,7 @@ pipeline {
     environment {
         REGISTRY = 'registry.guildswarm.org'
         TOOL_LABEL = "members"
-        ENVIRONMENT = ENVIRONMENT = "${env.BRANCH_NAME == 'integration' ? 'staging' : (env.BRANCH_NAME == 'main' || env.BRANCH_NAME == 'master') ? 'production' : env.BRANCH_NAME}"
+        ENVIRONMENT = "${env.BRANCH_NAME == 'integration' ? 'staging' : (env.BRANCH_NAME == 'main' || env.BRANCH_NAME == 'master') ? 'production' : env.BRANCH_NAME}"
         IMAGE = 'members'
     }
     stages {
