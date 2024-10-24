@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Members.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class MigrationName : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -24,24 +24,6 @@ namespace Members.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Guilds", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Roles",
-                columns: table => new
-                {
-                    Id = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Position = table.Column<byte>(type: "smallint", nullable: false),
-                    RoleType = table.Column<byte>(type: "smallint", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: true),
-                    Permissions = table.Column<int>(type: "integer", nullable: false),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    ModifiedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Roles", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -64,7 +46,7 @@ namespace Members.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    MemberId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    UserId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     GuildId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     ModifiedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
@@ -110,25 +92,47 @@ namespace Members.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "MemberRole",
+                name: "Roles",
                 columns: table => new
                 {
-                    MembersId = table.Column<Guid>(type: "uuid", nullable: false),
-                    RolesId = table.Column<decimal>(type: "numeric(20,0)", nullable: false)
+                    Id = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    GuildId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Position = table.Column<byte>(type: "smallint", nullable: false),
+                    RoleType = table.Column<byte>(type: "smallint", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    Permissions = table.Column<int>(type: "integer", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ModifiedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MemberRole", x => new { x.MembersId, x.RolesId });
+                    table.PrimaryKey("PK_Roles", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MemberRole_Members_MembersId",
-                        column: x => x.MembersId,
-                        principalTable: "Members",
+                        name: "FK_Roles_Guilds_GuildId",
+                        column: x => x.GuildId,
+                        principalTable: "Guilds",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MemberRole",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    MemberId = table.Column<Guid>(type: "uuid", nullable: false),
+                    RoleId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ModifiedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MemberRole", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MemberRole_Roles_RolesId",
-                        column: x => x.RolesId,
-                        principalTable: "Roles",
+                        name: "FK_MemberRole_Members_MemberId",
+                        column: x => x.MemberId,
+                        principalTable: "Members",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -211,13 +215,18 @@ namespace Members.Infrastructure.Migrations
                 column: "SentenceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MemberRole_RolesId",
+                name: "IX_MemberRole_MemberId",
                 table: "MemberRole",
-                column: "RolesId");
+                column: "MemberId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Members_GuildId",
                 table: "Members",
+                column: "GuildId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Roles_GuildId",
+                table: "Roles",
                 column: "GuildId");
 
             migrationBuilder.CreateIndex(
@@ -239,13 +248,13 @@ namespace Members.Infrastructure.Migrations
                 name: "MemberRole");
 
             migrationBuilder.DropTable(
+                name: "Roles");
+
+            migrationBuilder.DropTable(
                 name: "VerifyCodes");
 
             migrationBuilder.DropTable(
                 name: "Sentences");
-
-            migrationBuilder.DropTable(
-                name: "Roles");
 
             migrationBuilder.DropTable(
                 name: "Members");

@@ -1,6 +1,5 @@
 ﻿using Common.Application.DTOs.Members;
 using Common.Domain.Validation;
-using Common.Infrastructure.Communication.ApiRoutes;
 using TGF.Common.ROP.HttpResult;
 using Members.Application;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +7,7 @@ using TGF.CA.Presentation;
 using TGF.CA.Presentation.MinimalAPI;
 using TGF.Common.ROP.Result;
 using Members.Application.UseCases.Members;
+using Common.Application.Communication.Routing;
 
 namespace Members.API.Endpoints
 {

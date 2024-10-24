@@ -1,15 +1,13 @@
-﻿using Common.Application.DTOs.Members;
-using Common.Domain.ValueObjects;
-using Common.Infrastructure.Communication.Messages;
-using Members.Application;
+﻿using Common.Application.Contracts.Communication;
+using Common.Application.DTOs.Members;
+using Common.Application.Contracts.Communication.Messages;
 using Members.Application.UseCases.Members;
 using Microsoft.Extensions.DependencyInjection;
-using SwarmBot.Infrastructure.Communication;
 using TGF.CA.Infrastructure.Communication.Consumer.Handler;
 using TGF.CA.Infrastructure.Communication.Messages;
-using TGF.CA.Infrastructure.Communication.Messages.Discord;
-using TGF.CA.Infrastructure.Communication.Publisher.Integration;
+using Common.Application.Contracts.Communication.Messages.Discord;
 using TGF.Common.ROP.HttpResult;
+using TGF.CA.Application.Contracts.Communication;
 
 namespace Members.Infrastructure.Communication.MessageConsumer.Member
 {
@@ -26,7 +24,7 @@ namespace Members.Infrastructure.Communication.MessageConsumer.Member
             using var lScope = aServiceScopeFactory.CreateScope();
             var revokeMemberRolesUseCase = lScope.ServiceProvider.GetRequiredService<RevokeMemberRoles>();
 
-            await revokeMemberRolesUseCase.ExecuteAsync(new MemberRolesDTO(aIntegrationMessage.Content.GuildId, aIntegrationMessage.Content.UserId, aIntegrationMessage.Content.DiscordRoleList.Select(x => x.Id)), aCancellationToken)
+            await revokeMemberRolesUseCase.ExecuteAsync(new MemberRolesDTO(aIntegrationMessage.Content.GuildId, aIntegrationMessage.Content.UserId, aIntegrationMessage.Content.DiscordRoleList.Select(x => x.RoleId)), aCancellationToken)
             .Tap(updateResult =>
             {
                 if (updateResult.IsPermissionsChanged)

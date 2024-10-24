@@ -1,13 +1,13 @@
-﻿using Common.Domain.ValueObjects;
-using Common.Infrastructure.Communication.Messages;
+﻿using Common.Application.Contracts.Communication;
+using Common.Domain.ValueObjects;
+using Common.Application.Contracts.Communication.Messages;
 using Members.Application;
 using Microsoft.Extensions.DependencyInjection;
-using SwarmBot.Infrastructure.Communication;
 using TGF.CA.Infrastructure.Communication.Consumer.Handler;
 using TGF.CA.Infrastructure.Communication.Messages;
-using TGF.CA.Infrastructure.Communication.Messages.Discord;
-using TGF.CA.Infrastructure.Communication.Publisher.Integration;
+using Common.Application.Contracts.Communication.Messages.Discord;
 using TGF.Common.ROP.HttpResult;
+using TGF.CA.Application.Contracts.Communication;
 
 namespace Members.Infrastructure.Communication.MessageConsumer.Member
 {

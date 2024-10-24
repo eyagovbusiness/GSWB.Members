@@ -1,4 +1,5 @@
-﻿using Common.Domain.Validation;
+﻿using Common.Domain;
+using Common.Domain.Validation;
 using FluentValidation;
 using Members.Domain.Services;
 using Members.Domain.Validation.Guild;
@@ -17,6 +18,7 @@ namespace Members.Domain
         /// </summary>
         public static WebApplicationBuilder ConfigureDomain(this WebApplicationBuilder aWebApplicationBuilder)
         {
+            aWebApplicationBuilder.ConfigureCommonDomain();
             aWebApplicationBuilder.Services.AddValidatorsFromAssemblyContaining<GuildRoleIdValidator>();
             aWebApplicationBuilder.Services.AddScoped<GuildMemberRoleService>();
             return aWebApplicationBuilder;

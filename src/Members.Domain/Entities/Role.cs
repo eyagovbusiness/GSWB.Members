@@ -9,6 +9,7 @@ namespace Members.Domain.Entities
     /// <remarks>The Id of this entity matches exactly the DiscordRoleId it represents.</remarks>
     public partial class Role : Entity<ulong>
     {
+        //roles have double key of guild id and role id
         /// <summary>
         /// The guild to which the role belongs
         /// </summary>

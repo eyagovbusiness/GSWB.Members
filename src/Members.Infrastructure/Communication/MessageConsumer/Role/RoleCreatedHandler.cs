@@ -1,8 +1,8 @@
-﻿using Members.Application;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using TGF.CA.Infrastructure.Communication.Consumer.Handler;
 using TGF.CA.Infrastructure.Communication.Messages;
-using TGF.CA.Infrastructure.Communication.Messages.Discord;
+using Common.Application.Contracts.Communication.Messages.Discord;
+using Members.Application.UseCases.Guilds.Roles;
 
 namespace Members.Infrastructure.Communication.MessageConsumer.Role
 {
@@ -12,8 +12,8 @@ namespace Members.Infrastructure.Communication.MessageConsumer.Role
         public async Task Handle(IntegrationMessage<RoleCreated> aIntegrationMessage, CancellationToken aCancellationToken = default)
         {
             using var lScope = aServiceScopeFactory.CreateScope();
-            var lRolesService = lScope.ServiceProvider.GetRequiredService<IRolesService>();
-            _ = await lRolesService.AddRoleAsync(aIntegrationMessage.Content.DiscordRole, aCancellationToken);
+            var createRolesUseCase = lScope.ServiceProvider.GetRequiredService<CreateRoles>();
+            _ = await createRolesUseCase.ExecuteAsync(aIntegrationMessage.Content, aCancellationToken);
         }
     }
 }

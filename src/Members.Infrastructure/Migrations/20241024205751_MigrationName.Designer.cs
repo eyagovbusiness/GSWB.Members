@@ -12,33 +12,18 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Members.Infrastructure.Migrations
 {
     [DbContext(typeof(MembersDbContext))]
-    [Migration("20240930144900_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20241024205751_MigrationName")]
+    partial class MigrationName
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.2")
+                .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("MemberRole", b =>
-                {
-                    b.Property<Guid>("MembersId")
-                        .HasColumnType("uuid");
-
-                    b.Property<decimal>("RolesId")
-                        .HasColumnType("numeric(20,0)");
-
-                    b.HasKey("MembersId", "RolesId");
-
-                    b.HasIndex("RolesId");
-
-                    b.ToTable("MemberRole");
-                });
 
             modelBuilder.Entity("Members.Domain.Entities.Guild", b =>
                 {
@@ -76,11 +61,11 @@ namespace Members.Infrastructure.Migrations
                     b.Property<decimal>("GuildId")
                         .HasColumnType("numeric(20,0)");
 
-                    b.Property<decimal>("MemberId")
-                        .HasColumnType("numeric(20,0)");
-
                     b.Property<DateTimeOffset>("ModifiedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("UserId")
+                        .HasColumnType("numeric(20,0)");
 
                     b.HasKey("Id");
 
@@ -186,6 +171,31 @@ namespace Members.Infrastructure.Migrations
                     b.ToTable("Members");
                 });
 
+            modelBuilder.Entity("Members.Domain.Entities.MemberRole", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("MemberId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("ModifiedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("RoleId")
+                        .HasColumnType("numeric(20,0)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MemberId");
+
+                    b.ToTable("MemberRole");
+                });
+
             modelBuilder.Entity("Members.Domain.Entities.Role", b =>
                 {
                     b.Property<decimal>("Id")
@@ -196,6 +206,9 @@ namespace Members.Infrastructure.Migrations
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
+
+                    b.Property<decimal>("GuildId")
+                        .HasColumnType("numeric(20,0)");
 
                     b.Property<DateTimeOffset>("ModifiedAt")
                         .HasColumnType("timestamp with time zone");
@@ -214,6 +227,8 @@ namespace Members.Infrastructure.Migrations
                         .HasColumnType("smallint");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("GuildId");
 
                     b.ToTable("Roles");
                 });
@@ -272,25 +287,10 @@ namespace Members.Infrastructure.Migrations
                     b.ToTable("VerifyCodes");
                 });
 
-            modelBuilder.Entity("MemberRole", b =>
-                {
-                    b.HasOne("Members.Domain.Entities.Member", null)
-                        .WithMany()
-                        .HasForeignKey("MembersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Members.Domain.Entities.Role", null)
-                        .WithMany()
-                        .HasForeignKey("RolesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Members.Domain.Entities.GuildBooster", b =>
                 {
                     b.HasOne("Members.Domain.Entities.Guild", "Guild")
-                        .WithMany()
+                        .WithMany("Boosters")
                         .HasForeignKey("GuildId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -332,6 +332,28 @@ namespace Members.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Members.Domain.Entities.MemberRole", b =>
+                {
+                    b.HasOne("Members.Domain.Entities.Member", "Member")
+                        .WithMany("Roles")
+                        .HasForeignKey("MemberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Member");
+                });
+
+            modelBuilder.Entity("Members.Domain.Entities.Role", b =>
+                {
+                    b.HasOne("Members.Domain.Entities.Guild", "Guild")
+                        .WithMany("Roles")
+                        .HasForeignKey("GuildId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Guild");
+                });
+
             modelBuilder.Entity("Members.Domain.Entities.Sentence", b =>
                 {
                     b.HasOne("Members.Domain.Entities.Member", "Judge")
@@ -341,6 +363,18 @@ namespace Members.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Judge");
+                });
+
+            modelBuilder.Entity("Members.Domain.Entities.Guild", b =>
+                {
+                    b.Navigation("Boosters");
+
+                    b.Navigation("Roles");
+                });
+
+            modelBuilder.Entity("Members.Domain.Entities.Member", b =>
+                {
+                    b.Navigation("Roles");
                 });
 #pragma warning restore 612, 618
         }
