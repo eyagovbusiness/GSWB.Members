@@ -5,6 +5,7 @@ using Common.Application.DTOs.Members;
 using Common.Application.DTOs.Roles;
 using Common.Domain.ValueObjects;
 using Members.Application.Mapping;
+using Members.Domain.Contracts.Repositories;
 using Members.Domain.Entities;
 using TGF.Common.ROP.HttpResult;
 using TGF.Common.ROP.Result;
@@ -14,17 +15,14 @@ namespace Members.Application.Services
     public class MembersService : IMembersService
     {
         private readonly IMemberRepository _memberRepository;
-        private readonly IRoleRepository _roleRepository;
         private readonly ISwarmBotCommunicationService _SwarmBotCommunicationService;
         private readonly IGameVerificationService _gameVerificationService;
         public MembersService(
             IMemberRepository aMemberRepository,
-            IRoleRepository aRoleRepository,
             ISwarmBotCommunicationService aSwarmBotCommunicationService,
             IGameVerificationService aGameVerificationService)
         {
             _memberRepository = aMemberRepository;
-            _roleRepository = aRoleRepository;
             _SwarmBotCommunicationService = aSwarmBotCommunicationService;
             _gameVerificationService = aGameVerificationService;
         }

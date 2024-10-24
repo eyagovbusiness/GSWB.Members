@@ -3,6 +3,7 @@ using Common.Application.DTOs.Auth;
 using Common.Application.DTOs.Discord;
 using Common.Application.DTOs.Members;
 using Members.Application.Mapping;
+using Members.Domain.Contracts.Repositories;
 using Members.Domain.Entities;
 using TGF.CA.Application.UseCases;
 using TGF.Common.ROP.HttpResult;
@@ -34,7 +35,7 @@ namespace Members.Application.UseCases.Members
             .Map(newMember => newMember.ToDetailDto(aIncludeDiscordOnlyRoles: false));
 
             var assignRolesResult = lNewMemberResult
-            .Bind(discordRoleList => assignMemberRoles.ExecuteAsync(new MemberRolesDTO(request.GuildId, request.DiscordCookieUserInfo.UserNameIdentifier, lDiscordRoleListResult.Value.Select(role => role.Id))));
+            .Bind(discordRoleList => assignMemberRoles.ExecuteAsync(new MemberRolesDTO(request.GuildId, request.DiscordCookieUserInfo.UserNameIdentifier, lDiscordRoleListResult.Value.Select(role => role.RoleId))));
 
             return lNewMemberResult;
 

@@ -1,13 +1,12 @@
-﻿using Common.Application.DTOs.Guilds;
+﻿using Common.Application.Contracts.Communication;
+using Common.Application.DTOs.Guilds;
 using Common.Application.DTOs.Members;
 using Common.Domain.ValueObjects;
-using Common.Infrastructure.Communication.ApiRoutes;
-using Common.Infrastructure.Communication.Messages;
+using Common.Application.Contracts.Communication.Messages;
 using Common.Infrastructure.Security;
 using Members.Application;
 using Members.Application.UseCases.Guilds;
 using Microsoft.AspNetCore.Mvc;
-using SwarmBot.Infrastructure.Communication;
 using System.Security.Claims;
 using TGF.CA.Infrastructure.Communication.Publisher.Integration;
 using TGF.CA.Infrastructure.Security.Identity.Authentication;
@@ -17,6 +16,8 @@ using TGF.CA.Presentation.Middleware;
 using TGF.CA.Presentation.MinimalAPI;
 using TGF.Common.ROP;
 using TGF.Common.ROP.HttpResult;
+using TGF.CA.Application.Contracts.Communication;
+using Common.Application.Communication.Routing;
 
 namespace Members.API.Endpoints
 {

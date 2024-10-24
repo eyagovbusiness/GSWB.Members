@@ -2,7 +2,7 @@
 using TGF.CA.Domain.Contracts.Repositories;
 using TGF.Common.ROP.HttpResult;
 
-namespace Members.Application
+namespace Members.Domain.Contracts.Repositories
 {
     /// <summary>
     /// Provides an interface for repository operations related to the <see cref="Member"/> entity.

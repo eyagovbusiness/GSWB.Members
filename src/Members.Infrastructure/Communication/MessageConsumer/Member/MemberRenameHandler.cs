@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using TGF.CA.Infrastructure.Communication.Consumer.Handler;
 using TGF.CA.Infrastructure.Communication.Messages;
-using TGF.CA.Infrastructure.Communication.Messages.Discord;
+using Common.Application.Contracts.Communication.Messages.Discord;
 
 namespace Members.Infrastructure.Communication.MessageConsumer.Member
 {

@@ -1,13 +1,13 @@
-﻿using Common.Application.DTOs.Members;
-using Common.Infrastructure.Communication.Messages;
+﻿using Common.Application.Contracts.Communication;
+using Common.Application.DTOs.Members;
+using Common.Application.Contracts.Communication.Messages;
 using Members.Application.UseCases.Members;
 using Microsoft.Extensions.DependencyInjection;
-using SwarmBot.Infrastructure.Communication;
 using TGF.CA.Infrastructure.Communication.Consumer.Handler;
 using TGF.CA.Infrastructure.Communication.Messages;
-using TGF.CA.Infrastructure.Communication.Messages.Discord;
-using TGF.CA.Infrastructure.Communication.Publisher.Integration;
+using Common.Application.Contracts.Communication.Messages.Discord;
 using TGF.Common.ROP.HttpResult;
+using TGF.CA.Application.Contracts.Communication;
 
 namespace Members.Infrastructure.Communication.MessageConsumer.Member
 {
@@ -19,7 +19,7 @@ namespace Members.Infrastructure.Communication.MessageConsumer.Member
             using var lScope = aServiceScopeFactory.CreateScope();
             var assignMemberRolesUseCase = lScope.ServiceProvider.GetRequiredService<AssignMemberRoles>();
 
-            await assignMemberRolesUseCase.ExecuteAsync(new MemberRolesDTO(aIntegrationMessage.Content.UserId, aIntegrationMessage.Content.GuildId, aIntegrationMessage.Content.DiscordRoleList.Select(x => x.Id)), aCancellationToken)
+            await assignMemberRolesUseCase.ExecuteAsync(new MemberRolesDTO(aIntegrationMessage.Content.UserId, aIntegrationMessage.Content.GuildId, aIntegrationMessage.Content.DiscordRoleList.Select(x => x.RoleId)), aCancellationToken)
             .Tap(updateMemberRolesResultDto =>
             {
                 if (updateMemberRolesResultDto.IsPermissionsChanged)

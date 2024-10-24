@@ -1,11 +1,17 @@
-﻿using Common.Application.DTOs.Members;
-using Common.Application.DTOs.Roles;
+﻿using Common.Application.Communication.Routing;
+using Common.Application.DTOs.Members;
+using Common.Domain.Validation;
 using Common.Domain.ValueObjects;
-using Common.Infrastructure.Communication.ApiRoutes;
-using Common.Presentation.Validation;
-using Members.API.Validation;
+using Common.Infrastructure.Security;
 using Members.Application;
+using Members.Application.Specifications;
+using Members.Application.UseCases.Members;
+using Members.Application.Validation;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel;
+using System.Security.Claims;
+using TGF.CA.Application.DTOs;
+using TGF.CA.Application.Validation;
 using TGF.CA.Infrastructure.Security.Identity.Authentication;
 using TGF.CA.Infrastructure.Security.Identity.Authorization.Permissions;
 using TGF.CA.Presentation;
@@ -25,7 +31,7 @@ namespace Members.API.Endpoints
             aWebApplication.MapGet(MembersApiRoutes.members, Get_MembersList)
                 .RequireJWTBearer()
                 .RequirePermissions(PermissionsEnum.AccessMembers)
-                .SetResponseMetadata<PaginatedMemberListDTO[]>(200)
+                .SetResponseMetadata<PagedListDTO<MemberDTO>>(200)
                 .ProducesValidationProblem();
 
             aWebApplication.MapPost(MembersApiRoutes.members_getByIds, Post_MembersByIdList)
@@ -44,18 +50,19 @@ namespace Members.API.Endpoints
         }
 
         /// <summary>
-        /// Get the list of guild members(<see cref="PaginatedMemberListDTO"/>) under filtering and pagination conditions specified in the request's query parameters and sorted by a given column name.
+        /// Get the list of guild members under filtering and pagination conditions specified in the request's query parameters and sorted by a given column name.
         /// </summary>
-        private async Task<IResult> Get_MembersList(IMembersService aMembersService, PaginationValidator aPaginationValidator, MembersSortByValidator aSortByValidator,
-            string? discordNameFilter, string? gameHandleFilter, ulong? roleIdFilter, bool? isVerifiedFilter,
-            int page = 1, int pageSize = 20, string sortBy = nameof(MemberDTO.Roles),
-            CancellationToken aCancellationToken = default)
-        =>
-        await Result.CancellationTokenResult(aCancellationToken)
-        .ValidateMany(
-            aPaginationValidator.Validate(new PaginationValParams(page, pageSize)),
-            aSortByValidator.Validate(sortBy))
-        .Bind(_ => aMembersService.GetMemberList(page, pageSize, sortBy, discordNameFilter, gameHandleFilter, roleIdFilter, isVerifiedFilter, aCancellationToken))
+        private async Task<IResult> Get_MembersList(ClaimsPrincipal claimsPrincipal, ListMembers listMembers, PaginationValidator paginationValidationRules, MembersSortingValidator sortingValidationRules, DiscordIdValidator discordIdValidator,
+        int? page, int? pageSize,
+        string? sortBy, ListSortDirection? sortDirection,
+        string? name,
+        CancellationToken aCancellationToken = default)
+        => await new MemberPageSpecification(
+            page, pageSize, sortBy, sortDirection,
+            paginationValidationRules, sortingValidationRules, discordIdValidator,
+            claimsPrincipal.FindFirstValue(GuildSwarmClaims.GuildId)!, name
+        ).Apply()
+        .Bind(specification => listMembers.ExecuteAsync(specification, aCancellationToken))
         .ToIResult();
 
 

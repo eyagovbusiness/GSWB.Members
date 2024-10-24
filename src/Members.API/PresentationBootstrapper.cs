@@ -1,7 +1,7 @@
 ﻿using Common.Presentation;
 using FluentValidation;
 using HealthChecks.UI.Client;
-using Members.API.Validation;
+using Members.Application.Validation;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using System.Reflection;
 using TGF.CA.Application;
@@ -21,6 +21,8 @@ namespace Members.API
         /// </summary>
         public static void ConfigurePresentation(this WebApplicationBuilder aWebApplicationBuilder)
         {
+            aWebApplicationBuilder.ConfigureCommonPresentation();
+
             var lXmlDocFileName = $"{Assembly.GetEntryAssembly()?.GetName().Name}.xml";
             var lXmlDocFilePath = Path.Combine(AppContext.BaseDirectory, lXmlDocFileName);
 
@@ -29,7 +31,7 @@ namespace Members.API
                 aBaseSwaggerPath: "members-ms",
                 aScanMarkerList: typeof(PresentationErrors)
             );
-            aWebApplicationBuilder.Services.AddValidatorsFromAssemblyContaining<MembersSortByValidator>();
+            aWebApplicationBuilder.Services.AddValidatorsFromAssemblyContaining<MembersSortingValidator>();
         }
 
         /// <summary>
@@ -43,7 +45,6 @@ namespace Members.API
             aWebApplication.UseRouting();//UseRouting() must be called before UseAuthentication() and UseAuthorization() which is UseIdentity().
             aWebApplication.UseIdentity();
 
-            aWebApplication.MapHealthChecksUI(options => options.UIPath = TGFEndpointRoutes.healthUi);
             aWebApplication.UseEndpointDefinitions();
         }
 

@@ -25,5 +25,9 @@
     <ProjectReference Include="../Members.Infrastructure/Members.Infrastructure.csproj" />
     <PackageReference Include="Common.Presentation" Version="1.0.0" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Members.Application\Members.Application.csproj" />
+  </ItemGroup>
   
 </Project>

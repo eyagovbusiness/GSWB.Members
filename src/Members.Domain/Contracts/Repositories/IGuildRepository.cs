@@ -6,6 +6,6 @@ namespace Members.Domain.Contracts.Repositories
 {
     public interface IGuildRepository : IRepositoryBase<Guild, ulong>
     {
-        Task<IHttpResult<Guild>> GetGuildWithRoles(ulong guildId, CancellationToken cancellationToken);
+        Task<IHttpResult<Guild>> GetGuildWithRoles(ulong guildId, CancellationToken cancellationToken = default);
     }
 }
