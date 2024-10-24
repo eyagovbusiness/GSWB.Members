@@ -9,10 +9,11 @@ namespace Members.Domain.Entities
     /// <remarks>The Id of this entity matches exactly the DiscordRoleId it represents.</remarks>
     public partial class Role : Entity<ulong>
     {
-        ///// <summary>
-        ///// The guild to which the role belongs
-        ///// </summary>
-        //public required Guild Guild { get; set; }
+        //roles have double key of guild id and role id
+        /// <summary>
+        /// The guild to which the role belongs
+        /// </summary>
+        public required Guild Guild { get; set; }
 
         /// <summary>
         /// Name of this Role.
@@ -42,11 +43,6 @@ namespace Members.Domain.Entities
         /// </summary>
         /// <remarks>Uses <see cref="Role.SetPermissions(PermissionsEnum)"/> in the setter.</remarks>
         public PermissionsEnum Permissions { get => _permissions; set { _permissions = SetPermissions(value); } }
-
-        /// <summary>
-        /// The list of Member assigned with this Role.
-        /// </summary>
-        public virtual ICollection<Member> Members { get; set; } = [];
 
     }
 }

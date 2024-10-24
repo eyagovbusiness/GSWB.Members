@@ -1,20 +1,23 @@
-﻿using Common.Application.DTOs.Guilds;
+﻿using Common.Application.Contracts.Communication;
+using Common.Application.DTOs.Guilds;
 using Common.Application.DTOs.Members;
-using Common.Infrastructure.Communication.ApiRoutes;
-using Common.Infrastructure.Communication.Messages;
+using Common.Domain.ValueObjects;
+using Common.Application.Contracts.Communication.Messages;
 using Common.Infrastructure.Security;
 using Members.Application;
 using Members.Application.UseCases.Guilds;
 using Microsoft.AspNetCore.Mvc;
-using SwarmBot.Infrastructure.Communication;
 using System.Security.Claims;
 using TGF.CA.Infrastructure.Communication.Publisher.Integration;
 using TGF.CA.Infrastructure.Security.Identity.Authentication;
+using TGF.CA.Infrastructure.Security.Identity.Authorization.Permissions;
 using TGF.CA.Presentation;
 using TGF.CA.Presentation.Middleware;
 using TGF.CA.Presentation.MinimalAPI;
 using TGF.Common.ROP;
 using TGF.Common.ROP.HttpResult;
+using TGF.CA.Application.Contracts.Communication;
+using Common.Application.Communication.Routing;
 
 namespace Members.API.Endpoints
 {
@@ -24,12 +27,34 @@ namespace Members.API.Endpoints
         /// <inheritdoc/>
         public void DefineEndpoints(WebApplication aWebApplication)
         {
-            aWebApplication.MapGet(MembersApiRoutes.members_me, Get_Me).RequireJWTBearer().SetResponseMetadata<MemberDetailDTO>(200, 404);
-            aWebApplication.MapGet(MembersApiRoutes.members_me_guild, Get_MemberGuild).SetResponseMetadata<GuildDTO>(200);
-            aWebApplication.MapPut(MembersApiRoutes.members_me, Put_MeUpdate).RequireJWTBearer().SetResponseMetadata<MemberDetailDTO>(200, 404);
-            aWebApplication.MapDelete(MembersApiRoutes.members_me, Delete_MeDelete).RequireJWTBearer().SetResponseMetadata<Unit>(200, 404);
-            aWebApplication.MapGet(MembersApiRoutes.members_me_verify, Get_GetVerifyInfo).RequireJWTBearer().SetResponseMetadata<MemberVerificationStateDTO>(200, 404);
-            aWebApplication.MapPut(MembersApiRoutes.members_me_verify, Put_MeVerifyGameHandle).RequireJWTBearer().SetResponseMetadata<MemberDetailDTO>(200, 404);
+            aWebApplication.MapGet(MembersApiRoutes.members_me, Get_Me)
+                .RequireJWTBearer()
+                .SetResponseMetadata<MemberDetailDTO>(200, 404);
+
+            aWebApplication.MapGet(MembersApiRoutes.members_me_guild, Get_MemberGuild)
+                .RequireJWTBearer()
+                .SetResponseMetadata<GuildDTO>(200);
+
+            aWebApplication.MapDelete(MembersApiRoutes.members_me_guild, Delete_MemberGuild)
+                .RequireJWTBearer()
+                .RequirePermissions(PermissionsEnum.AccessMembers)
+                .SetResponseMetadata<GuildDTO>(200);
+
+            aWebApplication.MapPut(MembersApiRoutes.members_me, Put_MeUpdate)
+                .RequireJWTBearer()
+                .SetResponseMetadata<MemberDetailDTO>(200, 404);
+
+            aWebApplication.MapDelete(MembersApiRoutes.members_me, Delete_MeDelete)
+                .RequireJWTBearer()
+                .SetResponseMetadata<Unit>(200, 404);
+
+            aWebApplication.MapGet(MembersApiRoutes.members_me_verify, Get_GetVerifyInfo)
+                .RequireJWTBearer()
+                .SetResponseMetadata<MemberVerificationStateDTO>(200, 404);
+
+            aWebApplication.MapPut(MembersApiRoutes.members_me_verify, Put_MeVerifyGameHandle)
+                .RequireJWTBearer()
+                .SetResponseMetadata<MemberDetailDTO>(200, 404);
 
         }
 
@@ -51,6 +76,13 @@ namespace Members.API.Endpoints
         /// </summary>
         private async Task<IResult> Get_MemberGuild(HttpContext httpContext, GetGuild getGuildUseCase, CancellationToken aCancellationToken = default)
         => await getGuildUseCase.ExecuteAsync(httpContext.User.Claims.First(c => c.Type == GuildSwarmClaims.GuildId).Value)
+        .ToIResult();
+
+        /// <summary>
+        /// Get the Guild information of the current membership checked-in
+        /// </summary>
+        private async Task<IResult> Delete_MemberGuild(HttpContext httpContext, DeleteGuild deleteGuild, CancellationToken aCancellationToken = default)
+        => await deleteGuild.ExecuteAsync(httpContext.User.Claims.First(c => c.Type == GuildSwarmClaims.GuildId).Value)
         .ToIResult();
 
         /// <summary>

@@ -7,12 +7,16 @@
     <DockerBuild>false</DockerBuild>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(DockerBuild)'=='false'" >
+  <ItemGroup Condition="'$(DockerBuild)'=='false'">
     <ProjectReference Include="..\..\..\GSWB.Common\src\Common.Domain\Common.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(DockerBuild)'=='true'" >
+  <ItemGroup Condition="'$(DockerBuild)'=='true'">
     <PackageReference Include="Common.Domain" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\TheGoodFramework\src\Common\TGF.Common.Extensions\TGF.Common.Extensions.csproj" />
   </ItemGroup>
 
 </Project>

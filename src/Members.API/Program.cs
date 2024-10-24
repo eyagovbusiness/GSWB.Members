@@ -2,15 +2,15 @@ using Common.Domain;
 using Common.Presentation;
 using Members.API;
 using Members.Application;
+using Members.Domain;
 using Members.Infrastructure;
 
 
 WebApplicationBuilder lMembersApplicationBuilder = WebApplication.CreateBuilder(args);
 
-lMembersApplicationBuilder.ConfigureCommonDomain();
+lMembersApplicationBuilder.ConfigureDomain();
 await lMembersApplicationBuilder.ConfigureInfrastructureAsync();
 lMembersApplicationBuilder.Services.RegisterApplicationServices();
-lMembersApplicationBuilder.ConfigureCommonPresentation();
 lMembersApplicationBuilder.ConfigurePresentation();
 
 var lMembersWebApplication = lMembersApplicationBuilder.Build();

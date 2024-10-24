@@ -33,23 +33,10 @@ namespace Members.Application
         /// <returns>The memmber matching both the Guild Id and the User Id or error.</returns>
         public Task<IHttpResult<MemberDetailDTO>> GetByUserAndGuildIdsAsync(ulong userId, ulong guildId, CancellationToken aCancellationToken = default);
 
-
-        /// <summary>
-        /// Get the calculated permissions of a given member from its Id.
-        /// </summary>
-        /// <returns>The permissions of the member.</returns>
-        public Task<IHttpResult<PermissionsEnum>> GetPermissions(Guid aMemberId, CancellationToken aCancellationToken = default); 
-
         /// <summary>
         /// Get the total count of guild members.
         /// </summary>
         public Task<IHttpResult<int>> GetMembersCount(CancellationToken aCancellationToken = default);
-
-        /// <summary>
-        /// Registers a new application member from a given DiscordUserId from the discord cookie.
-        /// </summary>
-        /// <returns>The new member created, otherwise error.</returns>
-        public Task<IHttpResult<MemberDetailDTO>> AddNewMember(CreateMemberDTO aCreateMemberDTO, CancellationToken aCancellationToken = default);
 
         /// <summary>
         /// Get the application member by its Id.
@@ -86,22 +73,6 @@ namespace Members.Application
         /// <param name="aNewAvatarUrl">New member avatar url.</param>
         /// <returns>The updated member DTO.</returns>
         public Task<IHttpResult<MemberDetailDTO>> UpdateMemberAvatar(ulong userId, ulong guildId, string aNewAvatarUrl, CancellationToken aCancellationToken = default);
-
-        /// <summary>
-        /// Assign a list of roles to a certain member identified by its DiscordUserId.
-        /// </summary>
-        /// <param name="aDiscordUserId">DiscordUserId related with the member.</param>
-        /// <param name="aAssignRoleList">List of roles to be assigned to the given member identified by its DiscordUserId.</param>
-        /// <returns>True if the member's highest application permissions were updated after assigning the new roles, otherwise false.</returns>
-        public Task<IHttpResult<MayUpdateMemberPermissionsDTO>> AssignMemberRoleList(ulong userId, ulong guildId, IEnumerable<DiscordRoleDTO> aAssignRoleList, CancellationToken aCancellationToken = default);
-
-        /// <summary>
-        /// Revoke a list of roles to a certain member identified by its DiscordUserId.
-        /// </summary>
-        /// <param name="aDiscordUserId">DiscordUserId related with the member.</param>
-        /// <param name="aRevokeRoleList">List of roles to be revoked to the given member identified by its DiscordUserId.</param>
-        /// <returns>True if the member's highest application permissions were updated after revoking the specified roles, otherwise false.</returns>
-        public Task<IHttpResult<MayUpdateMemberPermissionsDTO>> RevokeMemberRoleList(ulong userId, ulong guildId, IEnumerable<DiscordRoleDTO> aRevokeRoleList, CancellationToken aCancellationToken = default);
 
         /// <summary>
         /// Delete application member detailed by its Id.

@@ -2,9 +2,12 @@
 using Common.Infrastructure;
 using Common.Infrastructure.Communication.HTTP;
 using Members.Application;
-using Members.Application.Contracts.Repositories;
+using Members.Domain.Contracts.Repositories;
+using Members.Domain.Contracts.Repositories.ReadOnly;
 using Members.Infrastructure.Communication.MessageConsumer.Member;
+using Members.Infrastructure.DataAccess.DbContext;
 using Members.Infrastructure.Repositories;
+using Members.Infrastructure.Repositories.ReadOnly;
 using Members.Infrastructure.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,13 +33,13 @@ namespace Members.Infrastructure
             await aWebApplicationBuilder.ConfigureCommonInfrastructureAsync();
 
             await aWebApplicationBuilder.Services.AddPostgreSQL<MembersDbContext>("MembersDb");
-            aWebApplicationBuilder.Services.AddScoped<IRoleRepository, RoleRepository>();
+            await aWebApplicationBuilder.Services.AddPostgreSQL<ReadOnlyMembersDbContext>("ReadOnlyMembersDb");
+
+            aWebApplicationBuilder.Services.AddScoped<IRoleQueryRepository, RoleQueryRepository>();
             aWebApplicationBuilder.Services.AddScoped<IMemberRepository, MemberRepository>();
             aWebApplicationBuilder.Services.AddScoped<IGuildRepository, GuildRepository>();
-            aWebApplicationBuilder.Services.AddHostedService<StartupHostedService>();
 
             aWebApplicationBuilder.Services.AddHttpClient();
-            aWebApplicationBuilder.Services.AddScoped<IRolesInfrastructureService, RolesInfrastructureService>();
             aWebApplicationBuilder.Services.AddScoped<IGameVerificationService, GameVerificationService>();
             aWebApplicationBuilder.ConfigureCommunication();
 
@@ -62,7 +65,7 @@ namespace Members.Infrastructure
         /// <returns>A task that represents the asynchronous operation.</returns>
         public static async Task UseInfrastructure(this WebApplication aWebApplication)
         {
-            aWebApplication.UseCommonInfrastructure();
+            await aWebApplication.UseCommonInfrastructure();
             await aWebApplication.UseMigrations<MembersDbContext>();
         }
 

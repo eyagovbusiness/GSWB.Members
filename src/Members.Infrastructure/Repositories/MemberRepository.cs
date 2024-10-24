@@ -1,4 +1,4 @@
-﻿using Members.Application;
+﻿using Members.Domain.Contracts.Repositories;
 using Members.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -7,7 +7,7 @@ using TGF.Common.ROP.HttpResult;
 
 namespace Members.Infrastructure.Repositories
 {
-    public class MemberRepository(MembersDbContext aContext, ILogger<MemberRepository> aLogger)
+    internal class MemberRepository(MembersDbContext aContext, ILogger<MemberRepository> aLogger)
         : RepositoryBase<MemberRepository, MembersDbContext, Member, Guid>(aContext, aLogger), IMemberRepository, ISortRepository
     {
         public async Task<IHttpResult<IEnumerable<Member>>> GetMembersListAsync(
@@ -18,11 +18,11 @@ namespace Members.Infrastructure.Repositories
         => await TryQueryAsync(async (aCancellationToken) =>
         {
             var lQuery = _context.Members
-            .Include(m => m.Roles.OrderByDescending(role => role.Position))
+            .Include(m => m.Roles)
             .AsQueryable();
 
             lQuery = ApplyFilters(lQuery, aDiscordNameFilter, aGameHandleFilter, aRoleIdFilter, aIsVerifiedFilter);
-            lQuery = ApplySorting(lQuery, aSortBy);
+            lQuery = ISortRepository.ApplySorting(lQuery, aSortBy);
 
             return await lQuery
                 .Skip((aPage - 1) * aPageSize)
@@ -34,20 +34,20 @@ namespace Members.Infrastructure.Repositories
         => await TryQueryAsync(async (aCancellationToken) =>
         {
             return await _context.Members
-            .Include(m => m.Roles.OrderByDescending(r => r.Position))
+            .Include(m => m.Roles)
             .SingleOrDefaultAsync(m => m.Id == Id, aCancellationToken);
         }, aCancellationToken)
-        .Verify(member => member != null, InfrastructureErrors.MembersDb.NotFoundDiscordUserId)
+        .Verify(member => member! != null!, InfrastructureErrors.MembersDb.NotFoundDiscordUserId)
         .Map(member => member!);
 
         public async Task<IHttpResult<Member>> GetByUserAndGuildIdsAsync(ulong userId, ulong guildId, CancellationToken cancellationToken = default)
         => await TryQueryAsync(async (aCancellationToken) =>
         {
             return await _context.Members
-            .Include(m => m.Roles.OrderByDescending(r => r.Position))
+            .Include(m => m.Roles)
             .SingleOrDefaultAsync(m => m.UserId == userId && m.GuildId == guildId, aCancellationToken);
         }, cancellationToken)
-        .Verify(member => member != null, InfrastructureErrors.MembersDb.NotFoundDiscordUserId)
+        .Verify(member => member! != null!, InfrastructureErrors.MembersDb.NotFoundDiscordUserId)
         .Map(member => member!);
 
         public async Task<IHttpResult<Member>> Add(Member aNewMember, CancellationToken aCancellationToken = default)
@@ -63,17 +63,17 @@ namespace Members.Infrastructure.Repositories
         => await TryQueryAsync(async (aCancellationToken) =>
         {
             return await _context.Members
-            .Include(m => m.Roles.OrderByDescending(r => r.Position))
+            .Include(m => m.Roles)
             .SingleOrDefaultAsync(m => m.Id == id, aCancellationToken);
         }, cancellationToken)
-        .Verify(member => member != null, InfrastructureErrors.MembersDb.NotFoundId)
+        .Verify(member => member! != null!, InfrastructureErrors.MembersDb.NotFoundId)
         .Map(member => member!);
 
         public override async Task<IHttpResult<IEnumerable<Member>>> GetByIdListAsync(IEnumerable<Guid> aMemberIdList, CancellationToken aCancellationToken = default)
         => await TryQueryAsync(async (aCancellationToken) =>
         {
             var lMemberList = await _context.Members
-                .Include(m => m.Roles.OrderByDescending(r => r.Position))
+                .Include(m => m.Roles)
                 .Where(m => aMemberIdList.Contains(m.Id))
                 .ToListAsync(aCancellationToken);
 
@@ -110,7 +110,7 @@ namespace Members.Infrastructure.Repositories
             }
 
             if (aRoleIdFilter.HasValue)
-                aQuery = aQuery.Where(m => m.Roles.Any(r => r.Id == aRoleIdFilter.Value));
+                aQuery = aQuery.Where(m => m.Roles.Any(r => r.RoleId == aRoleIdFilter.Value));
 
             if (aIsVerifiedFilter.HasValue)
                 aQuery = aQuery.Where(m => m.IsGameHandleVerified == aIsVerifiedFilter.Value);
@@ -118,11 +118,6 @@ namespace Members.Infrastructure.Repositories
             return aQuery;
         }
 
-        private static IQueryable<Member> ApplySorting(IQueryable<Member> aQuery, string aSortBy)
-        => aSortBy == nameof(Member.Roles)
-            ? aQuery.OrderBy(m => m.Roles
-                .Max(rc => rc.Position))
-            : ISortRepository.ApplySorting(aQuery, aSortBy);
 
         #endregion
 

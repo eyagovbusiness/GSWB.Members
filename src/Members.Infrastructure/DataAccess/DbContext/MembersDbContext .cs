@@ -8,12 +8,12 @@ namespace Members.Infrastructure
     public class MembersDbContext(DbContextOptions<MembersDbContext> options) : EntitiesDbContext<MembersDbContext>(options)
     {
         public virtual DbSet<Guild> Guilds { get; set; }
-        public virtual DbSet<GuildBooster> GuildBoosters { get; set; }
+        protected virtual DbSet<GuildBooster> GuildBoosters { get; set; }
         public virtual DbSet<Member> Members { get; set; }
-        public virtual DbSet<Role> Roles { get; set; }
-        public virtual DbSet<IncidentReport> IncidentReports { get; set; }
-        public virtual DbSet<Sentence> Sentences { get; set; }
-        public virtual DbSet<VerifyCode> VerifyCodes { get; set; }
+        protected virtual DbSet<Role> Roles { get; set; }
+        protected virtual DbSet<IncidentReport> IncidentReports { get; set; }
+        protected virtual DbSet<Sentence> Sentences { get; set; }
+        protected virtual DbSet<VerifyCode> VerifyCodes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
