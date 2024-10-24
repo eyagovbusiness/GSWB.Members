@@ -1,5 +1,6 @@
 ﻿using Common.Domain.ValueObjects;
 using Members.Domain.Errors;
+using Members.Domain.Validation;
 using Members.Domain.ValueObjects.Role;
 using TGF.Common.Extensions;
 using TGF.Common.ROP.HttpResult;
@@ -15,14 +16,19 @@ namespace Members.Domain.Entities
         public IHttpResult<Guild> AddRoles(IEnumerable<DiscordRoleValues> rolesValueList)
         {
             foreach (var roleValues in rolesValueList)
-                Roles.Add(new() 
+            {
+                Role newRole = new()
                 {
-                    Guild = this ,
+                    Guild = this,
                     Name = roleValues.Name,
                     Position = roleValues.Position,
-                    RoleType = roleValues.Name == "GuildSwarmAdmin" ? RoleTypesEnum.ApplicationRole : RoleTypesEnum.DiscordOnly,
-                    Permissions = roleValues.Name == "GuildSwarmAdmin" ? PermissionsEnum.Admin : PermissionsEnum.None
-                }); 
+                    RoleType = roleValues.Name == InvariantConstants.Role_Name_IsGuildSwarmAdmin ? RoleTypesEnum.ApplicationRole : RoleTypesEnum.DiscordOnly,
+                    Permissions = roleValues.Name == InvariantConstants.Role_Name_IsGuildSwarmAdmin ? PermissionsEnum.Admin : PermissionsEnum.None
+                };
+                newRole.SetId(roleValues.Id);
+                Roles.Add(newRole);
+            }
+                
 
             return Result.SuccessHttp(this);
         }
