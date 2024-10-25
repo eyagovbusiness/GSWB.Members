@@ -16,6 +16,7 @@ namespace Members.Application.UseCases.Guilds.Roles
         public async Task<IHttpResult<RoleDTO>> ExecuteAsync(RoleCreated request, CancellationToken cancellationToken = default)
         => await guildRepository.GetByIdAsync(ulong.Parse(request.GuildId), cancellationToken)
         .Bind(guild => guild.AddRoles([new DiscordRoleValues(ulong.Parse(request.DiscordRole.RoleId), request.DiscordRole.Name, request.DiscordRole.Position)]))
+        .Bind(guild => guildRepository.UpdateAsync(guild))
         .Map(guild => guild.Roles.First(role => role.Id == ulong.Parse(request.DiscordRole.RoleId)).ToDto());
     }
 }

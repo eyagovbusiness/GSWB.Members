@@ -8,7 +8,7 @@ using Members.Domain.Contracts.Repositories;
 using Common.Application.Contracts.Services;
 using Members.Domain.ValueObjects.Role;
 using Common.Application.DTOs.Discord;
-using Members.Domain.Validation;
+using Common.Domain.Validation;
 
 namespace Members.Application.UseCases.Guilds
 {
@@ -27,7 +27,7 @@ namespace Members.Application.UseCases.Guilds
                 return await guildRepository.AddAsync(new Guild(guildDTO.Id, guildDTO.Name, guildDTO.IconUrl), cancellationToken)
                 .Tap(guild => newGuild = guild)
                 .Bind(guild => swarmBotCommunicationService.GetGuildDiscordRoleList(guild.Id.ToString(), cancellationToken))
-                //.Bind(EnsureGuildSwarmAdminRole)
+                .Bind(roleDTOList => EnsureGuildSwarmAdminRole(newGuild.Id, roleDTOList, cancellationToken))
                 .Bind(roleDTOList => newGuild.AddRoles(roleDTOList.Select(roleDTO => new DiscordRoleValues(ulong.Parse(roleDTO.RoleId), roleDTO.Name, roleDTO.Position))))
                 .Bind(guild => guildRepository.UpdateAsync(guild, cancellationToken))
                 .Map(guild => guild.ToDto());
@@ -38,11 +38,11 @@ namespace Members.Application.UseCases.Guilds
 
             return Result.Failure<GuildDTO>(ApplicationErrors.Guilds.NotAdded);
         }
-        //public async Task<IHttpResult<IEnumerable<DiscordRoleDTO>>> EnsureGuildSwarmAdminRole(IEnumerable<DiscordRoleDTO> discordRoles)
-        //{
-        //    if (!discordRoles.Any(role => role.Name == InvariantConstants.Role_Name_IsGuildSwarmAdmin))
-        //    swarmBotCommunicationService.EnsureGuildSwarmAdminRole //this will create the role and get the updated list with the role oncluded
-        //}
+
+        private async Task<IHttpResult<IEnumerable<DiscordRoleDTO>>> EnsureGuildSwarmAdminRole(ulong guildId, IEnumerable<DiscordRoleDTO> discordRoles, CancellationToken cancellationToken)
+        => !discordRoles.Any(role => role.Name == InvariantConstants.Role_Name_IsGuildSwarmAdmin)
+        ? await swarmBotCommunicationService.CreateGuildSwarmAdminRole(guildId.ToString(), cancellationToken)
+        : Result.SuccessHttp(discordRoles);
 
     }
 } 

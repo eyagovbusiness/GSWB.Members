@@ -40,7 +40,7 @@ namespace Members.Infrastructure.Repositories
         .Verify(member => member! != null!, InfrastructureErrors.MembersDb.NotFoundDiscordUserId)
         .Map(member => member!);
 
-        public async Task<IHttpResult<Member>> GetByUserAndGuildIdsAsync(ulong userId, ulong guildId, CancellationToken cancellationToken = default)
+        public async Task<IHttpResult<Member>> GetByGuildAndUserIdsAsync(ulong guildId, ulong userId, CancellationToken cancellationToken = default)
         => await TryQueryAsync(async (aCancellationToken) =>
         {
             return await _context.Members
@@ -49,9 +49,6 @@ namespace Members.Infrastructure.Repositories
         }, cancellationToken)
         .Verify(member => member! != null!, InfrastructureErrors.MembersDb.NotFoundDiscordUserId)
         .Map(member => member!);
-
-        public async Task<IHttpResult<Member>> Add(Member aNewMember, CancellationToken aCancellationToken = default)
-            => await TryCommandAsync(() => _context.Members.Add(aNewMember).Entity, aCancellationToken);
 
         public async Task<IHttpResult<Member>> Update(Member aMember, CancellationToken aCancellationToken = default)
             => await TryCommandAsync(() => _context.Members.Update(aMember).Entity, aCancellationToken);
@@ -81,12 +78,6 @@ namespace Members.Infrastructure.Repositories
         }, aCancellationToken)
         .Verify(members => members != null && members.Count == aMemberIdList.Count(), InfrastructureErrors.MembersDb.NotFoundIdList)
         .Map(members => members!.AsEnumerable());
-
-
-        public async Task<IHttpResult<int>> GetCountAsync(CancellationToken aCancellationToken = default)
-        => await TryQueryAsync(async (aCancellationToken)
-            => await _context.Members.CountAsync(aCancellationToken)
-        , aCancellationToken);
 
         #region Private
 

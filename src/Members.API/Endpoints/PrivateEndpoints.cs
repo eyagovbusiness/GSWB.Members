@@ -49,7 +49,7 @@ namespace Members.API.Endpoints
         private async Task<IResult> Get_MemberByUserAndGuildIds(string userId, string guildId, DiscordIdValidator discordIdValidator, IMembersService aMembersService, CancellationToken aCancellationToken = default)
         => await Result.ValidationResult(discordIdValidator.Validate(userId))
         .Validate(userId, discordIdValidator)
-        .Bind(_ => aMembersService.GetByUserAndGuildIdsAsync(ulong.Parse(userId), ulong.Parse(guildId), aCancellationToken))
+        .Bind(_ => aMembersService.GetByGuildAndUserIdsAsync(ulong.Parse(userId), ulong.Parse(guildId), aCancellationToken))
         .ToIResult();
 
     }

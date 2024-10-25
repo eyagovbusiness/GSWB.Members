@@ -3,6 +3,7 @@ using Members.Application.Mapping;
 using Members.Domain.Contracts.Repositories;
 using Members.Domain.Entities;
 using Members.Domain.Services;
+using Members.Domain.ValueObjects;
 using TGF.CA.Application.UseCases;
 using TGF.Common.ROP.HttpResult;
 
@@ -24,13 +25,17 @@ namespace Members.Application.UseCases.Members
 
             Member lMember = default!;
             Guild lGuild = default!;
+            MemberRolesUpdateResult memberRolesUpdateResult = default!;
 
-            return await memberRepository.GetByUserAndGuildIdsAsync(ulong.Parse(request.GuildId), ulong.Parse(request.UserId), cancellationToken)
+            return await memberRepository.GetByGuildAndUserIdsAsync(ulong.Parse(request.GuildId), ulong.Parse(request.UserId), cancellationToken)
                 .Tap(member => lMember = member)
                 .Bind(member => guildRepository.GetGuildWithRoles(member.GuildId, cancellationToken))
                 .Tap(guild => lGuild = guild)
                 .Bind(guild => guildMemberRoleService.AssignRoles(guild, lMember, roleIdList))
-                .Map(roleUpdateResult => roleUpdateResult.ToDto());
+                .Tap(updateResult => memberRolesUpdateResult = updateResult)
+                .Bind(updateResult => memberRepository.UpdateAsync(updateResult.Member, cancellationToken))
+                .Map(updatedMember => new MemberRolesUpdateResult(updatedMember, memberRolesUpdateResult.IsPermissionsChanged))
+                .Map(updatedMemberRolesUpdateResult => updatedMemberRolesUpdateResult.ToDto());
         }
     }
 }

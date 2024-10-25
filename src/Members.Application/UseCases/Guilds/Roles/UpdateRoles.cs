@@ -26,7 +26,11 @@ namespace Members.Application.UseCases.Guilds.Roles
                     roleUpdate.Permissions,
                     roleUpdate.Type,
                     roleUpdate.Description,
-                    ulong.Parse(roleUpdate.Id)))))
+                    ulong.Parse(roleUpdate.Id))
+                )
+            )
+        )
+        .Bind(guild => guildRepository.UpdateAsync(guild))
         .Map(guild => guild.Roles.Select(role => role.ToDto()))
         .Tap(roleDTOList =>
         {

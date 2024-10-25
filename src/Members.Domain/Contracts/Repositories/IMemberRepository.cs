@@ -9,12 +9,6 @@ namespace Members.Domain.Contracts.Repositories
     /// </summary>
     public interface IMemberRepository : IRepositoryBase<Member, Guid>
     {
-        /// <summary>
-        /// Adds a new member to the repository.
-        /// </summary>
-        /// <param name="aNewMember">The member to add.</param>
-        /// <returns>The added member.</returns>
-        Task<IHttpResult<Member>> Add(Member aNewMember, CancellationToken aCancellationToken = default);
 
         /// <summary>
         /// Deletes a specified member from the repository.
@@ -34,7 +28,7 @@ namespace Members.Domain.Contracts.Repositories
         /// Get a member identified by the GuildId and the UserId.
         /// </summary>
         /// <returns>The member matching the given GuildId and UserId or Error.</returns>
-        Task<IHttpResult<Member>> GetByUserAndGuildIdsAsync(ulong userId, ulong guildId, CancellationToken cancellationToken = default);
+        Task<IHttpResult<Member>> GetByGuildAndUserIdsAsync(ulong guildId, ulong userId, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Retrieves a paginated list of members.
@@ -54,12 +48,6 @@ namespace Members.Domain.Contracts.Repositories
         /// <param name="aMember">The member to update.</param>
         /// <returns>The updated member or Error.</returns>
         Task<IHttpResult<Member>> Update(Member aMember, CancellationToken aCancellationToken = default);
-
-        /// <summary>
-        /// Get the number of registered guild members.
-        /// </summary>
-        /// <returns>Returns the number registered guild members or Error.</returns>
-        Task<IHttpResult<int>> GetCountAsync(CancellationToken aCancellationToken = default);
 
     }
 

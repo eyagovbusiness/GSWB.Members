@@ -41,8 +41,8 @@ namespace Members.Application.Services
         => await _memberRepository.GetByIdListAsync(aMemberIdList, aCancellationToken)
             .Map(memberList => memberList.Select(member => member.ToDetailDto()));
 
-        public async Task<IHttpResult<MemberDetailDTO>> GetByUserAndGuildIdsAsync(ulong userId, ulong guildId, CancellationToken aCancellationToken = default)
-        => await _memberRepository.GetByUserAndGuildIdsAsync(userId, guildId, aCancellationToken)
+        public async Task<IHttpResult<MemberDetailDTO>> GetByGuildAndUserIdsAsync(ulong guildId, ulong userId, CancellationToken aCancellationToken = default)
+        => await _memberRepository.GetByGuildAndUserIdsAsync(guildId, userId, aCancellationToken)
             .Map(member => member.ToDetailDto());
 
 
@@ -64,12 +64,12 @@ namespace Members.Application.Services
             .Map(member => member.ToDetailDto());
 
         public async Task<IHttpResult<MemberDetailDTO>> UpdateMemberDiscordDisplayName(ulong userId, ulong guildId, string aNewDisplayName, CancellationToken aCancellationToken = default)
-        => await _memberRepository.GetByUserAndGuildIdsAsync(userId, guildId, aCancellationToken)
+        => await _memberRepository.GetByGuildAndUserIdsAsync(guildId, userId, aCancellationToken)
             .Bind(member => UpdateMemberDisplayName(member!, aNewDisplayName, aCancellationToken))
             .Map(member => member.ToDetailDto());
 
         public async Task<IHttpResult<MemberDetailDTO>> UpdateMemberAvatar(ulong userId, ulong guildId, string aNewAvatarUrl, CancellationToken aCancellationToken = default)
-        => await _memberRepository.GetByUserAndGuildIdsAsync(userId, guildId, aCancellationToken)
+        => await _memberRepository.GetByGuildAndUserIdsAsync(guildId, userId, aCancellationToken)
             .Bind(member => UpdateAvatar(member!, aNewAvatarUrl, aCancellationToken))
             .Map(member => member.ToDetailDto());
 
@@ -79,7 +79,7 @@ namespace Members.Application.Services
             .Bind(member => _memberRepository.Delete(member!, aCancellationToken));
 
         public async Task<IHttpResult<MemberDetailDTO>> UpdateMemberStatus(ulong userId, ulong guildId, MemberStatusEnum aMemberStatus, CancellationToken aCancellationToken = default)
-        => await _memberRepository.GetByUserAndGuildIdsAsync(userId, guildId, aCancellationToken)
+        => await _memberRepository.GetByGuildAndUserIdsAsync(guildId, userId, aCancellationToken)
             .Bind(member => UpdateMemberStatus(member!, aMemberStatus, aCancellationToken))
             .Map(member => member.ToDetailDto());
 

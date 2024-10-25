@@ -31,7 +31,7 @@ namespace Members.Application
         /// Get a Member from the Guild Id and the User Id
         /// </summary>
         /// <returns>The memmber matching both the Guild Id and the User Id or error.</returns>
-        public Task<IHttpResult<MemberDetailDTO>> GetByUserAndGuildIdsAsync(ulong userId, ulong guildId, CancellationToken aCancellationToken = default);
+        public Task<IHttpResult<MemberDetailDTO>> GetByGuildAndUserIdsAsync(ulong guildId, ulong userId, CancellationToken aCancellationToken = default);
 
         /// <summary>
         /// Get the total count of guild members.

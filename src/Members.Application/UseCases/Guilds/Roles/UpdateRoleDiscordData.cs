@@ -23,7 +23,9 @@ namespace Members.Application.UseCases.Guilds.Roles
                     ulong.Parse(request.RoleId),
                     request.Name,
                     request.Position)]
-            ))
+            )
+        )
+        .Bind(guild => guildRepository.UpdateAsync(guild))
         .Map(guild => guild.Roles.Select(role => role.ToDto()));
     }
 }

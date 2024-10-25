@@ -20,7 +20,7 @@ namespace Members.Application.UseCases.Members
     {
         public async Task<IHttpResult<MemberDetailDTO>> ExecuteAsync(CreateMemberDTO request, CancellationToken aCancellationToken = default)
         {
-            var lExistingMemberResultResult = await memberRepository.GetByUserAndGuildIdsAsync(ulong.Parse(request.DiscordCookieUserInfo.UserNameIdentifier), ulong.Parse(request.GuildId), aCancellationToken);
+            var lExistingMemberResultResult = await memberRepository.GetByGuildAndUserIdsAsync(ulong.Parse(request.GuildId), ulong.Parse(request.DiscordCookieUserInfo.UserNameIdentifier), aCancellationToken);
             if (lExistingMemberResultResult.IsSuccess)
                 return Result.Failure<MemberDetailDTO>(ApplicationErrors.Members.DiscordAccountAlreadyRegistered);
 
@@ -28,16 +28,12 @@ namespace Members.Application.UseCases.Members
             .Bind(_ => swarmBotCommunicationService.GetMemberRoleList(request.GuildId, request.DiscordCookieUserInfo.UserNameIdentifier, aCancellationToken));
 
 
-            var lNewMemberResult = await lDiscordRoleListResult
+            return await lDiscordRoleListResult
             .Bind(_ => swarmBotCommunicationService.GetMemberProfileFromId(request.GuildId, request.DiscordCookieUserInfo.UserNameIdentifier))
             .Map(discordMemberProfile => this.GetNewMemberEntity(request, discordMemberProfile))
-            .Bind(newMember => memberRepository.Add(newMember, aCancellationToken))
-            .Map(newMember => newMember.ToDetailDto(aIncludeDiscordOnlyRoles: false));
-
-            var assignRolesResult = lNewMemberResult
-            .Bind(discordRoleList => assignMemberRoles.ExecuteAsync(new MemberRolesDTO(request.GuildId, request.DiscordCookieUserInfo.UserNameIdentifier, lDiscordRoleListResult.Value.Select(role => role.RoleId))));
-
-            return lNewMemberResult;
+            .Bind(newMember => memberRepository.AddAsync(newMember, aCancellationToken))
+            .Bind(member => assignMemberRoles.ExecuteAsync(new MemberRolesDTO(member.GuildId.ToString(), member.UserId.ToString(), lDiscordRoleListResult.Value.Select(role => role.RoleId))))
+            .Map(updateResult => updateResult.Member);
 
         }
 

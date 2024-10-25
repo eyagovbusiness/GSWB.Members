@@ -1,6 +1,6 @@
-﻿using Common.Domain.ValueObjects;
+﻿using Common.Domain.Validation;
+using Common.Domain.ValueObjects;
 using Members.Domain.Errors;
-using Members.Domain.Validation;
 using Members.Domain.ValueObjects.Role;
 using TGF.Common.Extensions;
 using TGF.Common.ROP.HttpResult;

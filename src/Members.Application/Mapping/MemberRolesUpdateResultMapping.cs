@@ -7,6 +7,6 @@ namespace Members.Application.Mapping
     public static class MemberRolesUpdateResultMapping
     {
         public static MemberRolesUpdateResultDTO ToDto(this MemberRolesUpdateResult memberRolesUpdateResult)
-        => new(memberRolesUpdateResult.Member.ToDto(), memberRolesUpdateResult.IsPermissionsChanged);
+        => new(memberRolesUpdateResult.Member.ToDetailDto(), memberRolesUpdateResult.IsPermissionsChanged);
     }
 }

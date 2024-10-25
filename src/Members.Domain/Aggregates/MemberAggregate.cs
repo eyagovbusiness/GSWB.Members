@@ -18,7 +18,7 @@ namespace Members.Domain.Entities
                     .Select(e => ValidateSwitchExtensions.GetValidationError(e.ErrorCode, e.ErrorMessage))
                     .ToImmutableArray());
 
-            roleIdList.Where(roleId => Roles.Any(role => role.RoleId == roleId))
+            roleIdList.Where(roleId => !Roles.Any(role => role.RoleId == roleId))
             .ToList()
             .ForEach(roleId => Roles.Add(new MemberRole() { Member = this, RoleId = roleId }));
 
