@@ -41,10 +41,6 @@ namespace Members.Application.Services
         => await _memberRepository.GetByIdListAsync(aMemberIdList, aCancellationToken)
             .Map(memberList => memberList.Select(member => member.ToDetailDto()));
 
-        public async Task<IHttpResult<MemberDetailDTO>> GetByGuildAndUserIdsAsync(ulong guildId, ulong userId, CancellationToken aCancellationToken = default)
-        => await _memberRepository.GetByGuildAndUserIdsAsync(guildId, userId, aCancellationToken)
-            .Map(member => member.ToDetailDto());
-
 
         public async Task<IHttpResult<int>> GetMembersCount(CancellationToken aCancellationToken = default)
         => await _memberRepository.GetCountAsync();

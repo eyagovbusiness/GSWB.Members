@@ -8,15 +8,17 @@ namespace Members.Application.Mapping
 {
     public static class MemberMapping
     {
-        public static MemberDTO ToDto(this Member aMember, IEnumerable<Role> roles)
-        {
-            var lRoleDTOList = roles
-                .Select(role => role.ToDto())
-                .ToImmutableArray();
-            return new MemberDTO(aMember.Id, aMember.GuildId.ToString(), aMember.DiscordGuildDisplayName, aMember.GameHandle, aMember.Status, lRoleDTOList);
-        }
         public static MemberDTO ToDto(this Member aMember)
-        => aMember.ToDto([]);
+        => new(
+            aMember.Id,
+            aMember.GuildId.ToString(),
+            aMember.DiscordGuildDisplayName,
+            aMember.DiscordAvatarUrl,
+            aMember.GameHandle,
+            aMember.Status,
+            aMember.Roles.Select(memberRole => memberRole.RoleId.ToString())
+                .ToImmutableArray()
+        );
         public static MemberDetailDTO ToDetailDto(this Member aMember, IEnumerable<Role> roles, bool aIncludeDiscordOnlyRoles = true)
         {
             IEnumerable<Role> lRoleList = aIncludeDiscordOnlyRoles
@@ -28,7 +30,8 @@ namespace Members.Application.Mapping
             var lRoleDTOList = lRoleList.Select(role => role.ToDto()).ToImmutableArray();
             return new MemberDetailDTO(aMember.Id, aMember.GuildId.ToString(), aMember.DiscordGuildDisplayName, aMember.DiscordAvatarUrl, aMember.GameHandle, aMember.SpectrumCommunityMoniker, aMember.IsGameHandleVerified, aMember.Status, lRoleDTOList);
         }
+
         public static MemberDetailDTO ToDetailDto(this Member aMember, bool aIncludeDiscordOnlyRoles = true)
-        => aMember.ToDetailDto([]);
+        => aMember.ToDetailDto([], aIncludeDiscordOnlyRoles);
     }
 }

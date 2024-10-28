@@ -33,7 +33,7 @@ namespace Members.Infrastructure
             await aWebApplicationBuilder.ConfigureCommonInfrastructureAsync();
 
             await aWebApplicationBuilder.Services.AddPostgreSQL<MembersDbContext>("MembersDb");
-            await aWebApplicationBuilder.Services.AddPostgreSQL<ReadOnlyMembersDbContext>("ReadOnlyMembersDb");
+            await aWebApplicationBuilder.Services.AddReadOnlyPostgreSQL<ReadOnlyMembersDbContext>("MembersDb");
 
             aWebApplicationBuilder.Services.AddScoped<IRoleQueryRepository, RoleQueryRepository>();
             aWebApplicationBuilder.Services.AddScoped<IMemberRepository, MemberRepository>();

@@ -8,6 +8,7 @@ using TGF.CA.Presentation.MinimalAPI;
 using TGF.Common.ROP.Result;
 using Members.Application.UseCases.Members;
 using Common.Application.Communication.Routing;
+using Common.Domain.ValueObjects;
 
 namespace Members.API.Endpoints
 {
@@ -46,10 +47,10 @@ namespace Members.API.Endpoints
         .ToIResult();
 
         /// private endpoint implementation 
-        private async Task<IResult> Get_MemberByUserAndGuildIds(string userId, string guildId, DiscordIdValidator discordIdValidator, IMembersService aMembersService, CancellationToken aCancellationToken = default)
+        private async Task<IResult> Get_MemberByUserAndGuildIds(string userId, string guildId, DiscordIdValidator discordIdValidator, GetMemberDetail getMemberDetail, CancellationToken aCancellationToken = default)
         => await Result.ValidationResult(discordIdValidator.Validate(userId))
         .Validate(userId, discordIdValidator)
-        .Bind(_ => aMembersService.GetByGuildAndUserIdsAsync(ulong.Parse(userId), ulong.Parse(guildId), aCancellationToken))
+        .Bind(_ => getMemberDetail.ExecuteAsync(new GuildAndUserId(ulong.Parse(guildId),ulong.Parse(userId)), aCancellationToken))
         .ToIResult();
 
     }
