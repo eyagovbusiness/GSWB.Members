@@ -2,18 +2,16 @@
 using Common.Infrastructure;
 using Common.Infrastructure.Communication.HTTP;
 using Members.Application;
-using Members.Domain.Contracts.Repositories;
-using Members.Domain.Contracts.Repositories.ReadOnly;
 using Members.Infrastructure.Communication.MessageConsumer.Member;
 using Members.Infrastructure.DataAccess.DbContext;
-using Members.Infrastructure.Repositories;
-using Members.Infrastructure.Repositories.ReadOnly;
 using Members.Infrastructure.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 using TGF.CA.Infrastructure;
 using TGF.CA.Infrastructure.Communication.RabbitMQ;
 using TGF.CA.Infrastructure.DB.PostgreSQL;
+using TGF.CA.Infrastructure.DB.Repository;
 
 namespace Members.Infrastructure
 {
@@ -34,10 +32,7 @@ namespace Members.Infrastructure
 
             await aWebApplicationBuilder.Services.AddPostgreSQL<MembersDbContext>("MembersDb");
             await aWebApplicationBuilder.Services.AddReadOnlyPostgreSQL<ReadOnlyMembersDbContext>("MembersDb");
-
-            aWebApplicationBuilder.Services.AddScoped<IRoleQueryRepository, RoleQueryRepository>();
-            aWebApplicationBuilder.Services.AddScoped<IMemberRepository, MemberRepository>();
-            aWebApplicationBuilder.Services.AddScoped<IGuildRepository, GuildRepository>();
+            aWebApplicationBuilder.Services.AddRepositories(Assembly.GetExecutingAssembly());
 
             aWebApplicationBuilder.Services.AddHttpClient();
             aWebApplicationBuilder.Services.AddScoped<IGameVerificationService, GameVerificationService>();
