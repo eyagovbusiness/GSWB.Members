@@ -1,6 +1,4 @@
 ﻿using Common.Application.Contracts.Services;
-using Common.Application.DTOs.Auth;
-using Common.Application.DTOs.Discord;
 using Common.Application.DTOs.Members;
 using Common.Application.DTOs.Roles;
 using Common.Domain.ValueObjects;
@@ -28,14 +26,6 @@ namespace Members.Application.Services
         }
 
         #region IMembersService
-
-        public async Task<IHttpResult<PaginatedMemberListDTO>> GetMemberList(
-            int aPage, int aPageSize,
-            string aSortBy,
-            string? aDiscordNameFilter, string? aGameHandleFilter, ulong? aRoleIdFilter, bool? aIsVerifiedFilter,
-            CancellationToken aCancellationToken = default)
-        => await _memberRepository.GetMembersListAsync(aPage, aPageSize, aSortBy, aDiscordNameFilter, aGameHandleFilter, aRoleIdFilter, aIsVerifiedFilter, aCancellationToken)
-            .Bind(memberList => GetPaginatedMemberListDTO(memberList, aPage, aPageSize));
 
         public async Task<IHttpResult<IEnumerable<MemberDetailDTO>>> GetMembersByIdList(IEnumerable<Guid> aMemberIdList, CancellationToken aCancellationToken = default)
         => await _memberRepository.GetByIdListAsync(aMemberIdList, aCancellationToken)

@@ -18,16 +18,14 @@
   
   <ItemGroup Condition="'$(DockerBuild)'=='false'">
     <ProjectReference Include="..\Members.Infrastructure\Members.Infrastructure.csproj" />
+    <ProjectReference Include="..\Members.Application\Members.Application.csproj" />
     <ProjectReference Include="..\..\..\GSWB.Common\src\Common.Presentation\Common.Presentation.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(DockerBuild)'=='true'">
     <ProjectReference Include="../Members.Infrastructure/Members.Infrastructure.csproj" />
+    <ProjectReference Include="../Members.Application/Members.Application.csproj" />
     <PackageReference Include="Common.Presentation" Version="1.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Members.Application\Members.Application.csproj" />
   </ItemGroup>
   
 </Project>

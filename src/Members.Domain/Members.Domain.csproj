@@ -8,15 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup Condition="'$(DockerBuild)'=='false'">
+    <ProjectReference Include="..\..\..\TheGoodFramework\src\Common\TGF.Common.Extensions\TGF.Common.Extensions.csproj" />
     <ProjectReference Include="..\..\..\GSWB.Common\src\Common.Domain\Common.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(DockerBuild)'=='true'">
+    <PackageReference Include="TGF.Common.Extensions" Version="1.0.0" />
     <PackageReference Include="Common.Domain" Version="1.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\TheGoodFramework\src\Common\TGF.Common.Extensions\TGF.Common.Extensions.csproj" />
   </ItemGroup>
 
 </Project>

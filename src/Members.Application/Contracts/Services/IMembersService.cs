@@ -11,16 +11,6 @@ namespace Members.Application
     {
 
         /// <summary>
-        /// Get the paginated list of members based on the filters and sorted by the specified property.
-        /// </summary>
-        /// <returns>List of members and pagination metadata.</returns>
-        public Task<IHttpResult<PaginatedMemberListDTO>> GetMemberList(
-            int aPage, int aPageSize,
-            string aSortBy,
-            string? aDiscordNameFilter, string? aGameHandleFilter, ulong? aRoleIdFilter, bool? aIsVerifiedFilter,
-            CancellationToken aCancellationToken = default);
-
-        /// <summary>
         /// Get the list of members from the provided members id list.
         /// </summary>
         /// <returns>List of members matching the id list.</returns>
