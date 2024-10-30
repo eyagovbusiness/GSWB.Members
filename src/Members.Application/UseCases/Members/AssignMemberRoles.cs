@@ -35,7 +35,11 @@ namespace Members.Application.UseCases.Members
                 .Tap(updateResult => memberRolesUpdateResult = updateResult)
                 .Bind(updateResult => memberRepository.UpdateAsync(updateResult.Member, cancellationToken))
                 .Map(updatedMember => new MemberRolesUpdateResult(updatedMember, memberRolesUpdateResult.IsPermissionsChanged))
-                .Map(updatedMemberRolesUpdateResult => updatedMemberRolesUpdateResult.ToDto());
+                .Map(updatedMemberRolesUpdateResult =>
+                {
+                    var memberRoleIds = lMember.Roles.Select(memberRole => memberRole.RoleId).ToArray();
+                    return updatedMemberRolesUpdateResult.ToDto(lGuild.Roles.Where(role => memberRoleIds.Contains(role.Id)));
+                });
         }
     }
 }

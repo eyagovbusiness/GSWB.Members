@@ -2,7 +2,6 @@
 using Common.Application.DTOs.Auth;
 using Common.Application.DTOs.Discord;
 using Common.Application.DTOs.Members;
-using Members.Application.Mapping;
 using Members.Domain.Contracts.Repositories;
 using Members.Domain.Entities;
 using TGF.CA.Application.UseCases;

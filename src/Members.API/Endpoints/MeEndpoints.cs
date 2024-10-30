@@ -18,6 +18,7 @@ using TGF.Common.ROP;
 using TGF.Common.ROP.HttpResult;
 using TGF.CA.Application.Contracts.Communication;
 using Common.Application.Communication.Routing;
+using Members.Application.UseCases.Members.Me;
 
 namespace Members.API.Endpoints
 {
@@ -67,8 +68,8 @@ namespace Members.API.Endpoints
         /// <summary>
         /// Get the current authenticated member's overall information(<see cref="MemberDetailDTO"/>).
         /// </summary>
-        private async Task<IResult> Get_Me(IMembersService aMembersService, ClaimsPrincipal aClaims, CancellationToken aCancellationToken = default)
-            => await aMembersService.GetDetailByDiscordUserId(Guid.Parse(aClaims.FindFirstValue(GuildSwarmClaims.MemberId)!), aCancellationToken)
+        private async Task<IResult> Get_Me(GetMemberMe getMemberMe, ClaimsPrincipal aClaims, CancellationToken aCancellationToken = default)
+            => await getMemberMe.ExecuteAsync(new GuildAndUserId(ulong.Parse(aClaims.FindFirstValue(GuildSwarmClaims.GuildId)!), ulong.Parse(aClaims.FindFirstValue(ClaimTypes.NameIdentifier)!)), aCancellationToken)
             .ToIResult();
 
         /// <summary>
