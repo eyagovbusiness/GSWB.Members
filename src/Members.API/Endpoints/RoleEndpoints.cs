@@ -1,5 +1,4 @@
-﻿using BGSFX.CA.Presentation.MinimalAPI;
-using Common.Application.Communication.Routing;
+﻿using Common.Application.Communication.Routing;
 using Common.Application.DTOs.Members;
 using Common.Application.DTOs.Roles;
 using Common.Domain.Validation;

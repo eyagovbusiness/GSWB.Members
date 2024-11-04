@@ -8,7 +8,7 @@ using TGF.Common.ROP.HttpResult.RailwaySwitches;
 using Members.Application.UseCases.Members;
 using Common.Application.Communication.Routing;
 using Common.Domain.ValueObjects;
-using BGSFX.CA.Presentation.MinimalAPI;
+using TGF.CA.Presentation.MinimalAPI;
 
 namespace Members.API.Endpoints
 {

@@ -15,7 +15,6 @@ using TGF.Common.ROP.HttpResult.RailwaySwitches;
 using TGF.CA.Application.Contracts.Communication;
 using Common.Application.Communication.Routing;
 using Members.Application.UseCases.Members.Me;
-using BGSFX.CA.Presentation.MinimalAPI;
 using TGF.CA.Infrastructure.Identity.Authentication;
 using TGF.CA.Infrastructure.Identity.Authorization.Permissions;
 
