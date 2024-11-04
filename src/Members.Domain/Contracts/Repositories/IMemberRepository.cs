@@ -18,13 +18,6 @@ namespace Members.Domain.Contracts.Repositories
         Task<IHttpResult<Member>> Delete(Member aMemberToDelete, CancellationToken aCancellationToken = default);
 
         /// <summary>
-        /// Retrieves a member by their Discord user ID.
-        /// </summary>
-        /// <param name="aDiscordUserId">The Discord user ID to search for.</param>
-        /// <returns>The member matching the given Id or Error.</returns>
-        Task<IHttpResult<Member>> GetByDiscordUserIdAsync(Guid id, CancellationToken aCancellationToken = default);
-
-        /// <summary>
         /// Get a member identified by the GuildId and the UserId.
         /// </summary>
         /// <returns>The member matching the given GuildId and UserId or Error.</returns>

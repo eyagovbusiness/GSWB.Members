@@ -1,19 +1,19 @@
 ﻿using Common.Application.DTOs.Members;
 using Common.Domain.Validation;
-using TGF.Common.ROP.HttpResult;
 using Members.Application;
 using Microsoft.AspNetCore.Mvc;
 using TGF.CA.Presentation;
-using TGF.CA.Presentation.MinimalAPI;
 using TGF.Common.ROP.Result;
+using TGF.Common.ROP.HttpResult.RailwaySwitches;
 using Members.Application.UseCases.Members;
 using Common.Application.Communication.Routing;
 using Common.Domain.ValueObjects;
+using BGSFX.CA.Presentation.MinimalAPI;
 
 namespace Members.API.Endpoints
 {
     /// List of private endpoint only reached from the internal private docker network.
-    public class PrivateEndpoints : IEndpointDefinition
+    public class PrivateEndpoints : IEndpointsDefinition
     {
         /// <inheritdoc/>
         public void DefineEndpoints(WebApplication aWebApplication)

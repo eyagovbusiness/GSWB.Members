@@ -6,6 +6,7 @@ using Members.Domain.Contracts.Repositories;
 using Members.Domain.Entities;
 using TGF.CA.Application.UseCases;
 using TGF.Common.ROP.HttpResult;
+using TGF.Common.ROP.HttpResult.RailwaySwitches;
 using TGF.Common.ROP.Result;
 
 namespace Members.Application.UseCases.Members

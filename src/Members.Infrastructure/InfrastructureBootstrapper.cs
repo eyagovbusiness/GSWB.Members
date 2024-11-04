@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using TGF.CA.Infrastructure;
-using TGF.CA.Infrastructure.Communication.RabbitMQ;
+using TGF.CA.Infrastructure.Comm.RabbitMQ;
 using TGF.CA.Infrastructure.DB.PostgreSQL;
 using TGF.CA.Infrastructure.DB.Repository;
 

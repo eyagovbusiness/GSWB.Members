@@ -1,4 +1,5 @@
-﻿using Common.Application.Communication.Routing;
+﻿using BGSFX.CA.Presentation.MinimalAPI;
+using Common.Application.Communication.Routing;
 using Common.Application.DTOs.Members;
 using Common.Domain.Validation;
 using Common.Domain.ValueObjects;
@@ -12,18 +13,17 @@ using System.ComponentModel;
 using System.Security.Claims;
 using TGF.CA.Application.DTOs;
 using TGF.CA.Application.Validation;
-using TGF.CA.Infrastructure.Security.Identity.Authentication;
-using TGF.CA.Infrastructure.Security.Identity.Authorization.Permissions;
+using TGF.Common.ROP.HttpResult.RailwaySwitches;
+using TGF.CA.Infrastructure.Identity.Authentication;
+using TGF.CA.Infrastructure.Identity.Authorization.Permissions;
 using TGF.CA.Presentation;
-using TGF.CA.Presentation.Middleware;
 using TGF.CA.Presentation.MinimalAPI;
-using TGF.Common.ROP.HttpResult;
 using TGF.Common.ROP.Result;
 
 namespace Members.API.Endpoints
 {
     /// Collection of endpoints to run over the whole guild's member list.
-    public class MembersEndpoints : IEndpointDefinition
+    public class MembersEndpoints : IEndpointsDefinition
     {
         /// <inheritdoc/>
         public void DefineEndpoints(WebApplication aWebApplication)
@@ -70,8 +70,7 @@ namespace Members.API.Endpoints
         /// Get the list of guild members(<see cref="MemberDetailDTO"/>) from the provided members id list.
         /// </summary>
         private async Task<IResult> Post_MembersByIdList(IMembersService aMembersService, [FromBody] IEnumerable<Guid> aMemberList, CancellationToken aCancellationToken = default)
-        =>
-        await Result.CancellationTokenResult(aCancellationToken)
+        => await Result.CancellationTokenResult(aCancellationToken)
         .Bind(_ => aMembersService.GetMembersByIdList(aMemberList, aCancellationToken))
         .ToIResult();
 

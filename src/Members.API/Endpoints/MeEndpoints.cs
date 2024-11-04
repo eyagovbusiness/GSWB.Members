@@ -8,22 +8,21 @@ using Members.Application;
 using Members.Application.UseCases.Guilds;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using TGF.CA.Infrastructure.Communication.Publisher.Integration;
-using TGF.CA.Infrastructure.Security.Identity.Authentication;
-using TGF.CA.Infrastructure.Security.Identity.Authorization.Permissions;
 using TGF.CA.Presentation;
-using TGF.CA.Presentation.Middleware;
 using TGF.CA.Presentation.MinimalAPI;
 using TGF.Common.ROP;
-using TGF.Common.ROP.HttpResult;
+using TGF.Common.ROP.HttpResult.RailwaySwitches;
 using TGF.CA.Application.Contracts.Communication;
 using Common.Application.Communication.Routing;
 using Members.Application.UseCases.Members.Me;
+using BGSFX.CA.Presentation.MinimalAPI;
+using TGF.CA.Infrastructure.Identity.Authentication;
+using TGF.CA.Infrastructure.Identity.Authorization.Permissions;
 
 namespace Members.API.Endpoints
 {
     /// Collection of endpoints to run over the authenticated member(by JWT).
-    public class MeEndpoints : IEndpointDefinition
+    public class MeEndpoints : IEndpointsDefinition
     {
         /// <inheritdoc/>
         public void DefineEndpoints(WebApplication aWebApplication)

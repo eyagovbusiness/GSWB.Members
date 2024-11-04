@@ -3,10 +3,10 @@ using Common.Application.DTOs.Members;
 using Common.Application.Contracts.Communication.Messages;
 using Members.Application.UseCases.Members;
 using Microsoft.Extensions.DependencyInjection;
-using TGF.CA.Infrastructure.Communication.Consumer.Handler;
-using TGF.CA.Infrastructure.Communication.Messages;
+using TGF.CA.Infrastructure.Comm.Consumer.Handler;
+using TGF.CA.Infrastructure.Comm.Messages;
 using Common.Application.Contracts.Communication.Messages.Discord;
-using TGF.Common.ROP.HttpResult;
+using TGF.Common.ROP.HttpResult.RailwaySwitches;
 using TGF.CA.Application.Contracts.Communication;
 
 namespace Members.Infrastructure.Communication.MessageConsumer.Member

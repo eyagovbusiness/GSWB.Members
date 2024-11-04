@@ -7,6 +7,7 @@ using Members.Domain.Contracts.Repositories;
 using TGF.CA.Application.Contracts.Communication;
 using TGF.CA.Application.UseCases;
 using TGF.Common.ROP.HttpResult;
+using TGF.Common.ROP.HttpResult.RailwaySwitches;
 
 namespace Members.Application.UseCases.Guilds.Roles
 {

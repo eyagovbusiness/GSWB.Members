@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using TGF.CA.Infrastructure.Communication.Consumer.Handler;
-using TGF.CA.Infrastructure.Communication.Messages;
+using TGF.CA.Infrastructure.Comm.Consumer.Handler;
+using TGF.CA.Infrastructure.Comm.Messages;
 using Common.Application.Contracts.Communication.Messages.Discord;
 using Members.Application.UseCases.Guilds.Roles;
 

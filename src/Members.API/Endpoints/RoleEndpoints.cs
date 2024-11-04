@@ -1,4 +1,5 @@
-﻿using Common.Application.Communication.Routing;
+﻿using BGSFX.CA.Presentation.MinimalAPI;
+using Common.Application.Communication.Routing;
 using Common.Application.DTOs.Members;
 using Common.Application.DTOs.Roles;
 using Common.Domain.Validation;
@@ -8,18 +9,17 @@ using Members.Application.UseCases.Guilds.Roles;
 using Members.Application.Validation;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
+using TGF.Common.ROP.HttpResult.RailwaySwitches;
 using TGF.CA.Application.Validation;
-using TGF.CA.Infrastructure.Security.Identity.Authorization.Permissions;
+using TGF.CA.Infrastructure.Identity.Authorization.Permissions;
 using TGF.CA.Presentation;
-using TGF.CA.Presentation.Middleware;
 using TGF.CA.Presentation.MinimalAPI;
-using TGF.Common.ROP.HttpResult;
 using TGF.Common.ROP.Result;
 
 namespace Members.API.Endpoints
 {
     /// List of endpoints related with the guild's roles.
-    public class RoleEndpoints : IEndpointDefinition
+    public class RoleEndpoints : IEndpointsDefinition
     {
         /// <inheritdoc/>
         public void DefineEndpoints(WebApplication aWebApplication)

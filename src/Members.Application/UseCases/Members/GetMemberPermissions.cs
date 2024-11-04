@@ -4,6 +4,7 @@ using Members.Domain.Entities;
 using Members.Domain.Services;
 using TGF.CA.Application.UseCases;
 using TGF.Common.ROP.HttpResult;
+using TGF.Common.ROP.HttpResult.RailwaySwitches;
 
 namespace Members.Application.UseCases.Members
 {

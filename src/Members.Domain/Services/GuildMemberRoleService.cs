@@ -3,6 +3,7 @@ using Members.Domain.Entities;
 using Members.Domain.Validation.Guild;
 using Members.Domain.ValueObjects;
 using TGF.Common.ROP.HttpResult;
+using TGF.Common.ROP.HttpResult.RailwaySwitches;
 using TGF.Common.ROP.Result;
 
 namespace Members.Domain.Services

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TGF.CA.Infrastructure.DB.Repository;
 using TGF.Common.ROP.HttpResult;
+using TGF.Common.ROP.HttpResult.RailwaySwitches;
 
 namespace Members.Infrastructure.Repositories
 {
@@ -30,15 +31,6 @@ namespace Members.Infrastructure.Repositories
                 .ToListAsync(aCancellationToken) as IEnumerable<Member>;
         }, aCancellationToken);
 
-        public async Task<IHttpResult<Member>> GetByDiscordUserIdAsync(Guid Id, CancellationToken aCancellationToken = default)
-        => await TryQueryAsync(async (aCancellationToken) =>
-        {
-            return await _context.Members
-            .Include(m => m.Roles)
-            .SingleOrDefaultAsync(m => m.Id == Id, aCancellationToken);
-        }, aCancellationToken)
-        .Verify(member => member! != null!, InfrastructureErrors.MembersDb.NotFoundDiscordUserId)
-        .Map(member => member!);
 
         public async Task<IHttpResult<Member>> GetByGuildAndUserIdsAsync(ulong guildId, ulong userId, CancellationToken cancellationToken = default)
         => await TryQueryAsync(async (aCancellationToken) =>

@@ -2,8 +2,8 @@
 using Common.Application.DTOs.Guilds;
 using Members.Application.UseCases.Guilds;
 using Microsoft.Extensions.DependencyInjection;
-using TGF.CA.Infrastructure.Communication.Consumer.Handler;
-using TGF.CA.Infrastructure.Communication.Messages;
+using TGF.CA.Infrastructure.Comm.Consumer.Handler;
+using TGF.CA.Infrastructure.Comm.Messages;
 
 namespace Members.Infrastructure.Communication.MessageConsumer.Guild
 {
