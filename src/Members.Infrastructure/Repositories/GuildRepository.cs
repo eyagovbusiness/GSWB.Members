@@ -10,7 +10,7 @@ using TGF.Common.ROP.HttpResult.RailwaySwitches;
 namespace Members.Infrastructure.Repositories
 {
     internal class GuildRepository(MembersDbContext aContext, ILogger<GuildRepository> aLogger)
-        : RepositoryBase<GuildRepository, MembersDbContext, Guild, ulong>(aContext, aLogger), IGuildRepository, ISortRepository
+        : EntityRepository<GuildRepository, MembersDbContext, Guild, ulong>(aContext, aLogger), IGuildRepository, ISortRepository
     {
 
         public async Task<IHttpResult<Guild>> GetGuildWithRoles(ulong guildId, CancellationToken cancellationToken = default)

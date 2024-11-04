@@ -1,5 +1,5 @@
 ﻿using Members.Domain.Entities;
-using TGF.CA.Domain.Contracts.Repositories;
+using TGF.CA.Domain.Contracts.Repositories.EntityRepository;
 using TGF.Common.ROP.HttpResult;
 
 namespace Members.Domain.Contracts.Repositories
@@ -7,7 +7,7 @@ namespace Members.Domain.Contracts.Repositories
     /// <summary>
     /// Provides an interface for repository operations related to the <see cref="Member"/> entity.
     /// </summary>
-    public interface IMemberRepository : IRepositoryBase<Member, Guid>
+    public interface IMemberRepository : IEntitiyRepository<Member, Guid>
     {
 
         /// <summary>

@@ -9,7 +9,7 @@ using TGF.Common.ROP.HttpResult.RailwaySwitches;
 namespace Members.Infrastructure.Repositories
 {
     internal class MemberRepository(MembersDbContext aContext, ILogger<MemberRepository> aLogger)
-        : RepositoryBase<MemberRepository, MembersDbContext, Member, Guid>(aContext, aLogger), IMemberRepository, ISortRepository
+        : EntityRepository<MemberRepository, MembersDbContext, Member, Guid>(aContext, aLogger), IMemberRepository, ISortRepository
     {
         public async Task<IHttpResult<IEnumerable<Member>>> GetMembersListAsync(
             int aPage, int aPageSize,
@@ -43,10 +43,10 @@ namespace Members.Infrastructure.Repositories
         .Map(member => member!);
 
         public async Task<IHttpResult<Member>> Update(Member aMember, CancellationToken aCancellationToken = default)
-            => await TryCommandAsync(() => _context.Members.Update(aMember).Entity, aCancellationToken);
+            => await TryCommandAsync(() => _context.Members.Update(aMember).Entity, aCancellationToken: aCancellationToken);
 
         public async Task<IHttpResult<Member>> Delete(Member aMemberToDelete, CancellationToken aCancellationToken = default)
-            => await TryCommandAsync(() => _context.Members.Remove(aMemberToDelete).Entity, aCancellationToken);
+            => await TryCommandAsync(() => _context.Members.Remove(aMemberToDelete).Entity, aCancellationToken: aCancellationToken);
 
         public override async Task<IHttpResult<Member>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         => await TryQueryAsync(async (aCancellationToken) =>

@@ -1,9 +1,9 @@
 ﻿using Members.Domain.Entities;
-using TGF.CA.Domain.Contracts.Repositories;
+using TGF.CA.Domain.Contracts.Repositories.EntityRepository;
 
 namespace Members.Domain.Contracts.Repositories.ReadOnly
 {
-    public interface IRoleQueryRepository : IQueryRepository<Role, ulong>
+    public interface IRoleQueryRepository : IEntityQueryRepository<Role, ulong>
     {
     }
 }
