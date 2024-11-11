@@ -1,6 +1,6 @@
-﻿using Members.Domain.Contracts.Repositories.ReadOnly;
+﻿using Common.Domain.ValueObjects;
+using Members.Domain.Contracts.Repositories.ReadOnly;
 using Members.Domain.Entities;
-using Members.Domain.ValueObjects.Role;
 using Members.Infrastructure.DataAccess.DbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

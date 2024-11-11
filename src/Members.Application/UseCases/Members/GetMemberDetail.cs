@@ -17,9 +17,9 @@ namespace Members.Application.UseCases.Members
         IMemberRepository memberRepository,
         IRoleQueryRepository roleQueryRepository
     )
-         : IUseCase<IHttpResult<MemberDetailDTO>, GuildAndUserId>
+         : IUseCase<IHttpResult<MemberDetailDTO>, MemberKey>
     {
-        public Task<IHttpResult<MemberDetailDTO>> ExecuteAsync(GuildAndUserId request, CancellationToken cancellationToken = default)
+        public Task<IHttpResult<MemberDetailDTO>> ExecuteAsync(MemberKey request, CancellationToken cancellationToken = default)
         {
             Member lMember = default!;
             return memberRepository.GetByGuildAndUserIdsAsync(request.GuildId, request.UserId, cancellationToken)

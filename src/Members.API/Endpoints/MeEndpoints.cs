@@ -67,7 +67,7 @@ namespace Members.API.Endpoints
         /// Get the current authenticated member's overall information(<see cref="MemberDetailDTO"/>).
         /// </summary>
         private async Task<IResult> Get_Me(GetMemberMe getMemberMe, ClaimsPrincipal aClaims, CancellationToken aCancellationToken = default)
-            => await getMemberMe.ExecuteAsync(new GuildAndUserId(ulong.Parse(aClaims.FindFirstValue(GuildSwarmClaims.GuildId)!), ulong.Parse(aClaims.FindFirstValue(ClaimTypes.NameIdentifier)!)), aCancellationToken)
+            => await getMemberMe.ExecuteAsync(new MemberKey(ulong.Parse(aClaims.FindFirstValue(GuildSwarmClaims.GuildId)!), ulong.Parse(aClaims.FindFirstValue(ClaimTypes.NameIdentifier)!)), aCancellationToken)
             .ToIResult();
 
         /// <summary>
