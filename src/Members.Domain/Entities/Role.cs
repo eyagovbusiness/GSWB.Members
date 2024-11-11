@@ -10,14 +10,14 @@ namespace Members.Domain.Entities
     public partial class Role : EntityBase
     {
         /// <summary>
-        /// Key1: The role Id in its guild.
-        /// </summary>
-        public ulong RoleId { get; set; }
-
-        /// <summary>
         /// Key2: The Id of the guild to which the role belongs
         /// </summary>
         public required ulong GuildId { get; set; }
+
+        /// <summary>
+        /// Key1: The role Id in its guild.
+        /// </summary>
+        public ulong RoleId { get; set; }
 
         /// <summary>
         /// The guild to which the role belongs
