@@ -6,6 +6,6 @@ namespace Members.Application.Mapping
     public static class RoleMapping
     {
         public static RoleDTO ToDto(this Role aRole)
-            => new(aRole.Name, aRole.Permissions, aRole.RoleType, aRole.Description, aRole.Id.ToString(), aRole.Position);
+            => new(aRole.Name, aRole.Permissions, aRole.RoleType, aRole.Description, aRole.RoleId.ToString(), aRole.Position);
     }
 }

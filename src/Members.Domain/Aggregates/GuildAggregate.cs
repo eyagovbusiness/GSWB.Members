@@ -19,16 +19,16 @@ namespace Members.Domain.Entities
             {
                 Role newRole = new()
                 {
+                    RoleId = roleValues.Id,
+                    GuildId = this.Id,
                     Guild = this,
                     Name = roleValues.Name,
                     Position = roleValues.Position,
                     RoleType = roleValues.Name == InvariantConstants.Role_Name_IsGuildSwarmAdmin ? RoleTypesEnum.ApplicationRole : RoleTypesEnum.DiscordOnly,
                     Permissions = roleValues.Name == InvariantConstants.Role_Name_IsGuildSwarmAdmin ? PermissionsEnum.Admin : PermissionsEnum.None
                 };
-                newRole.SetId(roleValues.Id);
                 Roles.Add(newRole);
-            }
-                
+            }            
 
             return Result.SuccessHttp(this);
         }
@@ -37,14 +37,14 @@ namespace Members.Domain.Entities
         {
             var roleUpdateDict = roleUpdates.ToDictionary(r => r.Id, r => r);
             var lDbRoleList = Roles
-                .Where(r => roleUpdateDict.ContainsKey(r.Id));
+                .Where(r => roleUpdateDict.ContainsKey(r.RoleId));
 
             if (Roles.Count != roleUpdateDict.Count)
                 return Result.Failure<Guild>(DomainErrors.Role.NotFoundIdList);
 
             lDbRoleList.ForEach(role =>
             {
-                var dto = roleUpdateDict[role.Id];
+                var dto = roleUpdateDict[role.RoleId];
                 role.RoleType = dto.Type;
                 role.Permissions = dto.Permissions;
                 role.Description = dto.Description;
@@ -56,14 +56,14 @@ namespace Members.Domain.Entities
         {
             var roleUpdateDict = roleDiscordUpdates.ToDictionary(r => r.Id, r => r);
             var lDbRoleList = Roles
-                .Where(r => roleUpdateDict.ContainsKey(r.Id));
+                .Where(r => roleUpdateDict.ContainsKey(r.RoleId));
 
             if (Roles.Count != roleUpdateDict.Count)
                 return Result.Failure<Guild>(DomainErrors.Role.NotFoundIdList);
 
             lDbRoleList.ForEach(role =>
             {
-                var dto = roleUpdateDict[role.Id];
+                var dto = roleUpdateDict[role.RoleId];
                 role.Position = dto.Position;
                 role.Name = dto.Name;
             });
@@ -72,7 +72,7 @@ namespace Members.Domain.Entities
 
         public IHttpResult<Guild> DeleteRoles(IEnumerable<ulong> roleIdList)
         {
-            var rolesToDelete = Roles.Where(r => roleIdList.Contains(r.Id)).ToList();
+            var rolesToDelete = Roles.Where(r => roleIdList.Contains(r.RoleId)).ToList();
 
             if (rolesToDelete.Count != roleIdList.Count())
                 return Result.Failure<Guild>(DomainErrors.Role.NotFoundIdList);
@@ -88,7 +88,6 @@ namespace Members.Domain.Entities
             Boosters.Add(new() { Guild = this, UserId = userId });
             return Result.SuccessHttp(this);
         }
-
 
     }
 }

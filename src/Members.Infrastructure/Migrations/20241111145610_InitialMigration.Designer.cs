@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Members.Infrastructure.Migrations
 {
     [DbContext(typeof(MembersDbContext))]
-    [Migration("20241024205751_MigrationName")]
-    partial class MigrationName
+    [Migration("20241111145610_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -198,7 +198,10 @@ namespace Members.Infrastructure.Migrations
 
             modelBuilder.Entity("Members.Domain.Entities.Role", b =>
                 {
-                    b.Property<decimal>("Id")
+                    b.Property<decimal>("RoleId")
+                        .HasColumnType("numeric(20,0)");
+
+                    b.Property<decimal>("GuildId")
                         .HasColumnType("numeric(20,0)");
 
                     b.Property<DateTimeOffset>("CreatedAt")
@@ -206,9 +209,6 @@ namespace Members.Infrastructure.Migrations
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
-
-                    b.Property<decimal>("GuildId")
-                        .HasColumnType("numeric(20,0)");
 
                     b.Property<DateTimeOffset>("ModifiedAt")
                         .HasColumnType("timestamp with time zone");
@@ -226,7 +226,7 @@ namespace Members.Infrastructure.Migrations
                     b.Property<byte>("RoleType")
                         .HasColumnType("smallint");
 
-                    b.HasKey("Id");
+                    b.HasKey("RoleId", "GuildId");
 
                     b.HasIndex("GuildId");
 

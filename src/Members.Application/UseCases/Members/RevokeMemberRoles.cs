@@ -39,7 +39,7 @@ namespace Members.Application.UseCases.Members
                 .Map(updatedMemberRolesUpdateResult =>
                 {
                     var memberRoleIds = lMember.Roles.Select(memberRole => memberRole.RoleId).ToArray();
-                    return updatedMemberRolesUpdateResult.ToDto(lGuild.Roles.Where(role => memberRoleIds.Contains(role.Id)));
+                    return updatedMemberRolesUpdateResult.ToDto(lGuild.Roles.Where(role => memberRoleIds.Contains(role.RoleId)));
                 });
         }
     }

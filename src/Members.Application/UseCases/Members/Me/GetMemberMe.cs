@@ -24,7 +24,7 @@ namespace Members.Application.UseCases.Members.Me
             Member lMember = default!;
             return await memberRepository.GetByGuildAndUserIdsAsync(request.GuildId, request.UserId, cancellationToken)
             .Tap(member => lMember = member)
-            .Bind(member => roleQueryRepository.GetByIdListAsync(member.Roles.Select(memberRole => memberRole.RoleId)))
+            .Bind(member => roleQueryRepository.GetByIdListAsync(member.Roles.Select(memberRole =>(memberRole.RoleId, request.GuildId))))
             .Map(roles => lMember.ToDetailDto(roles, aIncludeDiscordOnlyRoles: false));
         }
     }

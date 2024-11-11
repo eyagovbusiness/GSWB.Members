@@ -4,7 +4,7 @@ using TGF.Common.ROP.HttpResult;
 
 namespace Members.Domain.Contracts.Repositories
 {
-    public interface IGuildRepository : IEntitiyRepository<Guild, ulong>
+    public interface IGuildRepository : IEntityRepository<Guild, ulong>
     {
         Task<IHttpResult<Guild>> GetGuildWithRoles(ulong guildId, CancellationToken cancellationToken = default);
     }

@@ -27,11 +27,20 @@ namespace Members.Infrastructure
 
             modelBuilder.Entity<Role>(entity =>
             {
-                // Map Id property to PostgreSQL numeric(20,0) and apply the converter because ulong is not directly supported in postgres
-                entity.Property(e => e.Id)
+                // Map RoleId property to PostgreSQL numeric(20,0) and apply the converter because ulong is not directly supported in postgres
+                entity.Property(e => e.RoleId)
                     .ValueGeneratedNever()
                     .HasColumnType("numeric(20,0)")           // Store as numeric in PostgreSQL
                     .HasConversion(ulongToDecimalConverter);  // Use the ValueConverter
+
+                // Configure GuildId property similarly
+                entity.Property(e => e.GuildId)
+                    .ValueGeneratedNever()
+                    .HasColumnType("numeric(20,0)")
+                    .HasConversion(ulongToDecimalConverter);
+
+                // Define composite key based on RoleId and GuildId
+                entity.HasKey(e => new { e.RoleId, e.GuildId });
             });
 
             modelBuilder.Entity<Guild>(entity =>

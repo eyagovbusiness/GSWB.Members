@@ -7,7 +7,7 @@ namespace Members.Domain.Contracts.Repositories
     /// <summary>
     /// Provides an interface for repository operations related to the <see cref="Member"/> entity.
     /// </summary>
-    public interface IMemberRepository : IEntitiyRepository<Member, Guid>
+    public interface IMemberRepository : IEntityRepository<Member, Guid>
     {
 
         /// <summary>

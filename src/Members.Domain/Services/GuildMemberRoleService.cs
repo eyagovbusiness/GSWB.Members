@@ -56,7 +56,7 @@ namespace Members.Domain.Services
 
             // Step 2: Filter guild roles that are application roles and are assigned to the member
             var memberApplicationRoles = guild.Roles
-                .Where(role => role.IsApplicationRole() && memberRoleIds.Contains(role.Id));
+                .Where(role => role.IsApplicationRole() && memberRoleIds.Contains(role.RoleId));
 
             // Step 3: Accumulate permissions using bitwise OR
             PermissionsEnum totalPermissions = PermissionsEnum.None;

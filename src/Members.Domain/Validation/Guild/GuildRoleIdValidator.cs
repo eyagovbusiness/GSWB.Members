@@ -18,7 +18,7 @@ namespace Members.Domain.Validation.Guild
                 return false;
             return !guildRoleIdValidationData.RoleIdList
                 .Except(guildResult.Value.Roles
-                    .Select(role => role.Id))
+                    .Select(role => role.RoleId))
                 .Any();
         }
 

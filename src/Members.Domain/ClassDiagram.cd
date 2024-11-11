@@ -18,9 +18,12 @@
       <Compartment Name="Methods" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAABABAEAAgAAQgAAAAAAAgAFAAAAACgAAAAQAwAAAA=</HashCode>
-      <FileName>Entities\BusinessLogic\Member.cs</FileName>
+      <HashCode>AAABCBAEAAgAAQgAAAAAAAgAFgAAAAAgAAAAQAQAAAA=</HashCode>
+      <FileName>Aggregates\MemberAggregate.cs</FileName>
     </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Roles" />
+    </ShowAsCollectionAssociation>
   </Class>
   <Class Name="Members.Domain.Entities.Role">
     <Position X="0.5" Y="4.5" Width="2.5" />
@@ -28,14 +31,8 @@
       <Compartment Name="Fields" Collapsed="true" />
       <Compartment Name="Methods" Collapsed="true" />
     </Compartments>
-    <AssociationLine Name="Guild" Type="Members.Domain.Entities.Guild" FixedToPoint="true">
-      <Path>
-        <Point X="1.625" Y="7.021" />
-        <Point X="1.625" Y="9.75" />
-      </Path>
-    </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AAIAAAAAAAAgAAQggAAAAAQCAAIAAAAAEABAAJAACAA=</HashCode>
+      <HashCode>AAIAAAIAAAAgAAQggAAAAAQCBAIAAAAAEABAAJAACAA=</HashCode>
       <FileName>Entities\BusinessLogic\Role.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -62,6 +59,11 @@
   </Class>
   <Class Name="Members.Domain.Entities.Guild">
     <Position X="0.5" Y="9.75" Width="2.5" />
+    <AssociationLine Name="Roles" Type="Members.Domain.Entities.Role">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-1.841" Y="0.06" />
+      </MemberNameLabel>
+    </AssociationLine>
     <AssociationLine Name="Boosters" Type="Members.Domain.Entities.GuildBooster" FixedFromPoint="true">
       <Path>
         <Point X="3" Y="10.501" />
@@ -71,22 +73,13 @@
         <Position X="0.081" Y="-0.252" />
       </MemberNameLabel>
     </AssociationLine>
-    <AssociationLine Name="Roles" Type="Members.Domain.Entities.Role" FixedFromPoint="true">
-      <Path>
-        <Point X="1.938" Y="9.75" />
-        <Point X="1.938" Y="7.021" />
-      </Path>
-      <MemberNameLabel ManuallyPlaced="true">
-        <Position X="-1.841" Y="0.06" />
-      </MemberNameLabel>
-    </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAASACAAAAQCAgAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAASACAAAAQCAgAAAAAAAAAAAAAAAAg=</HashCode>
       <FileName>Aggregates\GuildAggregate.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
-      <Property Name="Boosters" />
       <Property Name="Roles" />
+      <Property Name="Boosters" />
     </ShowAsCollectionAssociation>
   </Class>
   <Class Name="Members.Domain.Entities.GuildBooster">
@@ -101,7 +94,7 @@
       </MemberNameLabel>
     </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAQAAAAAAQAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAQAAAAAAAgAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Entities\GuildBooster.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
