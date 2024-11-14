@@ -1,5 +1,4 @@
 ﻿using Common.Application.DTOs.Members;
-using Common.Application.DTOs.Roles;
 using Common.Domain.ValueObjects;
 using Members.Domain.Entities;
 using System.Collections.Immutable;
@@ -10,7 +9,7 @@ namespace Members.Application.Mapping
     {
         public static MemberDTO ToDto(this Member aMember)
         => new(
-            aMember.Id,
+            aMember.UserId.ToString(),
             aMember.GuildId.ToString(),
             aMember.DiscordGuildDisplayName,
             aMember.DiscordAvatarUrl,
@@ -28,7 +27,7 @@ namespace Members.Application.Mapping
                     .OrderByDescending(role => role.Position);
 
             var lRoleDTOList = lRoleList.Select(role => role.ToDto()).ToImmutableArray();
-            return new MemberDetailDTO(aMember.Id, aMember.GuildId.ToString(), aMember.DiscordGuildDisplayName, aMember.DiscordAvatarUrl, aMember.GameHandle, aMember.SpectrumCommunityMoniker, aMember.IsGameHandleVerified, aMember.Status, lRoleDTOList);
+            return new MemberDetailDTO(aMember.UserId.ToString(), aMember.GuildId.ToString(), aMember.DiscordGuildDisplayName, aMember.DiscordAvatarUrl, aMember.GameHandle, aMember.SpectrumCommunityMoniker, aMember.IsGameHandleVerified, aMember.Status, lRoleDTOList);
         }
 
         public static MemberDetailDTO ToDetailDto(this Member aMember, bool aIncludeDiscordOnlyRoles = true)

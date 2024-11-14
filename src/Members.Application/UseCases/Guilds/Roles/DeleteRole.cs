@@ -2,6 +2,7 @@
 using Common.Application.Contracts.Communication.Messages;
 using Common.Application.Contracts.Communication.Messages.Discord;
 using Common.Application.DTOs.Roles;
+using Common.Domain.ValueObjects;
 using Members.Application.Mapping;
 using Members.Domain.Contracts.Repositories;
 using TGF.CA.Application.Contracts.Communication;
@@ -24,7 +25,7 @@ namespace Members.Application.UseCases.Guilds.Roles
         .Map(guild => guild.Roles.Select(role => role.ToDto()))
         .Tap(roleDTOList =>
         {
-            integrationMessagePublisher.Publish(new RoleTokenRevoked([ulong.Parse(request.RoleId)]), routingKey: RoutingKeys.Members.Member_role_revoke);
+            integrationMessagePublisher.Publish(new RoleTokenRevoked([new RoleKey(request.GuildId,request.RoleId)]), routingKey: RoutingKeys.Members.Member_role_revoke);
         });
 
     }

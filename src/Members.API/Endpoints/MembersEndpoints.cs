@@ -68,9 +68,9 @@ namespace Members.API.Endpoints
         /// <summary>
         /// Get the list of guild members(<see cref="MemberDetailDTO"/>) from the provided members id list.
         /// </summary>
-        private async Task<IResult> Post_MembersByIdList(IMembersService aMembersService, [FromBody] IEnumerable<Guid> aMemberList, CancellationToken aCancellationToken = default)
+        private async Task<IResult> Post_MembersByIdList(IMembersService aMembersService, [FromBody] IEnumerable<MemberKey> memberIdList, CancellationToken aCancellationToken = default)
         => await Result.CancellationTokenResult(aCancellationToken)
-        .Bind(_ => aMembersService.GetMembersByIdList(aMemberList, aCancellationToken))
+        .Bind(_ => aMembersService.GetMembersByIdList(memberIdList, aCancellationToken))
         .ToIResult();
 
         /// <summary>

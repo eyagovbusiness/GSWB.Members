@@ -18,7 +18,7 @@ namespace Members.Application.UseCases.Members
          : IUseCase<IHttpResult<MemberDTO>, MemberKey>
     {
         public Task<IHttpResult<MemberDTO>> ExecuteAsync(MemberKey request, CancellationToken cancellationToken = default)
-        => memberRepository.GetByGuildAndUserIdsAsync(request.GuildId, request.UserId, cancellationToken)
+        => memberRepository.GetByIdAsync(new MemberKey(request.GuildId, request.UserId), cancellationToken)
             .Map(member => member.ToDto());
     }
 }

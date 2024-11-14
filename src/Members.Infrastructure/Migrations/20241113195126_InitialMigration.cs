@@ -66,11 +66,10 @@ namespace Members.Infrastructure.Migrations
                 name: "Members",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    GuildId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     UserId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     DiscordGuildDisplayName = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
                     DiscordAvatarUrl = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
-                    GuildId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     SpectrumCommunityMoniker = table.Column<string>(type: "text", nullable: true),
                     GameHandle = table.Column<string>(type: "text", nullable: true),
                     Status = table.Column<byte>(type: "smallint", nullable: false),
@@ -82,7 +81,7 @@ namespace Members.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Members", x => x.Id);
+                    table.PrimaryKey("PK_Members", x => new { x.GuildId, x.UserId });
                     table.ForeignKey(
                         name: "FK_Members_Guilds_GuildId",
                         column: x => x.GuildId,
@@ -95,8 +94,8 @@ namespace Members.Infrastructure.Migrations
                 name: "Roles",
                 columns: table => new
                 {
-                    RoleId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     GuildId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    RoleId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Position = table.Column<byte>(type: "smallint", nullable: false),
                     RoleType = table.Column<byte>(type: "smallint", nullable: false),
@@ -121,7 +120,8 @@ namespace Members.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    MemberId = table.Column<Guid>(type: "uuid", nullable: false),
+                    MemberGuildId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    MemberUserId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     RoleId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     ModifiedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
@@ -130,10 +130,10 @@ namespace Members.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_MemberRole", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MemberRole_Members_MemberId",
-                        column: x => x.MemberId,
+                        name: "FK_MemberRole_Members_MemberGuildId_MemberUserId",
+                        columns: x => new { x.MemberGuildId, x.MemberUserId },
                         principalTable: "Members",
-                        principalColumn: "Id",
+                        principalColumns: new[] { "GuildId", "UserId" },
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -143,7 +143,8 @@ namespace Members.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
-                    JudgeId = table.Column<Guid>(type: "uuid", nullable: false),
+                    JudgeGuildId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    JudgeUserId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     SentenceType = table.Column<int>(type: "integer", nullable: false),
                     CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     ModifiedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
@@ -152,10 +153,10 @@ namespace Members.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Sentences", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Sentences_Members_JudgeId",
-                        column: x => x.JudgeId,
+                        name: "FK_Sentences_Members_JudgeGuildId_JudgeUserId",
+                        columns: x => new { x.JudgeGuildId, x.JudgeUserId },
                         principalTable: "Members",
-                        principalColumn: "Id",
+                        principalColumns: new[] { "GuildId", "UserId" },
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -166,8 +167,10 @@ namespace Members.Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Title = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
                     Description = table.Column<string>(type: "character varying(1024)", maxLength: 1024, nullable: false),
-                    AccuserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    AccusedId = table.Column<Guid>(type: "uuid", nullable: false),
+                    AccuserGuildId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    AccuserUserId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    AccusedGuildId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    AccusedUserId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     SentenceId = table.Column<Guid>(type: "uuid", nullable: true),
                     CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     ModifiedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
@@ -176,16 +179,16 @@ namespace Members.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_IncidentReports", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_IncidentReports_Members_AccusedId",
-                        column: x => x.AccusedId,
+                        name: "FK_IncidentReports_Members_AccusedGuildId_AccusedUserId",
+                        columns: x => new { x.AccusedGuildId, x.AccusedUserId },
                         principalTable: "Members",
-                        principalColumn: "Id",
+                        principalColumns: new[] { "GuildId", "UserId" },
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_IncidentReports_Members_AccuserId",
-                        column: x => x.AccuserId,
+                        name: "FK_IncidentReports_Members_AccuserGuildId_AccuserUserId",
+                        columns: x => new { x.AccuserGuildId, x.AccuserUserId },
                         principalTable: "Members",
-                        principalColumn: "Id",
+                        principalColumns: new[] { "GuildId", "UserId" },
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_IncidentReports_Sentences_SentenceId",
@@ -200,14 +203,14 @@ namespace Members.Infrastructure.Migrations
                 column: "GuildId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_IncidentReports_AccusedId",
+                name: "IX_IncidentReports_AccusedGuildId_AccusedUserId",
                 table: "IncidentReports",
-                column: "AccusedId");
+                columns: new[] { "AccusedGuildId", "AccusedUserId" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_IncidentReports_AccuserId",
+                name: "IX_IncidentReports_AccuserGuildId_AccuserUserId",
                 table: "IncidentReports",
-                column: "AccuserId");
+                columns: new[] { "AccuserGuildId", "AccuserUserId" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_IncidentReports_SentenceId",
@@ -215,14 +218,9 @@ namespace Members.Infrastructure.Migrations
                 column: "SentenceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MemberRole_MemberId",
+                name: "IX_MemberRole_MemberGuildId_MemberUserId",
                 table: "MemberRole",
-                column: "MemberId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Members_GuildId",
-                table: "Members",
-                column: "GuildId");
+                columns: new[] { "MemberGuildId", "MemberUserId" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Roles_GuildId",
@@ -230,9 +228,9 @@ namespace Members.Infrastructure.Migrations
                 column: "GuildId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Sentences_JudgeId",
+                name: "IX_Sentences_JudgeGuildId_JudgeUserId",
                 table: "Sentences",
-                column: "JudgeId");
+                columns: new[] { "JudgeGuildId", "JudgeUserId" });
         }
 
         /// <inheritdoc />

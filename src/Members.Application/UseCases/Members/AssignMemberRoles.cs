@@ -1,4 +1,5 @@
 ﻿using Common.Application.DTOs.Members;
+using Common.Domain.ValueObjects;
 using Members.Application.Mapping;
 using Members.Domain.Contracts.Repositories;
 using Members.Domain.Entities;
@@ -28,7 +29,7 @@ namespace Members.Application.UseCases.Members
             Guild lGuild = default!;
             MemberRolesUpdateResult memberRolesUpdateResult = default!;
 
-            return await memberRepository.GetByGuildAndUserIdsAsync(ulong.Parse(request.GuildId), ulong.Parse(request.UserId), cancellationToken)
+            return await memberRepository.GetByIdAsync(new MemberKey(request.GuildId, request.UserId), cancellationToken)
                 .Tap(member => lMember = member)
                 .Bind(member => guildRepository.GetGuildWithRoles(member.GuildId, cancellationToken))
                 .Tap(guild => lGuild = guild)

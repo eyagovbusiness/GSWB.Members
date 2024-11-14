@@ -88,17 +88,20 @@ namespace Members.API.Endpoints
         /// Updates the basic profile data(<see cref="MemberProfileUpdateDTO"/>) for the current authenticated member.
         /// </summary>
         private async Task<IResult> Put_MeUpdate([FromBody] MemberProfileUpdateDTO aMemberProfileDTO, IMembersService aMembersService, ClaimsPrincipal aClaims, CancellationToken aCancellationToken = default)
-            => await aMembersService.UpdateMemberDetail(aMemberProfileDTO, Guid.Parse(aClaims.FindFirstValue(GuildSwarmClaims.MemberId)!), aCancellationToken)
+            => await aMembersService.UpdateMemberDetail(aMemberProfileDTO, new MemberKey(aClaims.FindFirstValue(GuildSwarmClaims.GuildId)!, aClaims.FindFirstValue(ClaimTypes.NameIdentifier)!), aCancellationToken)
             .ToIResult();
 
         /// <summary>
         /// Delete the current authenticated member from database.
         /// </summary>
         private async Task<IResult> Delete_MeDelete(IMembersService aMembersService, ClaimsPrincipal aClaims, IIntegrationMessagePublisher aIntegrationPublisherService, CancellationToken aCancellationToken = default)
-            => await aMembersService.DeleteMember(Guid.Parse(aClaims.FindFirstValue(GuildSwarmClaims.MemberId)!), aCancellationToken)
-            .Tap(updatedRoleIdList => aIntegrationPublisherService.Publish(new MemberTokenRevoked([Guid.Parse(aClaims.FindFirstValue(GuildSwarmClaims.MemberId)!)]), routingKey: RoutingKeys.Members.Member_revoke))
+        {
+            var memberId = new MemberKey(aClaims.FindFirstValue(GuildSwarmClaims.GuildId)!, aClaims.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            return await aMembersService.DeleteMember(memberId, aCancellationToken)
+            .Tap(updatedRoleIdList => aIntegrationPublisherService.Publish(new MemberTokenRevoked([memberId]), routingKey: RoutingKeys.Members.Member_revoke))
             .Map(_ => Unit.Value)
             .ToIResult();
+        }
 
         #region Verify
 
@@ -106,14 +109,14 @@ namespace Members.API.Endpoints
         /// Get game handle verification info for the authenticated member. Calling this endpoint refreshes the verification code if expired.
         /// </summary>
         private async Task<IResult> Get_GetVerifyInfo(IMembersService aMembersService, ClaimsPrincipal aClaims, CancellationToken aCancellationToken = default)
-            => await aMembersService.Get_GetVerifyInfo(Guid.Parse(aClaims.FindFirstValue(GuildSwarmClaims.MemberId)!), aCancellationToken)
+            => await aMembersService.Get_GetVerifyInfo(new MemberKey(aClaims.FindFirstValue(GuildSwarmClaims.GuildId)!, aClaims.FindFirstValue(ClaimTypes.NameIdentifier)!), aCancellationToken)
             .ToIResult();
 
         /// <summary>
         /// Verifies the GameHandle ownership of current authenticated member by checking if the public profile of the provided GameHandle by this member contains this member's personal verification code. Returns the updated member resulting after the verification process(<see cref="MemberDetailDTO"/>).
         /// </summary>
         private async Task<IResult> Put_MeVerifyGameHandle(IMembersService aMembersService, ClaimsPrincipal aClaims, CancellationToken aCancellationToken = default)
-            => await aMembersService.VerifyGameHandle(Guid.Parse(aClaims.FindFirstValue(GuildSwarmClaims.MemberId)!), aCancellationToken)
+            => await aMembersService.VerifyGameHandle(new MemberKey(aClaims.FindFirstValue(GuildSwarmClaims.GuildId)!, aClaims.FindFirstValue(ClaimTypes.NameIdentifier)!), aCancellationToken)
             .ToIResult();
 
         #endregion

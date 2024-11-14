@@ -1,6 +1,7 @@
 ﻿using Common.Application.DTOs.Members;
 using Common.Domain.ValueObjects;
 using Members.Application.Mapping;
+using Members.Application.Specifications.With;
 using Members.Domain.Contracts.Repositories;
 using Members.Domain.Contracts.Repositories.ReadOnly;
 using Members.Domain.Entities;
@@ -22,7 +23,7 @@ namespace Members.Application.UseCases.Members
         public Task<IHttpResult<MemberDetailDTO>> ExecuteAsync(MemberKey request, CancellationToken cancellationToken = default)
         {
             Member lMember = default!;
-            return memberRepository.GetByGuildAndUserIdsAsync(request.GuildId, request.UserId, cancellationToken)
+            return memberRepository.GetByIdAsync(new MemberKey(request.GuildId, request.UserId), new MemberWithRolesSpec(), cancellationToken)
                 .Tap(member => lMember = member)
                 .Bind(member => roleQueryRepository.GetByIdListAsync(member.Roles.Select(memberRoles => new RoleKey(request.GuildId, memberRoles.RoleId))))
                 .Map(roles => lMember.ToDetailDto(roles));

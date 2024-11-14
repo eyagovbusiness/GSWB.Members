@@ -22,7 +22,7 @@ namespace Members.Application.UseCases.Members.Me
         public async Task<IHttpResult<MemberDetailDTO>> ExecuteAsync(MemberKey request, CancellationToken cancellationToken = default)
         {
             Member lMember = default!;
-            return await memberRepository.GetByGuildAndUserIdsAsync(request.GuildId, request.UserId, cancellationToken)
+            return await memberRepository.GetByIdAsync(new MemberKey(request.GuildId, request.UserId), cancellationToken)
             .Tap(member => lMember = member)
             .Bind(member => roleQueryRepository.GetByIdListAsync(member.Roles.Select(memberRole => new RoleKey(request.GuildId, memberRole.RoleId))))
             .Map(roles => lMember.ToDetailDto(roles, aIncludeDiscordOnlyRoles: false));

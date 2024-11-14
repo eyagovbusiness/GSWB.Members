@@ -12,9 +12,9 @@ namespace Members.Application.UseCases.Members
     /// Use case to get the calculated permissions of a given member from its Id.
     /// </summary>
     /// <returns>The permissions of the member.</returns>
-    public class GetMemberPermissions(IMemberRepository memberRepository, IGuildRepository guildRepository, GuildMemberRoleService guildMemberRoleService) : IUseCase<IHttpResult<PermissionsEnum>, Guid>
+    public class GetMemberPermissions(IMemberRepository memberRepository, IGuildRepository guildRepository, GuildMemberRoleService guildMemberRoleService) : IUseCase<IHttpResult<PermissionsEnum>, MemberKey>
     {
-        public async Task<IHttpResult<PermissionsEnum>> ExecuteAsync(Guid request, CancellationToken cancellationToken = default)
+        public async Task<IHttpResult<PermissionsEnum>> ExecuteAsync(MemberKey request, CancellationToken cancellationToken = default)
         {
             Member lMember = default!;
             return await memberRepository.GetByIdAsync(request, cancellationToken)

@@ -1,4 +1,5 @@
-﻿using TGF.CA.Infrastructure.DB.PostgreSQL;
+﻿using Members.Infrastructure.DataAccess.DbContext;
+using TGF.CA.Infrastructure.DB.PostgreSQL;
 
 namespace Members.Infrastructure
 {

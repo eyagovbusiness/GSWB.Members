@@ -1,6 +1,5 @@
 ﻿using Common.Application.DTOs.Members;
 using Common.Domain.Validation;
-using Members.Application;
 using Microsoft.AspNetCore.Mvc;
 using TGF.CA.Presentation;
 using TGF.Common.ROP.Result;
@@ -18,8 +17,7 @@ namespace Members.API.Endpoints
         /// <inheritdoc/>
         public void DefineEndpoints(WebApplication aWebApplication)
         {
-            aWebApplication.MapGet(MembersApiRoutes.private_members_id, Get_GetMemberById);
-            aWebApplication.MapGet(MembersApiRoutes.private_members_userId_guildId, Get_MemberByUserAndGuildIds);
+            aWebApplication.MapGet(MembersApiRoutes.private_members_key, Get_MemberByUserAndGuildIds);
             aWebApplication.MapGet(MembersApiRoutes.private_members_permissions, Get_Permissions);
             aWebApplication.MapPut(MembersApiRoutes.private_members, Put_NewMember);
 
@@ -37,14 +35,10 @@ namespace Members.API.Endpoints
         .ToIResult();
 
         /// private endpoint implementation 
-        private async Task<IResult> Get_Permissions(Guid id, GetMemberPermissions getMemberPermissions, CancellationToken aCancellationToken = default)
-        => await getMemberPermissions.ExecuteAsync(id, aCancellationToken)
+        private async Task<IResult> Get_Permissions(string guildId, string userId, GetMemberPermissions getMemberPermissions, CancellationToken aCancellationToken = default)
+        => await getMemberPermissions.ExecuteAsync(new MemberKey(guildId, userId), aCancellationToken)
         .ToIResult(); 
 
-        /// private endpoint implementation 
-        private async Task<IResult> Get_GetMemberById(Guid id, IMembersService aMembersService, CancellationToken aCancellationToken = default)
-        => await aMembersService.GetByDiscordUserId(id, aCancellationToken)
-        .ToIResult();
 
         /// private endpoint implementation 
         private async Task<IResult> Get_MemberByUserAndGuildIds(string userId, string guildId, DiscordIdValidator discordIdValidator, GetMemberDetail getMemberDetail, CancellationToken aCancellationToken = default)

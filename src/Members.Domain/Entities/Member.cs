@@ -8,13 +8,10 @@ namespace Members.Domain.Entities
     /// <summary>
     /// Represents a member account (user account) in the system. Contains information about the DiscordUser who created this account, the in-game handles and the list of application Role assigned to this member which determines its permissions.
     /// </summary>
-    public partial class Member: Entity<Guid>
+    public partial class Member: EntityBase
     {
-        /// <summary>
-        /// Discord user ID from OAuth with discord.
-        /// </summary>
-        public required ulong UserId { get; set; }
-
+        public ulong GuildId { get; private init; }
+        public ulong UserId { get; private init; }
         /// <summary>
         /// The display name of this member in the guild's discord server. The value is taken from the global display name from the discord account or the in-server nickname override if it is set.
         /// </summary>
@@ -30,11 +27,6 @@ namespace Members.Domain.Entities
         [MaxLength(256)]
         [Required]
         public string DiscordAvatarUrl { get; set; }
-
-        /// <summary>
-        /// The Guild Id of this member.
-        /// </summary>
-        public required ulong GuildId { get; set; }
 
         /// <summary>
         /// The Community Moniker displays under your Handle in Spectrum forum posts. You can change your moniker anytime, as many times as you like. This is not your character name in game and is used solely for interactions on our forums and chat channels on the Spectrum website.
@@ -75,23 +67,24 @@ namespace Members.Domain.Entities
         public DateTimeOffset VerificationCodeExpiryDate { get; set; }
 
         #region Constructors
+        protected Member() { DiscordAvatarUrl = default!; DiscordGuildDisplayName = default!; }
         //ctor for EF
-        public Member(ulong UserId, ulong guildId, string DiscordGuildDisplayName, string DiscordAvatarUrl)
+        public Member(ulong userId, ulong guildId, string discordGuildDisplayName, string discordAvatarUrl)
         {
-            this.UserId = UserId;
-            this.GuildId = guildId;
-            this.DiscordGuildDisplayName = DiscordGuildDisplayName;
-            this.DiscordAvatarUrl = DiscordAvatarUrl;
+            GuildId = guildId;
+            UserId = userId;
+            this.DiscordGuildDisplayName = discordGuildDisplayName;
+            this.DiscordAvatarUrl = discordAvatarUrl;
         }
 
-        public Member(string UserId, string guildId, string DiscordGuildDisplayName, string DiscordAvatarUrl)
-            : this(ulong.Parse(UserId), ulong.Parse(guildId), DiscordGuildDisplayName, DiscordAvatarUrl)
+        public Member(string userId, string guildId, string discordGuildDisplayName, string discordAvatarUrl)
+            : this(ulong.Parse(userId), ulong.Parse(guildId), discordGuildDisplayName, discordAvatarUrl)
         {
 
         }
         [SetsRequiredMembers]
-        public Member(string UserId, string guildId, string DiscordGuildDisplayName, string DiscordAvatarUrl, string? GameHandle, string? SpectrumCommunityMoniker)
-            : this(UserId, guildId, DiscordGuildDisplayName, DiscordAvatarUrl)
+        public Member(string userId, string guildId, string discordGuildDisplayName, string discordAvatarUrl, string? gameHandle, string? spectrumCommunityMoniker)
+            : this(userId, guildId, discordGuildDisplayName, discordAvatarUrl)
         {
             if (GameHandle != null)
                 this.GameHandle = GameHandle;

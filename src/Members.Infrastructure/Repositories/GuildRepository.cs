@@ -1,6 +1,7 @@
 ﻿using Ardalis.Specification;
 using Members.Domain.Contracts.Repositories;
 using Members.Domain.Entities;
+using Members.Infrastructure.DataAccess.DbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TGF.CA.Infrastructure.DB.Repository;

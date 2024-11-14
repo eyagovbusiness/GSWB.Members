@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TGF.CA.Infrastructure.DB.DbContext;
 
-namespace Members.Infrastructure
+namespace Members.Infrastructure.DataAccess.DbContext
 {
     public class MembersDbContext(DbContextOptions<MembersDbContext> options) : EntitiesDbContext<MembersDbContext>(options)
     {
@@ -52,11 +52,28 @@ namespace Members.Infrastructure
                     .HasConversion(ulongToDecimalConverter);  // Use the ValueConverter
             });
 
-            modelBuilder.Entity<Member>()
-            .HasOne<Guild>()                  // No navigation property in Member
-            .WithMany()                       // No navigation property in Guild
-            .HasForeignKey(m => m.GuildId)    // GuildId is the foreign key
-            .IsRequired();                    // GuildId is required
+            modelBuilder.Entity<Member>(entity =>
+            {
+                // Explicitly define GuildId and UserId as the composite key
+                entity.HasKey(e => new { e.GuildId, e.UserId });
+
+                // Configure GuildId and UserId with the required conversions
+                entity.Property(e => e.GuildId)
+                    .HasColumnType("numeric(20,0)")
+                    .HasConversion(ulongToDecimalConverter)
+                    .IsRequired(); // Ensure it's marked as required
+
+                entity.Property(e => e.UserId)
+                    .HasColumnType("numeric(20,0)")
+                    .HasConversion(ulongToDecimalConverter)
+                    .IsRequired(); // Ensure it's marked as required
+
+                // Configure the foreign key relationship with Guild using GuildId
+                entity.HasOne<Guild>()
+                    .WithMany()                       // No navigation property in Guild
+                    .HasForeignKey(m => m.GuildId)    // Use GuildId as foreign key
+                    .IsRequired();
+            });
         }
 
     }

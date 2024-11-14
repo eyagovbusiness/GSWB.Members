@@ -8,6 +8,7 @@ using TGF.CA.Infrastructure.Comm.Messages;
 using Common.Application.Contracts.Communication.Messages.Discord;
 using TGF.Common.ROP.HttpResult.RailwaySwitches;
 using TGF.CA.Application.Contracts.Communication;
+using Common.Domain.ValueObjects;
 
 namespace Members.Infrastructure.Communication.MessageConsumer.Member
 {
@@ -29,7 +30,7 @@ namespace Members.Infrastructure.Communication.MessageConsumer.Member
             {
                 if (updateResult.IsPermissionsChanged)
                     lScope.ServiceProvider.GetRequiredService<IIntegrationMessagePublisher>()
-                        .Publish(new MemberTokenRevoked([updateResult.Member.Id]), routingKey: RoutingKeys.Members.Member_revoke);
+                        .Publish(new MemberTokenRevoked([new MemberKey(updateResult.Member.GuildId, updateResult.Member.UserId)]), routingKey: RoutingKeys.Members.Member_revoke);
             });
         }
     }

@@ -14,7 +14,7 @@ namespace Members.Application
         /// Get the list of members from the provided members id list.
         /// </summary>
         /// <returns>List of members matching the id list.</returns>
-        public Task<IHttpResult<IEnumerable<MemberDetailDTO>>> GetMembersByIdList(IEnumerable<Guid> aMemberIdList, CancellationToken aCancellationToken = default);
+        public Task<IHttpResult<IEnumerable<MemberDetailDTO>>> GetMembersByIdList(IEnumerable<  MemberKey> aMemberIdList, CancellationToken aCancellationToken = default);
 
         /// <summary>
         /// Get the total count of guild members.
@@ -22,16 +22,10 @@ namespace Members.Application
         public Task<IHttpResult<int>> GetMembersCount(CancellationToken aCancellationToken = default);
 
         /// <summary>
-        /// Get the application member by its Id.
-        /// </summary>
-        /// <returns>The found member associated with the provided Id, otherwise error.</returns>
-        public Task<IHttpResult<MemberDTO>> GetByDiscordUserId(Guid id, CancellationToken aCancellationToken = default);
-
-        /// <summary>
         /// Get the application member detailed by its Id.
         /// </summary>
         /// <returns>The found member associated with the provided Id, otherwise error.</returns>
-        public Task<IHttpResult<MemberDetailDTO>> GetDetailByDiscordUserId(Guid id, CancellationToken aCancellationToken = default);
+        public Task<IHttpResult<MemberDetailDTO>> GetDetailByDiscordUserId(MemberKey id, CancellationToken aCancellationToken = default);
 
         /// <summary>
         /// Update the member by its DiscordUserId and the provided fields to be updated.
@@ -39,7 +33,7 @@ namespace Members.Application
         /// <param name="aMemberProfileDTO"><see cref="MemberProfileUpdateDTO"/> with the member profile fields to be updated.</param>
         /// <param name="aDiscordUserId">DiscordUserId related with the member.</param>
         /// <returns>The updated member DTO.</returns>
-        public Task<IHttpResult<MemberDetailDTO>> UpdateMemberDetail(MemberProfileUpdateDTO aMemberProfileDTO, Guid id, CancellationToken aCancellationToken = default);
+        public Task<IHttpResult<MemberDetailDTO>> UpdateMemberDetail(MemberProfileUpdateDTO aMemberProfileDTO, MemberKey id, CancellationToken aCancellationToken = default);
 
         /// <summary>
         /// Update the member's discord display name.
@@ -61,7 +55,7 @@ namespace Members.Application
         /// Delete application member detailed by its Id.
         /// </summary>
         /// <returns>The found member associated with the provided Id, otherwise error.</returns>
-        public Task<IHttpResult<Member>> DeleteMember(Guid id, CancellationToken aCancellationToken = default);
+        public Task<IHttpResult<Member>> DeleteMember(MemberKey id, CancellationToken aCancellationToken = default);
 
         /// <summary>
         /// Update a given member's status by its Id.
@@ -73,13 +67,13 @@ namespace Members.Application
         /// Get game handle verification info related data for a given member by its Id as <see cref="MemberVerifyDTO"/>.
         /// </summary>
         /// <returns>The current <see cref="MemberVerifyInfoDTO"/> or error if any.</returns>
-        public Task<IHttpResult<MemberVerificationStateDTO>> Get_GetVerifyInfo(Guid id, CancellationToken aCancellationToken = default);
+        public Task<IHttpResult<MemberVerificationStateDTO>> Get_GetVerifyInfo(MemberKey id, CancellationToken aCancellationToken = default);
 
         /// <summary>
         /// Verifies the GameHandle of the authenticated member, wit will succeed if the member's GameHandleVerificationCode is present at the game handle's profile bio from "https://robertsspaceindustries.com/citizens/{Member.GameHandle}".
         /// </summary>
         /// <returns><see cref="MemberDetailDTO"/> with the refreshed member information after the verify attempt.</returns>
-        public Task<IHttpResult<MemberDetailDTO>> VerifyGameHandle(Guid id, CancellationToken aCancellationToken = default);
+        public Task<IHttpResult<MemberDetailDTO>> VerifyGameHandle(MemberKey id, CancellationToken aCancellationToken = default);
 
     }
 }

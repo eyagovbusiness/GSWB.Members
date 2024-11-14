@@ -8,6 +8,7 @@ using TGF.CA.Application.UseCases;
 using TGF.Common.ROP.HttpResult;
 using TGF.Common.ROP.HttpResult.RailwaySwitches;
 using TGF.Common.ROP.Result;
+using Common.Domain.ValueObjects;
 
 namespace Members.Application.UseCases.Members
 {
@@ -20,7 +21,7 @@ namespace Members.Application.UseCases.Members
     {
         public async Task<IHttpResult<MemberDetailDTO>> ExecuteAsync(CreateMemberDTO request, CancellationToken aCancellationToken = default)
         {
-            var lExistingMemberResultResult = await memberRepository.GetByGuildAndUserIdsAsync(ulong.Parse(request.GuildId), ulong.Parse(request.DiscordCookieUserInfo.UserNameIdentifier), aCancellationToken);
+            var lExistingMemberResultResult = await memberRepository.GetByIdAsync(new MemberKey(request.GuildId,request.DiscordCookieUserInfo.UserNameIdentifier), aCancellationToken);
             if (lExistingMemberResultResult.IsSuccess)
                 return Result.Failure<MemberDetailDTO>(ApplicationErrors.Members.DiscordAccountAlreadyRegistered);
 
@@ -39,12 +40,12 @@ namespace Members.Application.UseCases.Members
 
         private Member GetNewMemberEntity(CreateMemberDTO aCreateMemberDTO, DiscordProfileDTO aDiscordProfileDTO)
         => new(
-            UserId: aCreateMemberDTO.DiscordCookieUserInfo.UserNameIdentifier,
-            aCreateMemberDTO.GuildId,
-            DiscordGuildDisplayName: GetDiscordGuildDisplayName(aCreateMemberDTO.DiscordCookieUserInfo, aDiscordProfileDTO),
-            DiscordAvatarUrl: aDiscordProfileDTO.AvatarUrl,
-            GameHandle: aCreateMemberDTO.SignUpData?.GameHandle,
-            SpectrumCommunityMoniker: aCreateMemberDTO.SignUpData?.SpectrumCommunityMoniker);
+            userId: aCreateMemberDTO.DiscordCookieUserInfo.UserNameIdentifier,
+            guildId: aCreateMemberDTO.GuildId,
+            discordGuildDisplayName: GetDiscordGuildDisplayName(aCreateMemberDTO.DiscordCookieUserInfo, aDiscordProfileDTO),
+            discordAvatarUrl: aDiscordProfileDTO.AvatarUrl,
+            gameHandle: aCreateMemberDTO.SignUpData?.GameHandle,
+            spectrumCommunityMoniker: aCreateMemberDTO.SignUpData?.SpectrumCommunityMoniker);
 
         //TO-DO: GSWB-27
         private string GetDiscordGuildDisplayName(DiscordCookieUserInfo aDiscordCookieUserInfo, DiscordProfileDTO aDiscordProfileDTO)

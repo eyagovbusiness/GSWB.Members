@@ -28,7 +28,7 @@ namespace Members.Application.Services
 
         #region IMembersService
 
-        public async Task<IHttpResult<IEnumerable<MemberDetailDTO>>> GetMembersByIdList(IEnumerable<Guid> aMemberIdList, CancellationToken aCancellationToken = default)
+        public async Task<IHttpResult<IEnumerable<MemberDetailDTO>>> GetMembersByIdList(IEnumerable<MemberKey> aMemberIdList, CancellationToken aCancellationToken = default)
         => await _memberRepository.GetByIdListAsync(aMemberIdList, aCancellationToken)
             .Map(memberList => memberList.Select(member => member.ToDetailDto()));
 
@@ -36,48 +36,43 @@ namespace Members.Application.Services
         public async Task<IHttpResult<int>> GetMembersCount(CancellationToken aCancellationToken = default)
         => await _memberRepository.GetCountAsync();
 
-
-        public async Task<IHttpResult<MemberDTO>> GetByDiscordUserId(Guid id, CancellationToken aCancellationToken = default)
-        => await _memberRepository.GetByIdAsync(id, aCancellationToken)
-            .Map(member => member!.ToDto());
-
-        public async Task<IHttpResult<MemberDetailDTO>> GetDetailByDiscordUserId(Guid id, CancellationToken aCancellationToken = default)
+        public async Task<IHttpResult<MemberDetailDTO>> GetDetailByDiscordUserId(MemberKey id, CancellationToken aCancellationToken = default)
         => await _memberRepository.GetByIdAsync(id, aCancellationToken)
             .Map(member => member!.ToDetailDto());
 
-        public async Task<IHttpResult<MemberDetailDTO>> UpdateMemberDetail(MemberProfileUpdateDTO aMemberProfileDTO, Guid id, CancellationToken aCancellationToken = default)
+        public async Task<IHttpResult<MemberDetailDTO>> UpdateMemberDetail(MemberProfileUpdateDTO aMemberProfileDTO, MemberKey id, CancellationToken aCancellationToken = default)
         => await _memberRepository.GetByIdAsync(id, aCancellationToken)
             .Bind(member => UpdateMemberProfile(member!, aMemberProfileDTO, aCancellationToken))
             .Map(member => member.ToDetailDto());
 
         public async Task<IHttpResult<MemberDetailDTO>> UpdateMemberDiscordDisplayName(ulong userId, ulong guildId, string aNewDisplayName, CancellationToken aCancellationToken = default)
-        => await _memberRepository.GetByGuildAndUserIdsAsync(guildId, userId, aCancellationToken)
+        => await _memberRepository.GetByIdAsync(new MemberKey(guildId, userId), aCancellationToken)
             .Bind(member => UpdateMemberDisplayName(member!, aNewDisplayName, aCancellationToken))
             .Map(member => member.ToDetailDto());
 
         public async Task<IHttpResult<MemberDetailDTO>> UpdateMemberAvatar(ulong userId, ulong guildId, string aNewAvatarUrl, CancellationToken aCancellationToken = default)
-        => await _memberRepository.GetByGuildAndUserIdsAsync(guildId, userId, aCancellationToken)
+        => await _memberRepository.GetByIdAsync(new MemberKey(guildId, userId), aCancellationToken)
             .Bind(member => UpdateAvatar(member!, aNewAvatarUrl, aCancellationToken))
             .Map(member => member.ToDetailDto());
 
 
-        public async Task<IHttpResult<Member>> DeleteMember(Guid id, CancellationToken aCancellationToken = default)
+        public async Task<IHttpResult<Member>> DeleteMember(MemberKey id, CancellationToken aCancellationToken = default)
          => await _memberRepository.GetByIdAsync(id, aCancellationToken)
             .Bind(member => _memberRepository.Delete(member!, aCancellationToken));
 
         public async Task<IHttpResult<MemberDetailDTO>> UpdateMemberStatus(ulong userId, ulong guildId, MemberStatusEnum aMemberStatus, CancellationToken aCancellationToken = default)
-        => await _memberRepository.GetByGuildAndUserIdsAsync(guildId, userId, aCancellationToken)
+        => await _memberRepository.GetByIdAsync(new MemberKey(guildId, userId), aCancellationToken)
             .Bind(member => UpdateMemberStatus(member!, aMemberStatus, aCancellationToken))
             .Map(member => member.ToDetailDto());
 
         #region Verify
 
-        public async Task<IHttpResult<MemberVerificationStateDTO>> Get_GetVerifyInfo(Guid id, CancellationToken aCancellationToken = default)
+        public async Task<IHttpResult<MemberVerificationStateDTO>> Get_GetVerifyInfo(MemberKey id, CancellationToken aCancellationToken = default)
         => await _memberRepository.GetByIdAsync(id, aCancellationToken)
             .Bind(member => TryUpdateGameHandleVerifyCode(member!, aCancellationToken))
             .Map(member => new MemberVerificationStateDTO(member.IsGameHandleVerified, member!.GameHandleVerificationCode, member.VerificationCodeExpiryDate));
 
-        public async Task<IHttpResult<MemberDetailDTO>> VerifyGameHandle(Guid id, CancellationToken aCancellationToken = default)
+        public async Task<IHttpResult<MemberDetailDTO>> VerifyGameHandle(MemberKey id, CancellationToken aCancellationToken = default)
         {
             var lMemberResult = await _memberRepository.GetByIdAsync(id, aCancellationToken);
             return await lMemberResult.Verify(member => member?.GameHandle != null, ApplicationErrors.MemberValidation.GameHandleNotSet)

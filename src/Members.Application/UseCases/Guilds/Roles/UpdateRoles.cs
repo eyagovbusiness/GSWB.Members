@@ -1,6 +1,7 @@
 ﻿using Common.Application.Contracts.Communication;
 using Common.Application.Contracts.Communication.Messages;
 using Common.Application.DTOs.Roles;
+using Common.Domain.ValueObjects;
 using Members.Application.Mapping;
 using Members.Domain.Contracts.Repositories;
 using Members.Domain.ValueObjects.Role;
@@ -35,7 +36,7 @@ namespace Members.Application.UseCases.Guilds.Roles
         .Map(guild => guild.Roles.Select(role => role.ToDto()))
         .Tap(roleDTOList =>
         {
-            var lUpdatedRoleIdList = roleDTOList.Select(roleDTO => ulong.Parse(roleDTO.Id));
+            var lUpdatedRoleIdList = roleDTOList.Select(roleDTO => new RoleKey(request.GuildId, roleDTO.Id));
             integrationMessagePublisher.Publish(new RoleTokenRevoked(lUpdatedRoleIdList.ToArray()), routingKey: RoutingKeys.Members.Member_role_revoke);
         });
     }

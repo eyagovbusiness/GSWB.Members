@@ -22,7 +22,7 @@ namespace Members.Infrastructure.Communication.MessageConsumer.Member
 
             await lMembersService.UpdateMemberStatus(ulong.Parse(aIntegrationMessage.Content.UserId), ulong.Parse(aIntegrationMessage.Content.GuildId), lMemberStatus, aCancellationToken)
             .Tap(member => lScope.ServiceProvider.GetRequiredService<IIntegrationMessagePublisher>()
-                      .Publish(new MemberTokenRevoked([member.Id]), routingKey: RoutingKeys.Members.Member_revoke));
+                      .Publish(new MemberTokenRevoked([new MemberKey(member.GuildId, member.UserId)]), routingKey: RoutingKeys.Members.Member_revoke));
         }
     }
 }
