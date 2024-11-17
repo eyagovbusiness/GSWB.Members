@@ -10,7 +10,7 @@ using TGF.CA.Application.UseCases;
 using TGF.Common.ROP.HttpResult;
 using TGF.Common.ROP.HttpResult.RailwaySwitches;
 
-namespace Members.Application.UseCases.Members
+namespace Members.Application.UseCases.Members.Update
 {
     /// <summary>
     /// Use case to revoke a given list of roles for a guild member.

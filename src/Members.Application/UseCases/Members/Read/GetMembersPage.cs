@@ -11,7 +11,7 @@ using TGF.CA.Application.UseCases;
 using TGF.Common.ROP.HttpResult;
 using TGF.Common.ROP.HttpResult.RailwaySwitches;
 
-namespace Members.Application.UseCases.Members
+namespace Members.Application.UseCases.Members.Read
 {
     /// <summary>
     /// Use case to list Members
@@ -29,7 +29,7 @@ namespace Members.Application.UseCases.Members
             .Tap(members => memberDTOList = members
                 .Select(member => member.ToDetailDto(
                     guildRoleList
-                    .Where(role => 
+                    .Where(role =>
                         member.Roles
                         .Any(memberRole => memberRole.RoleId == role.RoleId)
                     )

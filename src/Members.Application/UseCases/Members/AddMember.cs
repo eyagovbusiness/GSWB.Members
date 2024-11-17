@@ -9,6 +9,7 @@ using TGF.Common.ROP.HttpResult;
 using TGF.Common.ROP.HttpResult.RailwaySwitches;
 using TGF.Common.ROP.Result;
 using Common.Domain.ValueObjects;
+using Members.Application.UseCases.Members.Update;
 
 namespace Members.Application.UseCases.Members
 {

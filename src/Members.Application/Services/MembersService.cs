@@ -27,10 +27,6 @@ namespace Members.Application.Services
 
         #region IMembersService
 
-        public async Task<IHttpResult<MemberDetailDTO>> UpdateMemberDetail(MemberProfileUpdateDTO aMemberProfileDTO, MemberKey id, CancellationToken aCancellationToken = default)
-        => await _memberRepository.GetByIdAsync(id, aCancellationToken)
-            .Bind(member => UpdateMemberProfile(member!, aMemberProfileDTO, aCancellationToken))
-            .Map(member => member.ToDetailDto());
 
         public async Task<IHttpResult<MemberDetailDTO>> UpdateMemberDiscordDisplayName(ulong userId, ulong guildId, string aNewDisplayName, CancellationToken aCancellationToken = default)
         => await _memberRepository.GetByIdAsync(new MemberKey(guildId, userId), aCancellationToken)
@@ -78,11 +74,6 @@ namespace Members.Application.Services
         => await Result.CancellationTokenResult(aCancellationToken)
             .Tap(_ => aMember!.Status = aMemberStatus)
             .Bind(member => _memberRepository.UpdateAsync(aMember, aCancellationToken));
-
-        private async Task<IHttpResult<Member>> UpdateMemberProfile(Member aMember, MemberProfileUpdateDTO aMemberProfileDTO, CancellationToken aCancellationToken = default)
-        => aMember.UpdateProfile(aMemberProfileDTO.GameHandle, aMemberProfileDTO.SpectrumCommunityMoniker)
-            ? await _memberRepository.UpdateAsync(aMember, aCancellationToken)
-            : Result.SuccessHttp(aMember);
 
         private async Task<IHttpResult<Member>> UpdateMemberDisplayName(Member aMember, string aNewDisplayName, CancellationToken aCancellationToken = default)
         {

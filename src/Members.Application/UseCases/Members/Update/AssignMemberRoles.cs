@@ -10,7 +10,7 @@ using TGF.CA.Application.UseCases;
 using TGF.Common.ROP.HttpResult;
 using TGF.Common.ROP.HttpResult.RailwaySwitches;
 
-namespace Members.Application.UseCases.Members
+namespace Members.Application.UseCases.Members.Update
 {
     /// <summary>
     /// Use case to assign a given list of roles to a guild member.

@@ -8,6 +8,7 @@ using Members.Application.UseCases.Members;
 using Common.Application.Communication.Routing;
 using Common.Domain.ValueObjects;
 using TGF.CA.Presentation.MinimalAPI;
+using Members.Application.UseCases.Members.Read;
 
 namespace Members.API.Endpoints
 {

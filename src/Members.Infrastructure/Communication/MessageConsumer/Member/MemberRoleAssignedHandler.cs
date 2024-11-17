@@ -1,7 +1,6 @@
 ﻿using Common.Application.Contracts.Communication;
 using Common.Application.DTOs.Members;
 using Common.Application.Contracts.Communication.Messages;
-using Members.Application.UseCases.Members;
 using Microsoft.Extensions.DependencyInjection;
 using TGF.CA.Infrastructure.Comm.Consumer.Handler;
 using TGF.CA.Infrastructure.Comm.Messages;
@@ -9,6 +8,7 @@ using Common.Application.Contracts.Communication.Messages.Discord;
 using TGF.Common.ROP.HttpResult.RailwaySwitches;
 using TGF.CA.Application.Contracts.Communication;
 using Common.Domain.ValueObjects;
+using Members.Application.UseCases.Members.Update;
 
 namespace Members.Infrastructure.Communication.MessageConsumer.Member
 {

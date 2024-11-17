@@ -3,7 +3,7 @@ using TGF.CA.Application.UseCases;
 using TGF.Common.ROP;
 using TGF.Common.ROP.HttpResult;
 
-namespace Members.Application.UseCases.Members
+namespace Members.Application.UseCases.Members.Read
 {
     public class GetMembersCount(
         IMemberRepository memberRepository

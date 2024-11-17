@@ -9,7 +9,7 @@ using TGF.CA.Application.UseCases;
 using TGF.Common.ROP.HttpResult;
 using TGF.Common.ROP.HttpResult.RailwaySwitches;
 
-namespace Members.Application.UseCases.Members
+namespace Members.Application.UseCases.Members.Read
 {
     /// <summary>
     /// Use case to get a <see cref="MemberDetailDTO"/> (which includes the role dtos, and additional member properties not included in the basic DTO

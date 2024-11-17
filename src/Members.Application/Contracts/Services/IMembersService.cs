@@ -1,6 +1,4 @@
-﻿using Common.Application.DTOs.Discord;
-using Common.Application.DTOs.Members;
-using Common.Application.DTOs.Roles;
+﻿using Common.Application.DTOs.Members;
 using Common.Domain.ValueObjects;
 using Members.Domain.Entities;
 using TGF.Common.ROP.HttpResult;
@@ -9,15 +7,6 @@ namespace Members.Application
 {
     public interface IMembersService
     {
-
-        /// <summary>
-        /// Update the member by its DiscordUserId and the provided fields to be updated.
-        /// </summary>
-        /// <param name="aMemberProfileDTO"><see cref="MemberProfileUpdateDTO"/> with the member profile fields to be updated.</param>
-        /// <param name="aDiscordUserId">DiscordUserId related with the member.</param>
-        /// <returns>The updated member DTO.</returns>
-        public Task<IHttpResult<MemberDetailDTO>> UpdateMemberDetail(MemberProfileUpdateDTO aMemberProfileDTO, MemberKey id, CancellationToken aCancellationToken = default);
-
         /// <summary>
         /// Update the member's discord display name.
         /// </summary>

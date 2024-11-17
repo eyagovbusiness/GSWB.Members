@@ -17,6 +17,8 @@ using Common.Application.Communication.Routing;
 using Members.Application.UseCases.Members.Me;
 using TGF.CA.Infrastructure.Identity.Authentication;
 using TGF.CA.Infrastructure.Identity.Authorization.Permissions;
+using Members.Application.UseCases.Members.Update;
+using Members.Domain.ValueObjects;
 
 namespace Members.API.Endpoints
 {
@@ -85,10 +87,15 @@ namespace Members.API.Endpoints
         .ToIResult();
 
         /// <summary>
-        /// Updates the basic profile data(<see cref="MemberProfileUpdateDTO"/>) for the current authenticated member.
+        /// Updates the basic profile data(<see cref="MemberGameProfileUpdateDTO"/>) for the current authenticated member.
         /// </summary>
-        private async Task<IResult> Put_MeUpdate([FromBody] MemberProfileUpdateDTO aMemberProfileDTO, IMembersService aMembersService, ClaimsPrincipal aClaims, CancellationToken aCancellationToken = default)
-            => await aMembersService.UpdateMemberDetail(aMemberProfileDTO, new MemberKey(aClaims.FindFirstValue(GuildSwarmClaims.GuildId)!, aClaims.FindFirstValue(ClaimTypes.NameIdentifier)!), aCancellationToken)
+        private async Task<IResult> Put_MeUpdate([FromBody] MemberGameProfileUpdateDTO memberGameProfileUpdateDTO, UpdateMemberGameProfile updateMemberGameProfileUseCase, ClaimsPrincipal aClaims, CancellationToken aCancellationToken = default)
+            => await updateMemberGameProfileUseCase.ExecuteAsync(
+                new MemberGameProfileUpdate(
+                    new MemberKey(aClaims.FindFirstValue(GuildSwarmClaims.GuildId)!, aClaims.FindFirstValue(ClaimTypes.NameIdentifier)!),
+                    memberGameProfileUpdateDTO.GameHandle,
+                    memberGameProfileUpdateDTO.SpectrumCommunityMoniker), aCancellationToken
+                )
             .ToIResult();
 
         /// <summary>

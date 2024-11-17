@@ -6,7 +6,7 @@ using TGF.CA.Application.UseCases;
 using TGF.Common.ROP.HttpResult;
 using TGF.Common.ROP.HttpResult.RailwaySwitches;
 
-namespace Members.Application.UseCases.Members
+namespace Members.Application.UseCases.Members.Read
 {
     /// <summary>
     /// Use case to get the calculated permissions of a given member from its Id.

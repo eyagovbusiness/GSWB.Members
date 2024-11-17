@@ -5,7 +5,6 @@ using Common.Domain.ValueObjects;
 using Common.Infrastructure.Security;
 using Members.Application;
 using Members.Application.Specifications;
-using Members.Application.UseCases.Members;
 using Members.Application.Validation;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
@@ -19,6 +18,7 @@ using TGF.CA.Presentation;
 using TGF.CA.Presentation.MinimalAPI;
 using TGF.Common.ROP.Result;
 using TGF.Common.ROP;
+using Members.Application.UseCases.Members.Read;
 
 namespace Members.API.Endpoints
 {
