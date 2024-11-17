@@ -30,11 +30,6 @@ namespace Members.Application.Services
          => await _memberRepository.GetByIdAsync(id, aCancellationToken)
             .Bind(member => _memberRepository.DeleteAsync(member!, aCancellationToken));
 
-        public async Task<IHttpResult<MemberDetailDTO>> UpdateMemberStatus(ulong userId, ulong guildId, MemberStatusEnum aMemberStatus, CancellationToken aCancellationToken = default)
-        => await _memberRepository.GetByIdAsync(new MemberKey(guildId, userId), aCancellationToken)
-            .Bind(member => UpdateMemberStatus(member!, aMemberStatus, aCancellationToken))
-            .Map(member => member.ToDetailDto());
-
         #region Verify
 
         public async Task<IHttpResult<MemberVerificationStateDTO>> Get_GetVerifyInfo(MemberKey id, CancellationToken aCancellationToken = default)
@@ -57,13 +52,6 @@ namespace Members.Application.Services
 
         #region Private
 
-        private async Task<IHttpResult<Member>> UpdateMemberStatus(Member aMember, MemberStatusEnum aMemberStatus, CancellationToken aCancellationToken = default)
-        => await Result.CancellationTokenResult(aCancellationToken)
-            .Tap(_ => aMember!.Status = aMemberStatus)
-            .Bind(member => _memberRepository.UpdateAsync(aMember, aCancellationToken));
-
-
-
         private async Task<IHttpResult<Member>> TryUpdateGameHandleVerifyCode(Member aMember, CancellationToken aCancellationToken = default)
         => aMember.TryRefreshGameHandleVerificationCode()
             ? await _memberRepository.UpdateAsync(aMember, aCancellationToken)
@@ -74,7 +62,6 @@ namespace Members.Application.Services
             ? await _memberRepository.UpdateAsync(aMember, aCancellationToken)
                 .Map(member => member.ToDetailDto())
             : Result.Failure<MemberDetailDTO>(ApplicationErrors.MemberValidation.GameHandleVerificationFailed);
-
 
         #endregion
 

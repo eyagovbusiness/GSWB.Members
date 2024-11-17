@@ -2,5 +2,5 @@
 
 namespace Members.Domain.ValueObjects
 {
-    public record class MemberStatus(MemberKey Id, MemberStatusEnum Status);
+    public record class MemberAvatar(MemberKey Id, string AvatarUrl);
 }

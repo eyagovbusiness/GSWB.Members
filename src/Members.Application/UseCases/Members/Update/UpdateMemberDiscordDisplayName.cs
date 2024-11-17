@@ -20,10 +20,10 @@ namespace Members.Application.UseCases.Members.Update
     {
         public async Task<IHttpResult<MemberDetailDTO>> ExecuteAsync(MemberDiscordDisplayName request, CancellationToken cancellationToken = default)
         => await memberRepository.GetByIdAsync(request.Id, cancellationToken)
-            .Bind(member => UpdateMemberDisplayName(member!, request.DisplayName, cancellationToken))
+            .Bind(member => UpdateDisplayName(member!, request.DisplayName, cancellationToken))
             .Map(member => member.ToDetailDto());
 
-        private async Task<IHttpResult<Member>> UpdateMemberDisplayName(Member aMember, string aNewDisplayName, CancellationToken aCancellationToken = default)
+        private async Task<IHttpResult<Member>> UpdateDisplayName(Member aMember, string aNewDisplayName, CancellationToken aCancellationToken = default)
         {
             aMember.DiscordGuildDisplayName = aNewDisplayName;
             return await memberRepository.UpdateAsync(aMember, aCancellationToken);

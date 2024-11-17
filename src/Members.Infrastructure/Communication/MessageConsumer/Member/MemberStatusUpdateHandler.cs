@@ -1,13 +1,14 @@
 ﻿using Common.Application.Contracts.Communication;
 using Common.Domain.ValueObjects;
 using Common.Application.Contracts.Communication.Messages;
-using Members.Application;
 using Microsoft.Extensions.DependencyInjection;
 using TGF.CA.Infrastructure.Comm.Consumer.Handler;
 using TGF.CA.Infrastructure.Comm.Messages;
 using Common.Application.Contracts.Communication.Messages.Discord;
 using TGF.Common.ROP.HttpResult.RailwaySwitches;
 using TGF.CA.Application.Contracts.Communication;
+using Members.Application.UseCases.Members.Update;
+using Members.Domain.ValueObjects;
 
 namespace Members.Infrastructure.Communication.MessageConsumer.Member
 {
@@ -17,12 +18,17 @@ namespace Members.Infrastructure.Communication.MessageConsumer.Member
         public async Task Handle(IntegrationMessage<MemberBanUpdated> aIntegrationMessage, CancellationToken aCancellationToken = default)
         {
             using var lScope = aServiceScopeFactory.CreateScope();
-            var lMembersService = lScope.ServiceProvider.GetRequiredService<IMembersService>();
-            var lMemberStatus = aIntegrationMessage.Content.IsMemberBanned ? MemberStatusEnum.Banned : MemberStatusEnum.Active;
+            var updateMemberStatusUseCase = lScope.ServiceProvider.GetRequiredService<UpdateMemberStatus>();
+            var memberStatus = aIntegrationMessage.Content.IsMemberBanned ? MemberStatusEnum.Banned : MemberStatusEnum.Active;
 
-            await lMembersService.UpdateMemberStatus(ulong.Parse(aIntegrationMessage.Content.UserId), ulong.Parse(aIntegrationMessage.Content.GuildId), lMemberStatus, aCancellationToken)
+            _ = await updateMemberStatusUseCase.ExecuteAsync(
+                new MemberStatus(
+                    new MemberKey(ulong.Parse(aIntegrationMessage.Content.GuildId), ulong.Parse(aIntegrationMessage.Content.UserId)),
+                    memberStatus
+                )
+            , aCancellationToken)
             .Tap(member => lScope.ServiceProvider.GetRequiredService<IIntegrationMessagePublisher>()
-                      .Publish(new MemberTokenRevoked([new MemberKey(member.GuildId, member.UserId)]), routingKey: RoutingKeys.Members.Member_revoke));
+                .Publish(new MemberTokenRevoked([new MemberKey(member.GuildId, member.UserId)]), routingKey: RoutingKeys.Members.Member_revoke));
         }
     }
 }

@@ -15,12 +15,6 @@ namespace Members.Application
         public Task<IHttpResult<Member>> DeleteMember(MemberKey id, CancellationToken aCancellationToken = default);
 
         /// <summary>
-        /// Update a given member's status by its Id.
-        /// </summary>
-        /// <returns>The updated member DTO.</returns>
-        public Task<IHttpResult<MemberDetailDTO>> UpdateMemberStatus(ulong userId, ulong guildId, MemberStatusEnum aMemberStatus, CancellationToken aCancellationToken = default);
-
-        /// <summary>
         /// Get game handle verification info related data for a given member by its Id as <see cref="MemberVerifyDTO"/>.
         /// </summary>
         /// <returns>The current <see cref="MemberVerifyInfoDTO"/> or error if any.</returns>
