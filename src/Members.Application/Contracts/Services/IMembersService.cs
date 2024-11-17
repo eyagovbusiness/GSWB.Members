@@ -9,23 +9,10 @@ namespace Members.Application
 {
     public interface IMembersService
     {
-
-        /// <summary>
-        /// Get the list of members from the provided members id list.
-        /// </summary>
-        /// <returns>List of members matching the id list.</returns>
-        public Task<IHttpResult<IEnumerable<MemberDetailDTO>>> GetMembersByIdList(IEnumerable<  MemberKey> aMemberIdList, CancellationToken aCancellationToken = default);
-
         /// <summary>
         /// Get the total count of guild members.
         /// </summary>
         public Task<IHttpResult<int>> GetMembersCount(CancellationToken aCancellationToken = default);
-
-        /// <summary>
-        /// Get the application member detailed by its Id.
-        /// </summary>
-        /// <returns>The found member associated with the provided Id, otherwise error.</returns>
-        public Task<IHttpResult<MemberDetailDTO>> GetDetailByDiscordUserId(MemberKey id, CancellationToken aCancellationToken = default);
 
         /// <summary>
         /// Update the member by its DiscordUserId and the provided fields to be updated.

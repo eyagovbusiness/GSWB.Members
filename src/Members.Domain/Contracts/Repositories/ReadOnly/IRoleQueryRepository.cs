@@ -16,5 +16,6 @@ namespace Members.Domain.Contracts.Repositories.ReadOnly
         /// Retrieves a list of roles by a list of composite keys (RoleId and GuildId).
         /// </summary>
         Task<IHttpResult<IEnumerable<Role>>> GetByIdListAsync(IEnumerable<RoleKey> roleKeys, CancellationToken cancellationToken = default);
+
     }
 }

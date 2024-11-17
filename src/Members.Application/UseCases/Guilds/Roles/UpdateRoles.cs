@@ -3,6 +3,7 @@ using Common.Application.Contracts.Communication.Messages;
 using Common.Application.DTOs.Roles;
 using Common.Domain.ValueObjects;
 using Members.Application.Mapping;
+using Members.Application.Specifications.With;
 using Members.Domain.Contracts.Repositories;
 using Members.Domain.ValueObjects.Role;
 using TGF.CA.Application.Contracts.Communication;
@@ -20,7 +21,7 @@ namespace Members.Application.UseCases.Guilds.Roles
         : IUseCase<IHttpResult<IEnumerable<RoleDTO>>, GuildRolesUpdateDTO>
     {
         public async Task<IHttpResult<IEnumerable<RoleDTO>>> ExecuteAsync(GuildRolesUpdateDTO request, CancellationToken cancellationToken = default)
-        => await guildRepository.GetGuildWithRoles(ulong.Parse(request.GuildId), cancellationToken)
+        => await guildRepository.GetByIdAsync(ulong.Parse(request.GuildId), new GuildWithRolesSpec(), cancellationToken)
         .Bind(guild => 
             guild.UpdateRoles(request.RoleUpdates
                 .Select(roleUpdate => 

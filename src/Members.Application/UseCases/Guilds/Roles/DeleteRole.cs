@@ -4,6 +4,7 @@ using Common.Application.Contracts.Communication.Messages.Discord;
 using Common.Application.DTOs.Roles;
 using Common.Domain.ValueObjects;
 using Members.Application.Mapping;
+using Members.Application.Specifications.With;
 using Members.Domain.Contracts.Repositories;
 using TGF.CA.Application.Contracts.Communication;
 using TGF.CA.Application.UseCases;
@@ -19,7 +20,7 @@ namespace Members.Application.UseCases.Guilds.Roles
         : IUseCase<IHttpResult<IEnumerable<RoleDTO>>, RoleDeleted>
     {
         public async Task<IHttpResult<IEnumerable<RoleDTO>>> ExecuteAsync(RoleDeleted request, CancellationToken cancellationToken = default)
-        => await guildRepository.GetGuildWithRoles(ulong.Parse(request.GuildId), cancellationToken)
+        => await guildRepository.GetByIdAsync(ulong.Parse(request.GuildId), new GuildWithRolesSpec(), cancellationToken)
         .Bind(guild => guild.DeleteRoles([ulong.Parse(request.RoleId)]))
         .Bind(guild => guildRepository.UpdateAsync(guild,cancellationToken))
         .Map(guild => guild.Roles.Select(role => role.ToDto()))

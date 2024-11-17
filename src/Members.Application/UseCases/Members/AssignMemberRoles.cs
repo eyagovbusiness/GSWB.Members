@@ -1,6 +1,7 @@
 ﻿using Common.Application.DTOs.Members;
 using Common.Domain.ValueObjects;
 using Members.Application.Mapping;
+using Members.Application.Specifications.With;
 using Members.Domain.Contracts.Repositories;
 using Members.Domain.Entities;
 using Members.Domain.Services;
@@ -31,7 +32,7 @@ namespace Members.Application.UseCases.Members
 
             return await memberRepository.GetByIdAsync(new MemberKey(request.GuildId, request.UserId), cancellationToken)
                 .Tap(member => lMember = member)
-                .Bind(member => guildRepository.GetGuildWithRoles(member.GuildId, cancellationToken))
+                .Bind(member => guildRepository.GetByIdAsync(member.GuildId, new GuildWithRolesSpec(), cancellationToken))
                 .Tap(guild => lGuild = guild)
                 .Bind(guild => guildMemberRoleService.AssignRoles(guild, lMember, roleIdList))
                 .Tap(updateResult => memberRolesUpdateResult = updateResult)

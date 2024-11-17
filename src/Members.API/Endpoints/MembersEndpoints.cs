@@ -27,7 +27,7 @@ namespace Members.API.Endpoints
         /// <inheritdoc/>
         public void DefineEndpoints(WebApplication aWebApplication)
         {
-            aWebApplication.MapGet(MembersApiRoutes.members, Get_MembersList)
+            aWebApplication.MapGet(MembersApiRoutes.members, Get_MembersPagedList)
                 .RequireJWTBearer()
                 .RequirePermissions(PermissionsEnum.AccessMembers)
                 .SetResponseMetadata<PagedListDTO<MemberDTO>>(200)
@@ -51,7 +51,7 @@ namespace Members.API.Endpoints
         /// <summary>
         /// Get the list of guild members under filtering and pagination conditions specified in the request's query parameters and sorted by a given column name.
         /// </summary>
-        private async Task<IResult> Get_MembersList(ClaimsPrincipal claimsPrincipal, ListMembers listMembers, PaginationValidator paginationValidationRules, MembersSortingValidator sortingValidationRules, DiscordIdValidator discordIdValidator,
+        private async Task<IResult> Get_MembersPagedList(ClaimsPrincipal claimsPrincipal, GetMembersPage getMembersPageUseCase, PaginationValidator paginationValidationRules, MembersSortingValidator sortingValidationRules, DiscordIdValidator discordIdValidator,
         int? page, int? pageSize,
         string? sortBy, ListSortDirection? sortDirection,
         string? name,
@@ -61,16 +61,16 @@ namespace Members.API.Endpoints
             paginationValidationRules, sortingValidationRules, discordIdValidator,
             claimsPrincipal.FindFirstValue(GuildSwarmClaims.GuildId)!, name
         ).Apply()
-        .Bind(specification => listMembers.ExecuteAsync(specification, aCancellationToken))
+        .Bind(specification => getMembersPageUseCase.ExecuteAsync((specification as MemberPageSpecification)!, aCancellationToken))
         .ToIResult();
 
 
         /// <summary>
         /// Get the list of guild members(<see cref="MemberDetailDTO"/>) from the provided members id list.
         /// </summary>
-        private async Task<IResult> Post_MembersByIdList(IMembersService aMembersService, [FromBody] IEnumerable<MemberKey> memberIdList, CancellationToken aCancellationToken = default)
+        private async Task<IResult> Post_MembersByIdList(ListMembersByIds listMembersByIdsUseCase, [FromBody] IEnumerable<MemberKey> memberIdList, CancellationToken aCancellationToken = default)
         => await Result.CancellationTokenResult(aCancellationToken)
-        .Bind(_ => aMembersService.GetMembersByIdList(memberIdList, aCancellationToken))
+        .Bind(_ => listMembersByIdsUseCase.ExecuteAsync(memberIdList, aCancellationToken))
         .ToIResult();
 
         /// <summary>

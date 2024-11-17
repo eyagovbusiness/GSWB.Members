@@ -13,7 +13,7 @@ namespace Members.Application.Specifications
 {
     public class MemberPageSpecification : SortedAndPagedSpecification<Member>
     {
-        private readonly string _guildId;
+        public readonly string _guildId;
         private readonly DiscordIdValidator _discordIdValidator;
         public MemberPageSpecification(
         int? page, int? pageSize,
@@ -28,6 +28,7 @@ namespace Members.Application.Specifications
             _discordIdValidator = discordIdValidator;
             if (!string.IsNullOrEmpty(name))
                 Query.Where(member => EF.Functions.Like(member.DiscordGuildDisplayName.ToLower(), $"%{name.ToLower()}%"));
+            Query.Include(member => member.Roles);
 
         }
 
