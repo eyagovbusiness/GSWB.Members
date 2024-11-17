@@ -18,6 +18,7 @@ using TGF.CA.Infrastructure.Identity.Authorization.Permissions;
 using TGF.CA.Presentation;
 using TGF.CA.Presentation.MinimalAPI;
 using TGF.Common.ROP.Result;
+using TGF.Common.ROP;
 
 namespace Members.API.Endpoints
 {
@@ -76,9 +77,9 @@ namespace Members.API.Endpoints
         /// <summary>
         /// Get the count of all the guild's members registered in the database.
         /// </summary>
-        private async Task<IResult> Get_MembersCount(IMembersService aMembersService, CancellationToken aCancellationToken = default)
-        => await Result.CancellationTokenResult(aCancellationToken)
-            .Bind(_ => aMembersService.GetMembersCount())
+        private async Task<IResult> Get_MembersCount(GetMembersCount getMembersCountUseCase, CancellationToken cancellationToken = default)
+        => await Result.CancellationTokenResult(cancellationToken)
+            .Bind(_ => getMembersCountUseCase.ExecuteAsync(Unit.Value, cancellationToken))
             .ToIResult();
     }
 }

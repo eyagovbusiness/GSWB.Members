@@ -9,10 +9,6 @@ namespace Members.Application
 {
     public interface IMembersService
     {
-        /// <summary>
-        /// Get the total count of guild members.
-        /// </summary>
-        public Task<IHttpResult<int>> GetMembersCount(CancellationToken aCancellationToken = default);
 
         /// <summary>
         /// Update the member by its DiscordUserId and the provided fields to be updated.

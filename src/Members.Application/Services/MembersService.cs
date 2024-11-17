@@ -27,10 +27,6 @@ namespace Members.Application.Services
 
         #region IMembersService
 
-
-        public async Task<IHttpResult<int>> GetMembersCount(CancellationToken aCancellationToken = default)
-        => await _memberRepository.GetCountAsync(aCancellationToken);
-
         public async Task<IHttpResult<MemberDetailDTO>> UpdateMemberDetail(MemberProfileUpdateDTO aMemberProfileDTO, MemberKey id, CancellationToken aCancellationToken = default)
         => await _memberRepository.GetByIdAsync(id, aCancellationToken)
             .Bind(member => UpdateMemberProfile(member!, aMemberProfileDTO, aCancellationToken))
