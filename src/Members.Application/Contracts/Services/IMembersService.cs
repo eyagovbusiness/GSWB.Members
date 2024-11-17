@@ -7,13 +7,6 @@ namespace Members.Application
 {
     public interface IMembersService
     {
-        /// <summary>
-        /// Update the member's discord display name.
-        /// </summary>
-        /// <param name="aDiscordUserId">DiscordUserId related with the member.</param>
-        /// <param name="aNewDisplayName">New discord display name in the server.</param>
-        /// <returns>The updated member DTO.</returns>
-        public Task<IHttpResult<MemberDetailDTO>> UpdateMemberDiscordDisplayName(ulong aUserId, ulong GuildId,  string aNewDisplayName, CancellationToken aCancellationToken = default);
 
         /// <summary>
         /// Update the member's discord avatar image.

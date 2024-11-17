@@ -27,12 +27,6 @@ namespace Members.Application.Services
 
         #region IMembersService
 
-
-        public async Task<IHttpResult<MemberDetailDTO>> UpdateMemberDiscordDisplayName(ulong userId, ulong guildId, string aNewDisplayName, CancellationToken aCancellationToken = default)
-        => await _memberRepository.GetByIdAsync(new MemberKey(guildId, userId), aCancellationToken)
-            .Bind(member => UpdateMemberDisplayName(member!, aNewDisplayName, aCancellationToken))
-            .Map(member => member.ToDetailDto());
-
         public async Task<IHttpResult<MemberDetailDTO>> UpdateMemberAvatar(ulong userId, ulong guildId, string aNewAvatarUrl, CancellationToken aCancellationToken = default)
         => await _memberRepository.GetByIdAsync(new MemberKey(guildId, userId), aCancellationToken)
             .Bind(member => UpdateAvatar(member!, aNewAvatarUrl, aCancellationToken))
@@ -74,12 +68,6 @@ namespace Members.Application.Services
         => await Result.CancellationTokenResult(aCancellationToken)
             .Tap(_ => aMember!.Status = aMemberStatus)
             .Bind(member => _memberRepository.UpdateAsync(aMember, aCancellationToken));
-
-        private async Task<IHttpResult<Member>> UpdateMemberDisplayName(Member aMember, string aNewDisplayName, CancellationToken aCancellationToken = default)
-        {
-            aMember.DiscordGuildDisplayName = aNewDisplayName;
-            return await _memberRepository.UpdateAsync(aMember, aCancellationToken);
-        }
 
         private async Task<IHttpResult<Member>> UpdateAvatar(Member aMember, string aNewAvatarUrl, CancellationToken aCancellationToken = default)
         {
