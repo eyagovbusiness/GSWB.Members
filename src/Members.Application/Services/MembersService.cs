@@ -26,13 +26,6 @@ namespace Members.Application.Services
         }
 
         #region IMembersService
-
-        public async Task<IHttpResult<MemberDetailDTO>> UpdateMemberAvatar(ulong userId, ulong guildId, string aNewAvatarUrl, CancellationToken aCancellationToken = default)
-        => await _memberRepository.GetByIdAsync(new MemberKey(guildId, userId), aCancellationToken)
-            .Bind(member => UpdateAvatar(member!, aNewAvatarUrl, aCancellationToken))
-            .Map(member => member.ToDetailDto());
-
-
         public async Task<IHttpResult<Member>> DeleteMember(MemberKey id, CancellationToken aCancellationToken = default)
          => await _memberRepository.GetByIdAsync(id, aCancellationToken)
             .Bind(member => _memberRepository.DeleteAsync(member!, aCancellationToken));
@@ -69,11 +62,7 @@ namespace Members.Application.Services
             .Tap(_ => aMember!.Status = aMemberStatus)
             .Bind(member => _memberRepository.UpdateAsync(aMember, aCancellationToken));
 
-        private async Task<IHttpResult<Member>> UpdateAvatar(Member aMember, string aNewAvatarUrl, CancellationToken aCancellationToken = default)
-        {
-            aMember.DiscordAvatarUrl = aNewAvatarUrl;
-            return await _memberRepository.UpdateAsync(aMember, aCancellationToken);
-        }
+
 
         private async Task<IHttpResult<Member>> TryUpdateGameHandleVerifyCode(Member aMember, CancellationToken aCancellationToken = default)
         => aMember.TryRefreshGameHandleVerificationCode()

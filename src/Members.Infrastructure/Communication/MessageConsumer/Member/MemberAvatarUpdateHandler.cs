@@ -1,8 +1,10 @@
-﻿using Members.Application;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using TGF.CA.Infrastructure.Comm.Consumer.Handler;
 using TGF.CA.Infrastructure.Comm.Messages;
 using Common.Application.Contracts.Communication.Messages.Discord;
+using Members.Application.UseCases.Members.Update;
+using Common.Domain.ValueObjects;
+using Members.Domain.ValueObjects;
 
 namespace Members.Infrastructure.Communication.MessageConsumer.Member
 {
@@ -12,8 +14,13 @@ namespace Members.Infrastructure.Communication.MessageConsumer.Member
         public async Task Handle(IntegrationMessage<MemberAvatarUpdated> aIntegrationMessage, CancellationToken aCancellationToken = default)
         {
             using var lScope = aServiceScopeFactory.CreateScope();
-            var lMembersService = lScope.ServiceProvider.GetRequiredService<IMembersService>();
-            _ = await lMembersService.UpdateMemberAvatar(ulong.Parse(aIntegrationMessage.Content.UserId), ulong.Parse(aIntegrationMessage.Content.GuildId), aIntegrationMessage.Content.NewAvatarUrl, aCancellationToken);
+            var updateMemberAvatarUseCase = lScope.ServiceProvider.GetRequiredService<UpdateMemberAvatar>();
+            _ = await updateMemberAvatarUseCase.ExecuteAsync(
+                new MemberAvatar(
+                    new MemberKey(ulong.Parse(aIntegrationMessage.Content.GuildId), ulong.Parse(aIntegrationMessage.Content.UserId)),
+                    aIntegrationMessage.Content.NewAvatarUrl
+                )
+            , aCancellationToken);
         }
     }
 }

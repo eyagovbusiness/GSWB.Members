@@ -9,14 +9,6 @@ namespace Members.Application
     {
 
         /// <summary>
-        /// Update the member's discord avatar image.
-        /// </summary>
-        /// <param name="aDiscordUserId">DiscordUserId related with the member.</param>
-        /// <param name="aNewAvatarUrl">New member avatar url.</param>
-        /// <returns>The updated member DTO.</returns>
-        public Task<IHttpResult<MemberDetailDTO>> UpdateMemberAvatar(ulong userId, ulong guildId, string aNewAvatarUrl, CancellationToken aCancellationToken = default);
-
-        /// <summary>
         /// Delete application member detailed by its Id.
         /// </summary>
         /// <returns>The found member associated with the provided Id, otherwise error.</returns>
