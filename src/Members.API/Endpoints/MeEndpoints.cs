@@ -20,6 +20,7 @@ using TGF.CA.Infrastructure.Identity.Authorization.Permissions;
 using Members.Application.UseCases.Members.Update;
 using Members.Domain.ValueObjects;
 using Members.Application.UseCases.Members;
+using Members.Application.UseCases.Members.Read;
 
 namespace Members.API.Endpoints
 {
@@ -70,8 +71,8 @@ namespace Members.API.Endpoints
         /// Get the current authenticated member's overall information(<see cref="MemberDetailDTO"/>).
         /// </summary>
         private async Task<IResult> Get_Me(GetMemberMe getMemberMe, ClaimsPrincipal aClaims, CancellationToken aCancellationToken = default)
-            => await getMemberMe.ExecuteAsync(new MemberKey(ulong.Parse(aClaims.FindFirstValue(GuildSwarmClaims.GuildId)!), ulong.Parse(aClaims.FindFirstValue(ClaimTypes.NameIdentifier)!)), aCancellationToken)
-            .ToIResult();
+        => await getMemberMe.ExecuteAsync(new MemberKey(ulong.Parse(aClaims.FindFirstValue(GuildSwarmClaims.GuildId)!), ulong.Parse(aClaims.FindFirstValue(ClaimTypes.NameIdentifier)!)), aCancellationToken)
+        .ToIResult();
 
         /// <summary>
         /// Get the Guild information of the current membership checked-in
@@ -91,13 +92,13 @@ namespace Members.API.Endpoints
         /// Updates the basic profile data(<see cref="MemberGameProfileUpdateDTO"/>) for the current authenticated member.
         /// </summary>
         private async Task<IResult> Put_MeUpdate([FromBody] MemberGameProfileUpdateDTO memberGameProfileUpdateDTO, UpdateMemberGameProfile updateMemberGameProfileUseCase, ClaimsPrincipal aClaims, CancellationToken aCancellationToken = default)
-            => await updateMemberGameProfileUseCase.ExecuteAsync(
-                new MemberGameProfileUpdate(
-                    new MemberKey(aClaims.FindFirstValue(GuildSwarmClaims.GuildId)!, aClaims.FindFirstValue(ClaimTypes.NameIdentifier)!),
-                    memberGameProfileUpdateDTO.GameHandle,
-                    memberGameProfileUpdateDTO.SpectrumCommunityMoniker), aCancellationToken
-                )
-            .ToIResult();
+        => await updateMemberGameProfileUseCase.ExecuteAsync(
+            new MemberGameProfileUpdate(
+                new MemberKey(aClaims.FindFirstValue(GuildSwarmClaims.GuildId)!, aClaims.FindFirstValue(ClaimTypes.NameIdentifier)!),
+                memberGameProfileUpdateDTO.GameHandle,
+                memberGameProfileUpdateDTO.SpectrumCommunityMoniker), aCancellationToken
+            )
+        .ToIResult();
 
         /// <summary>
         /// Delete the current authenticated member from database.
@@ -114,16 +115,16 @@ namespace Members.API.Endpoints
         /// <summary>
         /// Get game handle verification info for the authenticated member. Calling this endpoint refreshes the verification code if expired.
         /// </summary>
-        private async Task<IResult> Get_GetVerifyInfo(IMembersService aMembersService, ClaimsPrincipal aClaims, CancellationToken aCancellationToken = default)
-            => await aMembersService.Get_GetVerifyInfo(new MemberKey(aClaims.FindFirstValue(GuildSwarmClaims.GuildId)!, aClaims.FindFirstValue(ClaimTypes.NameIdentifier)!), aCancellationToken)
-            .ToIResult();
+        private async Task<IResult> Get_GetVerifyInfo(GetGetVerifyInfo getGetVerifyInfoUseCase, ClaimsPrincipal aClaims, CancellationToken aCancellationToken = default)
+        => await getGetVerifyInfoUseCase.ExecuteAsync(new MemberKey(aClaims.FindFirstValue(GuildSwarmClaims.GuildId)!, aClaims.FindFirstValue(ClaimTypes.NameIdentifier)!), aCancellationToken)
+        .ToIResult();
 
         /// <summary>
         /// Verifies the GameHandle ownership of current authenticated member by checking if the public profile of the provided GameHandle by this member contains this member's personal verification code. Returns the updated member resulting after the verification process(<see cref="MemberDetailDTO"/>).
         /// </summary>
-        private async Task<IResult> Put_MeVerifyGameHandle(IMembersService aMembersService, ClaimsPrincipal aClaims, CancellationToken aCancellationToken = default)
-            => await aMembersService.VerifyGameHandle(new MemberKey(aClaims.FindFirstValue(GuildSwarmClaims.GuildId)!, aClaims.FindFirstValue(ClaimTypes.NameIdentifier)!), aCancellationToken)
-            .ToIResult();
+        private async Task<IResult> Put_MeVerifyGameHandle(VerifyGameHandle verifyGameHandleUseCase, ClaimsPrincipal aClaims, CancellationToken aCancellationToken = default)
+        => await verifyGameHandleUseCase.ExecuteAsync(new MemberKey(aClaims.FindFirstValue(GuildSwarmClaims.GuildId)!, aClaims.FindFirstValue(ClaimTypes.NameIdentifier)!), aCancellationToken)
+        .ToIResult();
 
         #endregion
 

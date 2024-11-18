@@ -1,6 +1,5 @@
 ﻿using Common.Application;
 using FluentValidation;
-using Members.Application.Services;
 using Members.Application.Validation;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -20,7 +19,6 @@ namespace Members.Application
         public static void RegisterApplicationServices(this IServiceCollection aServiceList)
         {
             aServiceList.RegisterCommonApplicationServices();
-            aServiceList.AddScoped<IMembersService, MembersService>();
             aServiceList.AddValidatorsFromAssemblyContaining<RoleSortingValidator>();
             aServiceList.AddUseCases(Assembly.GetExecutingAssembly());
         }

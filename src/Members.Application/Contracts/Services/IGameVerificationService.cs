@@ -1,8 +1,7 @@
-﻿
-using TGF.Common.ROP;
+﻿using TGF.Common.ROP;
 using TGF.Common.ROP.HttpResult;
 
-namespace Members.Application
+namespace Members.Application.Contracts.Services
 {
     public interface IGameVerificationService
     {

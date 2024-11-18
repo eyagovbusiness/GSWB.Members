@@ -1,6 +1,5 @@
 ﻿using AngleSharp.Common;
 using AngleSharp.Html.Parser;
-using Members.Application;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
@@ -9,6 +8,7 @@ using TGF.Common.ROP.HttpResult;
 using TGF.Common.ROP.Result;
 using TGF.Common.ROP.HttpResult.RailwaySwitches;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
+using Members.Application.Contracts.Services;
 
 namespace Members.Infrastructure.Services
 {
