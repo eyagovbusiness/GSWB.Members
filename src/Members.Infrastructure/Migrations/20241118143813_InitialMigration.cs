@@ -31,7 +31,7 @@ namespace Members.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Code = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
+                    Code = table.Column<string>(type: "character varying(6)", maxLength: 6, nullable: false),
                     ExpiryDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     ModifiedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
@@ -63,34 +63,6 @@ namespace Members.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Members",
-                columns: table => new
-                {
-                    GuildId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
-                    UserId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
-                    DiscordGuildDisplayName = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
-                    DiscordAvatarUrl = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
-                    SpectrumCommunityMoniker = table.Column<string>(type: "text", nullable: true),
-                    GameHandle = table.Column<string>(type: "text", nullable: true),
-                    Status = table.Column<byte>(type: "smallint", nullable: false),
-                    IsGameHandleVerified = table.Column<bool>(type: "boolean", nullable: false),
-                    GameHandleVerificationCode = table.Column<string>(type: "character varying(6)", maxLength: 6, nullable: false),
-                    VerificationCodeExpiryDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    ModifiedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Members", x => new { x.GuildId, x.UserId });
-                    table.ForeignKey(
-                        name: "FK_Members_Guilds_GuildId",
-                        column: x => x.GuildId,
-                        principalTable: "Guilds",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Roles",
                 columns: table => new
                 {
@@ -113,6 +85,38 @@ namespace Members.Infrastructure.Migrations
                         principalTable: "Guilds",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Members",
+                columns: table => new
+                {
+                    GuildId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    UserId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    VerifyCodeId = table.Column<Guid>(type: "uuid", nullable: true),
+                    DiscordGuildDisplayName = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
+                    DiscordAvatarUrl = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    SpectrumCommunityMoniker = table.Column<string>(type: "text", nullable: true),
+                    GameHandle = table.Column<string>(type: "text", nullable: true),
+                    Status = table.Column<byte>(type: "smallint", nullable: false),
+                    IsGameHandleVerified = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ModifiedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Members", x => new { x.GuildId, x.UserId });
+                    table.ForeignKey(
+                        name: "FK_Members_Guilds_GuildId",
+                        column: x => x.GuildId,
+                        principalTable: "Guilds",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Members_VerifyCodes_VerifyCodeId",
+                        column: x => x.VerifyCodeId,
+                        principalTable: "VerifyCodes",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -223,6 +227,11 @@ namespace Members.Infrastructure.Migrations
                 columns: new[] { "MemberGuildId", "MemberUserId" });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Members_VerifyCodeId",
+                table: "Members",
+                column: "VerifyCodeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Roles_GuildId",
                 table: "Roles",
                 column: "GuildId");
@@ -249,9 +258,6 @@ namespace Members.Infrastructure.Migrations
                 name: "Roles");
 
             migrationBuilder.DropTable(
-                name: "VerifyCodes");
-
-            migrationBuilder.DropTable(
                 name: "Sentences");
 
             migrationBuilder.DropTable(
@@ -259,6 +265,9 @@ namespace Members.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Guilds");
+
+            migrationBuilder.DropTable(
+                name: "VerifyCodes");
         }
     }
 }

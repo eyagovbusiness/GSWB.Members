@@ -55,17 +55,6 @@ namespace Members.Domain.Entities
         ///// </summary>
         //public virtual VerifyCode? VerifyCode { get; set; }
 
-        /// <summary>
-        /// 6-digit verification code used to verify the current <see cref="GameHandle"/> set in this Member.
-        /// </summary>
-        [MaxLength(6)]
-        public string GameHandleVerificationCode { get; set; } = "000000";
-
-        /// <summary>
-        /// Expiry date of the current <see cref="GameHandleVerificationCode"/>
-        /// </summary>
-        public DateTimeOffset VerificationCodeExpiryDate { get; set; }
-
         #region Constructors
         protected Member() { DiscordAvatarUrl = default!; DiscordGuildDisplayName = default!; }
         //ctor for EF
@@ -120,33 +109,6 @@ namespace Members.Domain.Entities
             return lHasBeenUpdated;
         }
 
-        /// <summary>
-        /// Verifies the GameHandle if the VerificationCodeExpiryDate has not expired yet, setting IsGameHandleVerified to true.
-        /// </summary>
-        /// <returns>True in case IsGameHandleVerified was false and got updated to tue, otherwise false.</returns>
-        public bool Verify()
-        {
-            if (!IsGameHandleVerified
-                && VerificationCodeExpiryDate > DateTimeOffset.Now)
-            {
-                IsGameHandleVerified = true;
-                return true;
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Update game handle verification code ONLY if the game handle was not verified already and the code has expired already.
-        /// </summary>
-        /// <returns>True if GameHandleVerificationCode was updated, otherwise false.</returns>
-        public bool TryRefreshGameHandleVerificationCode()
-        {
-            if (IsGameHandleVerified || VerificationCodeExpiryDate > DateTimeOffset.Now)
-                return false;
-            GameHandleVerificationCode = new Random().Next(100000, 999999).ToString();
-            VerificationCodeExpiryDate = DateTimeOffset.Now.AddMinutes(1);
-            return true;
-        }
         #endregion
 
     }

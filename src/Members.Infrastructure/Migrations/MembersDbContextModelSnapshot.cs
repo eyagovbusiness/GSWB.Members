@@ -143,11 +143,6 @@ namespace Members.Infrastructure.Migrations
                     b.Property<string>("GameHandle")
                         .HasColumnType("text");
 
-                    b.Property<string>("GameHandleVerificationCode")
-                        .IsRequired()
-                        .HasMaxLength(6)
-                        .HasColumnType("character varying(6)");
-
                     b.Property<bool>("IsGameHandleVerified")
                         .HasColumnType("boolean");
 
@@ -160,10 +155,12 @@ namespace Members.Infrastructure.Migrations
                     b.Property<byte>("Status")
                         .HasColumnType("smallint");
 
-                    b.Property<DateTimeOffset>("VerificationCodeExpiryDate")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<Guid?>("VerifyCodeId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("GuildId", "UserId");
+
+                    b.HasIndex("VerifyCodeId");
 
                     b.ToTable("Members");
                 });
@@ -273,8 +270,8 @@ namespace Members.Infrastructure.Migrations
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .HasMaxLength(32)
-                        .HasColumnType("character varying(32)");
+                        .HasMaxLength(6)
+                        .HasColumnType("character varying(6)");
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -333,6 +330,12 @@ namespace Members.Infrastructure.Migrations
                         .HasForeignKey("GuildId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Members.Domain.Entities.VerifyCode", "VerifyCode")
+                        .WithMany()
+                        .HasForeignKey("VerifyCodeId");
+
+                    b.Navigation("VerifyCode");
                 });
 
             modelBuilder.Entity("Members.Domain.Entities.MemberRole", b =>
