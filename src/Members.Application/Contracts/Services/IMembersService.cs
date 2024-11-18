@@ -1,18 +1,11 @@
 ﻿using Common.Application.DTOs.Members;
 using Common.Domain.ValueObjects;
-using Members.Domain.Entities;
 using TGF.Common.ROP.HttpResult;
 
 namespace Members.Application
 {
     public interface IMembersService
     {
-
-        /// <summary>
-        /// Delete application member detailed by its Id.
-        /// </summary>
-        /// <returns>The found member associated with the provided Id, otherwise error.</returns>
-        public Task<IHttpResult<Member>> DeleteMember(MemberKey id, CancellationToken aCancellationToken = default);
 
         /// <summary>
         /// Get game handle verification info related data for a given member by its Id as <see cref="MemberVerifyDTO"/>.

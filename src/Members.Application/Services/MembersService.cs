@@ -25,11 +25,6 @@ namespace Members.Application.Services
             _gameVerificationService = aGameVerificationService;
         }
 
-        #region IMembersService
-        public async Task<IHttpResult<Member>> DeleteMember(MemberKey id, CancellationToken aCancellationToken = default)
-         => await _memberRepository.GetByIdAsync(id, aCancellationToken)
-            .Bind(member => _memberRepository.DeleteAsync(member!, aCancellationToken));
-
         #region Verify
 
         public async Task<IHttpResult<MemberVerificationStateDTO>> Get_GetVerifyInfo(MemberKey id, CancellationToken aCancellationToken = default)
@@ -48,7 +43,6 @@ namespace Members.Application.Services
 
         #endregion
 
-        #endregion
 
         #region Private
 

@@ -19,6 +19,7 @@ using TGF.CA.Infrastructure.Identity.Authentication;
 using TGF.CA.Infrastructure.Identity.Authorization.Permissions;
 using Members.Application.UseCases.Members.Update;
 using Members.Domain.ValueObjects;
+using Members.Application.UseCases.Members;
 
 namespace Members.API.Endpoints
 {
@@ -101,12 +102,10 @@ namespace Members.API.Endpoints
         /// <summary>
         /// Delete the current authenticated member from database.
         /// </summary>
-        private async Task<IResult> Delete_MeDelete(IMembersService aMembersService, ClaimsPrincipal aClaims, IIntegrationMessagePublisher aIntegrationPublisherService, CancellationToken aCancellationToken = default)
+        private async Task<IResult> Delete_MeDelete(DeleteMember deleteMemberUseCase, ClaimsPrincipal aClaims, IIntegrationMessagePublisher aIntegrationPublisherService, CancellationToken aCancellationToken = default)
         {
             var memberId = new MemberKey(aClaims.FindFirstValue(GuildSwarmClaims.GuildId)!, aClaims.FindFirstValue(ClaimTypes.NameIdentifier)!);
-            return await aMembersService.DeleteMember(memberId, aCancellationToken)
-            .Tap(updatedRoleIdList => aIntegrationPublisherService.Publish(new MemberTokenRevoked([memberId]), routingKey: RoutingKeys.Members.Member_revoke))
-            .Map(_ => Unit.Value)
+            return await deleteMemberUseCase.ExecuteAsync(memberId, aCancellationToken)
             .ToIResult();
         }
 
