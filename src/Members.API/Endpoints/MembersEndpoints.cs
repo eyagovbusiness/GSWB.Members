@@ -28,19 +28,19 @@ namespace Members.API.Endpoints
         /// <inheritdoc/>
         public void DefineEndpoints(WebApplication aWebApplication)
         {
-            aWebApplication.MapGet(MembersApiRoutes.members, Get_MembersPagedList)
+            aWebApplication.MapGet(MembersApiRoutes.guilds_mine_members, Get_MembersPagedList)
                 .RequireJWTBearer()
                 .RequirePermissions(PermissionsEnum.AccessMembers)
                 .SetResponseMetadata<PagedListDTO<MemberDTO>>(200)
                 .ProducesValidationProblem();
 
-            aWebApplication.MapPost(MembersApiRoutes.members_getByIds, Post_MembersByIdList)
+            aWebApplication.MapPost(MembersApiRoutes.guilds_mine_members_getByIds, Post_MembersByIdList)
                 .RequireJWTBearer()
                 .RequirePermissions(PermissionsEnum.AccessMembers)
                 .SetResponseMetadata<MemberDetailDTO[]>(200)
                 .ProducesValidationProblem();
 
-            aWebApplication.MapGet(MembersApiRoutes.members_count, Get_MembersCount)
+            aWebApplication.MapGet(MembersApiRoutes.guilds_mine_members_count, Get_MembersCount)
                 .SetResponseMetadata<int>(200);
         }
 
